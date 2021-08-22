@@ -4,7 +4,11 @@ import { useRouter } from 'next/dist/client/router'
 import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { organizationChange, tabChange } from 'store/modules/auth/authSlice'
+import {
+	organizationUpdate,
+	tabUpdate,
+	userNameInputTextUpdate,
+} from 'store/modules/auth/authSlice'
 import { fetchOrganizationList } from 'store/modules/organization/organizationSlice'
 import { SelectedTab } from 'types/enums'
 
@@ -20,14 +24,19 @@ const UserDetailInputs: React.FC = () => {
 		handleFetchOrganizations()
 	}, [handleFetchOrganizations])
 
-	console.log(auth.selectedOrganizationId)
-
 	return (
 		<div className="px-6 pt-3 pb-6">
 			<div>
 				<div className="text-gray-700 font-semibold">Your Name</div>
 				<div className="pt-1">
-					<Input placeholder="Saurabh Singh" background="white" />
+					<Input
+						placeholder="Saurabh Singh"
+						background="white"
+						value={auth.userNameInputText}
+						onChange={(e) =>
+							dispatch(userNameInputTextUpdate(e.target.value))
+						}
+					/>
 				</div>
 			</div>
 			<div className="pt-3">
@@ -38,7 +47,7 @@ const UserDetailInputs: React.FC = () => {
 						background="white"
 						value={auth.selectedOrganizationId}
 						onChange={(val) => {
-							dispatch(organizationChange(val.target.value))
+							dispatch(organizationUpdate(val.target.value))
 						}}
 					>
 						{organization.organizationList.map((org) => (
@@ -64,7 +73,7 @@ const UserDetailInputs: React.FC = () => {
 				<Link
 					color="gray.600"
 					onClick={() => {
-						dispatch(tabChange(SelectedTab.GET_STARTED))
+						dispatch(tabUpdate(SelectedTab.GET_STARTED))
 					}}
 				>
 					<div className="flex items-center justify-center">

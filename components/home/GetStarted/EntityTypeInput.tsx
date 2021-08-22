@@ -5,7 +5,7 @@ import GoogleLogin, {
 } from 'react-google-login'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState, store } from 'store'
-import { AuthState, loginTypeChange } from 'store/modules/auth/authSlice'
+import { AuthState, loginTypeUpdate } from 'store/modules/auth/authSlice'
 import { LoginType } from 'types/enums'
 
 interface EntityTypeInputComponentProps {
@@ -24,9 +24,9 @@ const EntityTypeInput = ({
 
 	const updateLoginType = (e: string) => {
 		if (e == 'user') {
-			dispatch(loginTypeChange(LoginType.USER))
+			dispatch(loginTypeUpdate(LoginType.USER))
 		} else {
-			dispatch(loginTypeChange(LoginType.ORGANISATION))
+			dispatch(loginTypeUpdate(LoginType.ORGANISATION))
 		}
 	}
 

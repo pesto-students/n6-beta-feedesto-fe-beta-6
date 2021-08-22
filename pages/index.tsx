@@ -7,7 +7,11 @@ import {
 	GoogleLoginResponseOffline,
 } from 'react-google-login'
 import { RootState, store } from 'store'
-import { tabChange } from 'store/modules/auth/authSlice'
+import {
+	googleAuthTokenUpdate,
+	tabUpdate,
+	userNameInputTextUpdate,
+} from 'store/modules/auth/authSlice'
 import { SelectedTab } from 'types/enums'
 import GetStarted from '@/components/home/GetStarted'
 import { useDispatch, useSelector } from 'react-redux'
@@ -21,9 +25,12 @@ const Home: NextPage = () => {
 	) => {
 		response = response as GoogleLoginResponse
 		if (response) {
-			// TODO: Set tokenId temporarily for auth
+			dispatch(
+				userNameInputTextUpdate(response.getBasicProfile().getName()),
+			)
+			dispatch(googleAuthTokenUpdate(response.tokenId))
 
-			dispatch(tabChange(SelectedTab.DETAILS_INPUT))
+			dispatch(tabUpdate(SelectedTab.DETAILS_INPUT))
 		}
 	}
 	const handleGoogleLoginFailure = (response: GoogleLoginResponse) => {
