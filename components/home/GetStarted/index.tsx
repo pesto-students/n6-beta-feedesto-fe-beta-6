@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState, store } from 'store'
 import { LoginType, SelectedTab } from 'types/enums'
 import EntityTypeInput from './EntityTypeInput'
-import OrganisationDetailInputs from './OrganisationDetailInputs'
+import OrganizationDetailInputs from './OrganizationDetailInputs'
 import UserDetailInputs from './UserDetailInputs'
 
 interface GetStartedComponentProps {
@@ -26,13 +26,13 @@ const GetStarted = ({
 		auth.loginType == LoginType.USER ? (
 			<UserDetailInputs />
 		) : (
-			<OrganisationDetailInputs />
+			<OrganizationDetailInputs />
 		)
 
 	return (
 		<div className="bg-gray-100 rounded-2xl ">
 			<div>
-				<div className="border-b border-gray-200 p-4 text-2xl font-semibold text-gray-500 text-center">
+				<div className="border-b border-gray-200 p-4 text-2xl font-semibold text-gray-600 text-center">
 					Get Started
 				</div>
 				{auth.selectedTab == SelectedTab.GET_STARTED ? (

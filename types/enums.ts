@@ -1,6 +1,6 @@
 export enum LoginType {
 	USER = 'user',
-	ORGANISATION = 'organisation',
+	ORGANISATION = 'organization',
 }
 
 export enum SelectedTab {

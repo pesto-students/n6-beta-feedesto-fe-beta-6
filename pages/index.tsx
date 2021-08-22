@@ -1,16 +1,17 @@
 import { Image, Radio, RadioGroup } from '@chakra-ui/react'
 import { NextPage } from 'next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
 } from 'react-google-login'
-import { store } from 'store'
+import { RootState, store } from 'store'
 import { tabChange } from 'store/modules/auth/authSlice'
 import { SelectedTab } from 'types/enums'
-import GetStarted from '@/components/home/GetStarted/GetStarted'
-import { useDispatch } from 'react-redux'
+import GetStarted from '@/components/home/GetStarted'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchOrganizationList } from 'store/modules/organization/organizationSlice'
 
 const Home: NextPage = () => {
 	const dispatch = useDispatch()
@@ -20,7 +21,8 @@ const Home: NextPage = () => {
 	) => {
 		response = response as GoogleLoginResponse
 		if (response) {
-			console.log(response.tokenId)
+			// TODO: Set tokenId temporarily for auth
+
 			dispatch(tabChange(SelectedTab.DETAILS_INPUT))
 		}
 	}
