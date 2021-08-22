@@ -21,10 +21,10 @@ jobs:
           node-version: 13.x
 
       - name: Install NPM packages
-        run: npm ci
+        run: yarn install
 
       - name: Build project
-        run: npm run build
+        run: yarn build
 
       - name: Upload Dist
         uses: actions/upload-artifact@v1
