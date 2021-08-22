@@ -38,7 +38,6 @@ const EntityTypeInput = ({
 					value={auth.loginType}
 					className="grid grid-cols-2"
 					onChange={updateLoginType}
-					id="abc"
 				>
 					<Radio className="col" value={LoginType.USER}>
 						User
