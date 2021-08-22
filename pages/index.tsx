@@ -2,10 +2,31 @@ import { Image, Radio, RadioGroup } from '@chakra-ui/react'
 import { NextPage } from 'next'
 import { useState } from 'react'
 import Head from 'next/head'
-import GetStarted, { LoginType } from '@/components/home/GetStarted'
+import {
+	GoogleLoginResponse,
+	GoogleLoginResponseOffline,
+} from 'react-google-login'
+import { store } from 'store'
+import { tabChange } from 'store/modules/auth/authSlice'
+import { SelectedTab } from 'types/enums'
+import GetStarted from '@/components/home/GetStarted/GetStarted'
+import { useDispatch } from 'react-redux'
 
 const Home: NextPage = () => {
-	const [loginType, setLoginType] = useState(LoginType.USER)
+	const dispatch = useDispatch()
+
+	const handleGoogleLoginSuccess = (
+		response: GoogleLoginResponse | GoogleLoginResponseOffline,
+	) => {
+		response = response as GoogleLoginResponse
+		if (response) {
+			console.log(response.tokenId)
+			dispatch(tabChange(SelectedTab.DETAILS_INPUT))
+		}
+	}
+	const handleGoogleLoginFailure = (response: GoogleLoginResponse) => {
+		console.log(response)
+	}
 
 	return (
 		<div>
@@ -33,8 +54,8 @@ const Home: NextPage = () => {
 						<div className="col-span-3"></div>
 						<div className="col-span-4">
 							<GetStarted
-								loginType={loginType}
-								onChange={setLoginType}
+								onLoginSuccess={handleGoogleLoginSuccess}
+								onLoginFailure={handleGoogleLoginFailure}
 							/>
 						</div>
 					</div>
