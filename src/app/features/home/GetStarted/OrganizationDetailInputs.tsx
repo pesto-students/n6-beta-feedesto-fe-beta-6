@@ -1,19 +1,16 @@
 import { ChevronLeftIcon } from '@chakra-ui/icons'
-import { Button, Icon, Input, Link, Select } from '@chakra-ui/react'
-import { useRouter } from 'next/dist/client/router'
-import React, { useCallback, useEffect } from 'react'
+import { Button, Input, Link, Select } from '@chakra-ui/react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'store'
+import { RootState } from '../../../store'
 import {
-	organizationUpdate,
-	organizationDesignationInputTextUpdate,
-	organizationNameInputTextUpdate,
-	tabUpdate,
 	userNameInputTextUpdate,
+	organizationNameInputTextUpdate,
 	organizationStrengthUpdate,
-} from 'store/modules/auth/authSlice'
-import { fetchOrganizationList } from 'store/modules/organization/organizationSlice'
-import { SelectedTab } from 'types/enums'
+	organizationDesignationInputTextUpdate,
+	tabUpdate,
+} from '../../../store/modules/auth/authSlice'
+import { SelectedTab } from '../../../types/enums'
 
 const OrganizationDetailInputs: React.FC = () => {
 	const dispatch = useDispatch()
@@ -47,6 +44,7 @@ const OrganizationDetailInputs: React.FC = () => {
 								organizationNameInputTextUpdate(e.target.value),
 							)
 						}
+						autoFocus
 					/>
 				</div>
 			</div>

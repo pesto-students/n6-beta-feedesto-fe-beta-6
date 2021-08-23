@@ -1,5 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { LoginType, SelectedTab } from 'types/enums'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 export interface Organization {
 	id: number
@@ -39,6 +38,6 @@ export const organizationSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {} = organizationSlice.actions
+// export const { } = organizationSlice.actions
 
 export default organizationSlice.reducer

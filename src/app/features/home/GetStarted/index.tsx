@@ -2,9 +2,9 @@ import {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
 } from 'react-google-login'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState, store } from 'store'
-import { LoginType, SelectedTab } from 'types/enums'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../store'
+import { LoginType, SelectedTab } from '../../../types/enums'
 import EntityTypeInput from './EntityTypeInput'
 import OrganizationDetailInputs from './OrganizationDetailInputs'
 import UserDetailInputs from './UserDetailInputs'
@@ -23,7 +23,7 @@ const GetStarted = ({
 	let auth = useSelector((state: RootState) => state.auth)
 
 	const activeEntityView =
-		auth.loginType == LoginType.USER ? (
+		auth.loginType === LoginType.USER ? (
 			<UserDetailInputs />
 		) : (
 			<OrganizationDetailInputs />
@@ -35,7 +35,7 @@ const GetStarted = ({
 				<div className="border-b border-gray-200 p-4 text-2xl font-semibold text-gray-600 text-center">
 					Get Started
 				</div>
-				{auth.selectedTab == SelectedTab.GET_STARTED ? (
+				{auth.selectedTab === SelectedTab.GET_STARTED ? (
 					<EntityTypeInput
 						onLoginSuccess={onLoginSuccess}
 						onLoginFailure={onLoginFailure}

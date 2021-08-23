@@ -1,6 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { LoginType, SelectedTab } from 'types/enums'
-import { Organization } from '../organization/organizationSlice'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { LoginType, SelectedTab } from '../../../types/enums'
 
 export interface AuthState {
 	loginType: LoginType

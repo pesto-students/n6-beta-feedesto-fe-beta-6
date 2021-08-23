@@ -4,9 +4,10 @@ import GoogleLogin, {
 	GoogleLoginResponseOffline,
 } from 'react-google-login'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState, store } from 'store'
-import { AuthState, loginTypeUpdate } from 'store/modules/auth/authSlice'
-import { LoginType } from 'types/enums'
+
+import { RootState } from '../../../store'
+import { loginTypeUpdate } from '../../../store/modules/auth/authSlice'
+import { LoginType } from '../../../types/enums'
 
 interface EntityTypeInputComponentProps {
 	onLoginSuccess: (
@@ -23,7 +24,7 @@ const EntityTypeInput = ({
 	const dispatch = useDispatch()
 
 	const updateLoginType = (e: string) => {
-		if (e == 'user') {
+		if (e === 'user') {
 			dispatch(loginTypeUpdate(LoginType.USER))
 		} else {
 			dispatch(loginTypeUpdate(LoginType.ORGANISATION))

@@ -1,23 +1,18 @@
-import { Image, Radio, RadioGroup } from '@chakra-ui/react'
-import { NextPage } from 'next'
-import { useEffect, useState } from 'react'
-import Head from 'next/head'
+import { Image } from '@chakra-ui/react'
 import {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
 } from 'react-google-login'
-import { RootState, store } from 'store'
+import { useDispatch } from 'react-redux'
 import {
 	googleAuthTokenUpdate,
 	tabUpdate,
 	userNameInputTextUpdate,
-} from 'store/modules/auth/authSlice'
-import { SelectedTab } from 'types/enums'
-import GetStarted from '@/components/home/GetStarted'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchOrganizationList } from 'store/modules/organization/organizationSlice'
+} from '../../store/modules/auth/authSlice'
+import { SelectedTab } from '../../types/enums'
+import GetStarted from './GetStarted'
 
-const Home: NextPage = () => {
+const Home = () => {
 	const dispatch = useDispatch()
 
 	const handleGoogleLoginSuccess = (
@@ -39,9 +34,6 @@ const Home: NextPage = () => {
 
 	return (
 		<div>
-			<Head>
-				<title>Feedesto | Home</title>
-			</Head>
 			<main>
 				<header>
 					<div className="mt-8 px-12">
