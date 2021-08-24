@@ -4,7 +4,6 @@ import GoogleLogin, {
 	GoogleLoginResponseOffline,
 } from 'react-google-login'
 import { useDispatch, useSelector } from 'react-redux'
-
 import { RootState } from '../../../store'
 import { loginTypeUpdate } from '../../../store/modules/auth/authSlice'
 import { LoginType } from '../../../types/enums'
@@ -39,12 +38,21 @@ const EntityTypeInput = ({
 					value={auth.loginType}
 					className="grid grid-cols-2"
 					onChange={updateLoginType}
+					data-testid="entity-type-radio"
 				>
-					<Radio className="col" value={LoginType.USER}>
+					<Radio
+						className="col"
+						value={LoginType.USER}
+						data-testid="entity-type-user-radio"
+					>
 						User
 					</Radio>
 
-					<Radio className="col" value={LoginType.ORGANISATION}>
+					<Radio
+						className="col"
+						value={LoginType.ORGANISATION}
+						data-testid="entity-type-organization-radio"
+					>
 						Organization
 					</Radio>
 				</RadioGroup>
@@ -57,6 +65,7 @@ const EntityTypeInput = ({
 							onClick={renderProps.onClick}
 							disabled={renderProps.disabled}
 							className="bg-white px-4 py-3 w-full rounded-xl shadow-lg font-semibold text-left"
+							data-testid="google-login"
 						>
 							<div className="flex items-center">
 								<div className="flex-none">

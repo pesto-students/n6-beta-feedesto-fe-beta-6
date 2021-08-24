@@ -10,7 +10,7 @@ import {
 	userNameInputTextUpdate,
 } from '../../store/modules/auth/authSlice'
 import { SelectedTab } from '../../types/enums'
-import GetStarted from './GetStarted'
+import GetStarted from './GetStarted/GetStarted'
 
 const Home = () => {
 	const dispatch = useDispatch()
@@ -47,7 +47,10 @@ const Home = () => {
 				<div className="m-16">
 					<div className="grid grid-cols-12">
 						<div className="col-span-5">
-							<div className="text-7xl text-gray-800">
+							<div
+								className="text-7xl text-gray-800"
+								data-testid="tagline"
+							>
 								A <b>Decisive</b> buddy for your{' '}
 								<b>Business.</b>
 							</div>
