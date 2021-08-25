@@ -7,33 +7,33 @@ on:
       - master
 
 jobs:
-  # build:
-  #   name: Build
-  #   runs-on: ubuntu-latest
+  build:
+    name: Build
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Install Node.js
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 14.x
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
 
-  #     - name: Install NPM packages
-  #       run: yarn install
+      - name: Install NPM packages
+        run: yarn install
 
-  #     - name: Build project
-  #       run: yarn build
+      - name: Build project
+        run: yarn build
 
-  #     - name: Upload Dist
-  #       uses: actions/upload-artifact@v1
-  #       with:
-  #         name: production-code
-  #         path: out
+      - name: Upload Dist
+        uses: actions/upload-artifact@v1
+        with:
+          name: production-code
+          path: out
 
   deploy:
-    # needs: build
+    needs: build
     name: Deploy
     runs-on: ubuntu-latest
 
