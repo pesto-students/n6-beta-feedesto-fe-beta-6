@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: production-code
-          path: out
+          path: build
 
   deploy:
     needs: build
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: production-code
-          path: out
+          path: build
 
       - name: Upload ftp
         uses: sebastianpopp/ftp-action@releases/v2
@@ -51,5 +51,5 @@ jobs:
           host: ftp://feedesto.com/com.feedesto
           user: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          localDir: "out"
+          localDir: "build"
           # remoteDir: 'lib'
