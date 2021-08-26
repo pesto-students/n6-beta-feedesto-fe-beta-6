@@ -10,22 +10,24 @@ import {
 	Tr,
 	useDisclosure,
 } from '@chakra-ui/react'
-import BaseLayout from '../layout/BaseLayout'
-import UserAddDrawer, { UserAddFormProps } from './UserAdd.drawer'
+import BaseLayout from '../../layout/OrganizationLayout'
+import DiscussionAddDrawer, {
+	DiscussionAddFormProps,
+} from './DiscussionAdd.drawer'
 
-const UsersPage = () => {
+const DiscussionsPage = () => {
 	const drawer = useDisclosure()
-	const userController = {
+	const disucssionController = {
 		add: {
 			drawer: drawer,
 			form: {
 				title: '',
 				description: '',
 			},
-			async submit({ title, description }: UserAddFormProps) {
+			async submit({ title, description }: DiscussionAddFormProps) {
 				try {
 					let result = await fetch(
-						'https://gateway.sevafalamforensic.com/user/add/v1',
+						'https://api.feedesto.com/disucssion/add/v1',
 						{
 							method: 'POST',
 							body: JSON.stringify({ title, description }),
@@ -40,10 +42,10 @@ const UsersPage = () => {
 			},
 		},
 	}
-	const users: { id: number; title: string; description: string }[] = [
+	const disucssions: { id: number; title: string; description: string }[] = [
 		{
 			id: 15,
-			title: 'New User',
+			title: 'New Discussion',
 			description: 'Demo description',
 		},
 	]
@@ -55,9 +57,9 @@ const UsersPage = () => {
 						<Button
 							leftIcon={<AddIcon />}
 							colorScheme="teal"
-							onClick={userController.add.drawer.onOpen}
+							onClick={disucssionController.add.drawer.onOpen}
 						>
-							Add User
+							Add Discussion
 						</Button>
 					</div>
 					<div>
@@ -73,24 +75,26 @@ const UsersPage = () => {
 								</Tr>
 							</Thead>
 							<Tbody>
-								{users.map((user) => (
-									<Tr key={user.id}>
-										<Td>{user.id}</Td>
-										<Td>{user.title}</Td>
-										<Td isTruncated>{user.description}</Td>
+								{disucssions.map((disucssion) => (
+									<Tr key={disucssion.id}>
+										<Td>{disucssion.id}</Td>
+										<Td>{disucssion.title}</Td>
+										<Td isTruncated>
+											{disucssion.description}
+										</Td>
 									</Tr>
 								))}
 							</Tbody>
 						</Table>
 					</div>
 				</div>
-				<UserAddDrawer
-					drawer={userController.add.drawer}
-					onSubmit={userController.add.submit}
-				></UserAddDrawer>
+				<DiscussionAddDrawer
+					drawer={disucssionController.add.drawer}
+					onSubmit={disucssionController.add.submit}
+				></DiscussionAddDrawer>
 			</div>
 		</BaseLayout>
 	)
 }
 
-export default UsersPage
+export default DiscussionsPage

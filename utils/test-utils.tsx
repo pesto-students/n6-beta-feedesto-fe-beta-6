@@ -6,6 +6,7 @@ import { store } from '../src/app/store'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import theme from '../src/app/theme'
+import { BrowserRouter } from 'react-router-dom'
 
 Enzyme.configure({ adapter: new Adapter() })
 
@@ -17,10 +18,15 @@ const AllTheProviders: FC = ({ children }) => {
 	)
 }
 
-const customRender = (
-	ui: ReactElement,
-	options?: Omit<RenderOptions, 'wrapper'>,
-) => render(ui, { wrapper: AllTheProviders, ...options })
+const customRender = (ui: ReactElement, options?: RenderOptions) =>
+	render(ui, { wrapper: AllTheProviders, ...options })
+
+// test utils file
+const renderWithRouter = (ui: ReactElement, { route = '/' } = {}) => {
+	window.history.pushState({}, 'Test page', route)
+
+	return customRender(ui, { wrapper: BrowserRouter })
+}
 
 export * from '@testing-library/react'
-export { customRender as render }
+export { customRender as render, renderWithRouter }

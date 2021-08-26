@@ -2,11 +2,11 @@ import { Box, FormLabel, Input, Stack, Textarea } from '@chakra-ui/react'
 import React, { ChangeEvent, useState } from 'react'
 import FormDrawer from '../../components/drawer/formDrawer'
 
-export interface UserAddFormProps {
+export interface DiscussionAddFormProps {
 	title: string
 	description: string
 }
-export interface UserAddDrawerProps {
+export interface DiscussionAddDrawerProps {
 	drawer: {
 		isOpen: boolean
 		onOpen: () => void
@@ -16,12 +16,12 @@ export interface UserAddDrawerProps {
 		getButtonProps: (props?: any) => any
 		getDisclosureProps: (props?: any) => any
 	}
-	onSubmit: ({ title, description }: UserAddFormProps) => void
+	onSubmit: ({ title, description }: DiscussionAddFormProps) => void
 }
-export default function UserAddDrawer({
+export default function DiscussionAddDrawer({
 	drawer,
 	onSubmit,
-}: UserAddDrawerProps) {
+}: DiscussionAddDrawerProps) {
 	const [title, setTitle] = useState('')
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) =>
 		setTitle(e.target.value)
@@ -39,8 +39,8 @@ export default function UserAddDrawer({
 
 	return (
 		<FormDrawer
-			formId="user-add-drawer"
-			title="Add User"
+			formId="discussion-add-drawer"
+			title="Add Discussion"
 			drawer={drawer}
 			onSubmit={handleOnSubmit}
 		>
@@ -49,7 +49,7 @@ export default function UserAddDrawer({
 					<FormLabel htmlFor="title">Title</FormLabel>
 					<Input
 						id="title"
-						placeholder="Please enter user title"
+						placeholder="Please enter discussion title"
 						value={title}
 						onChange={handleTitleChange}
 					/>
