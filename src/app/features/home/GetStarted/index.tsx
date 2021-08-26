@@ -48,3 +48,5 @@ const GetStarted = ({
 	)
 }
 export default GetStarted
+
+export { EntityTypeInput, OrganizationDetailInputs, UserDetailInputs }

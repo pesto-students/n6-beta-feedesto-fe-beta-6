@@ -10,7 +10,7 @@ import {
 	userNameInputTextUpdate,
 } from '../../store/modules/auth/authSlice'
 import { SelectedTab } from '../../types/enums'
-import GetStarted from './GetStarted/GetStarted'
+import GetStarted from './GetStarted'
 
 const Home = () => {
 	const dispatch = useDispatch()
