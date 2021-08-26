@@ -1,6 +1,6 @@
 import React from 'react'
-import { render } from '../../../utils/test-utils'
-import Home from '../../app/features/home/Home'
+import { render } from '../../../../../utils/test-utils'
+import Home from '../Home'
 
 describe('<Home />', () => {
 	it('should display landing page Tag Line', async () => {

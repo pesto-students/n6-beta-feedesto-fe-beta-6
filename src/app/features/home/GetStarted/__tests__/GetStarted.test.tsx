@@ -1,7 +1,7 @@
 import React from 'react'
-import { render } from '../../../utils/test-utils'
-import EntityTypeInput from '../../app/features/home/GetStarted/EntityTypeInput'
-import GetStarted from '../../app/features/home/GetStarted/GetStarted'
+import { render } from '../../../../../../utils/test-utils'
+import EntityTypeInput from '../EntityTypeInput'
+import GetStarted from '../GetStarted'
 
 describe('<GetStarted />', () => {
 	it('should have google login button enabled', () => {
