@@ -5,12 +5,13 @@ import { Provider } from 'react-redux'
 import { store } from '../src/app/store'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
+import theme from '../src/app/theme'
 
 Enzyme.configure({ adapter: new Adapter() })
 
 const AllTheProviders: FC = ({ children }) => {
 	return (
-		<ChakraProvider>
+		<ChakraProvider theme={theme}>
 			<Provider store={store}>{children}</Provider>
 		</ChakraProvider>
 	)
