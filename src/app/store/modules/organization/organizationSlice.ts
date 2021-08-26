@@ -32,7 +32,7 @@ export const organizationSlice = createSlice({
 			state.organizationList = action.payload
 		})
 		builder.addCase(fetchOrganizationList.rejected, (state, action) => {
-			alert(action.error?.message)
+			console.log(action.error?.message)
 		})
 	},
 })

@@ -1,14 +1,10 @@
-import React, { FC, ReactElement } from 'react'
-import { render, RenderOptions } from '@testing-library/react'
 import { ChakraProvider } from '@chakra-ui/react'
+import { render, RenderOptions } from '@testing-library/react'
+import React, { FC, ReactElement } from 'react'
 import { Provider } from 'react-redux'
-import { store } from '../src/app/store'
-import Enzyme from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
-import theme from '../src/app/theme'
 import { BrowserRouter } from 'react-router-dom'
-
-Enzyme.configure({ adapter: new Adapter() })
+import { store } from '../src/app/store'
+import theme from '../src/app/theme'
 
 const AllTheProviders: FC = ({ children }) => {
 	return (

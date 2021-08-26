@@ -32,7 +32,7 @@ export const userSlice = createSlice({
 			state.userList = action.payload
 		})
 		builder.addCase(fetchUserList.rejected, (state, action) => {
-			alert(action.error?.message)
+			console.log(action.error?.message)
 		})
 	},
 })

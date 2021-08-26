@@ -3,7 +3,7 @@ import * as Icon from 'react-bootstrap-icons'
 import Sidebar from './Sidebar'
 import { SidebarItemProps } from './SidebarItem'
 
-class OrganizationLayout extends React.Component<{ name?: string }> {
+class AdminLayout extends React.Component<{ name?: string }> {
 	sidebarItems: SidebarItemProps[] = [
 		{
 			label: 'Users',
@@ -32,4 +32,4 @@ class OrganizationLayout extends React.Component<{ name?: string }> {
 	}
 }
 
-export default OrganizationLayout
+export default AdminLayout

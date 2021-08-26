@@ -32,7 +32,7 @@ export const discussionSlice = createSlice({
 			state.discussionList = action.payload
 		})
 		builder.addCase(fetchDiscussionList.rejected, (state, action) => {
-			alert(action.error?.message)
+			console.log(action.error?.message)
 		})
 	},
 })
