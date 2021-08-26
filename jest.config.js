@@ -19,7 +19,7 @@ module.exports = {
 	collectCoverage: true,
 
 	// An array of glob patterns indicating a set of files for which coverage information should be collected
-	// collectCoverageFrom: undefined,
+	// collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
 
 	// The directory where Jest should output its coverage files
 	coverageDirectory: 'coverage',
@@ -80,7 +80,11 @@ module.exports = {
 	// ],
 
 	// A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-	// moduleNameMapper: {},
+	moduleNameMapper: {
+		'\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+			'<rootDir>/src/__mocks__/fileMock.js',
+		'\\.(css|less|sass|scss)$': '<rootDir>/src/__mocks__/styleMock.js',
+	},
 
 	// An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
 	// modulePathIgnorePatterns: [],
@@ -174,10 +178,7 @@ module.exports = {
 	// transform: undefined,
 
 	// An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-	// transformIgnorePatterns: [
-	//   "/node_modules/",
-	//   "\\.pnp\\.[^\\/]+$"
-	// ],
+	transformIgnorePatterns: ['/node_modules/', '\\.pnp\\.[^\\/]+$'],
 
 	// An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
 	// unmockedModulePathPatterns: undefined,

@@ -34,6 +34,7 @@
 		"build": "craco build",
 		"test": "jest",
 		"test:watch": "jest --watch",
+		"test:watchAll": "jest --watchAll",
 		"eject": "react-scripts eject"
 	},
 	"eslintConfig": {
