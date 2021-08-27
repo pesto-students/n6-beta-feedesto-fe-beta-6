@@ -1,4 +1,5 @@
 import { Image, Radio, RadioGroup } from '@chakra-ui/react'
+import React from 'react'
 import GoogleLogin, {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,

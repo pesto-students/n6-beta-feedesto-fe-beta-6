@@ -1,3 +1,4 @@
+import React from 'react'
 import { Table, TableCaption, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import BaseLayout from '../../components/layout/AdminLayout'
 

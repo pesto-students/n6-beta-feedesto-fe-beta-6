@@ -1,6 +1,6 @@
 import { Box, FormLabel, Input, Stack, Textarea } from '@chakra-ui/react'
+import FormDrawer from 'app/components/drawer/FormDrawer'
 import React, { ChangeEvent, useState } from 'react'
-import FormDrawer from '../../components/drawer/formDrawer'
 
 export interface DiscussionAddFormProps {
 	title: string

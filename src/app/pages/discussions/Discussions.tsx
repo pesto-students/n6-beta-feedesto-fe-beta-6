@@ -14,6 +14,7 @@ import BaseLayout from '../../components/layout/AdminLayout'
 import DiscussionAddDrawer, {
 	DiscussionAddFormProps,
 } from './DiscussionAdd.drawer'
+import React from 'react'
 
 const DiscussionsPage = () => {
 	const drawer = useDisclosure()
