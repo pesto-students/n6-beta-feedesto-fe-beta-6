@@ -1,6 +1,6 @@
 import React from 'react'
 import GetStarted from '..'
-import { render } from '../../../../../../utils/test-utils'
+import { render } from '../../../../../utils/test-utils'
 import EntityTypeInput from '../EntityTypeInput'
 
 describe('<GetStarted />', () => {

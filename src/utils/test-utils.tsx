@@ -3,8 +3,8 @@ import { render, RenderOptions } from '@testing-library/react'
 import React, { FC, ReactElement } from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
-import { store } from '../src/app/store'
-import theme from '../src/app/theme'
+import { store } from 'store'
+import theme from 'theme'
 
 const AllTheProviders: FC = ({ children }) => {
 	return (

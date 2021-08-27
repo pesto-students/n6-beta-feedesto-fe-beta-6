@@ -1,3 +1,4 @@
+import React from 'react'
 import { Box, Image } from '@chakra-ui/react'
 import { Component } from 'react'
 import * as Icons from 'react-bootstrap-icons'

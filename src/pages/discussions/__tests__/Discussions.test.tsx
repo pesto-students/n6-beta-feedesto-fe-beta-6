@@ -1,4 +1,4 @@
-import { renderWithRouter } from '../../../../../utils/test-utils'
+import { renderWithRouter } from '../../../../utils/test-utils'
 import DiscussionsPage from '../Discussions'
 import React from 'react'
 
