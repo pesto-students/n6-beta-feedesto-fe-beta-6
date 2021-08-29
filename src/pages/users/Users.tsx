@@ -13,7 +13,7 @@ import TimeAgo from 'javascript-time-ago'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { fetchUserList } from 'store/modules/user/userSlice'
+import { fetchUserList } from 'store/modules/user/services'
 
 const UsersPage = () => {
 	const dispatch = useDispatch()

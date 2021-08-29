@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
+import { fetchUserList } from './services'
 
 export interface User {
 	id: string
@@ -19,10 +20,6 @@ export interface UserState {
 const initialState: UserState = {
 	userList: [],
 }
-
-export const fetchUserList = createAsyncThunk<User[]>('users', async () => {
-	return await sendRequest.get<User[]>(`user`)
-})
 
 export const userSlice = createSlice({
 	name: 'user',
