@@ -31,6 +31,7 @@ const Home = () => {
 	) => {
 		response = response as GoogleLoginResponse
 		setGoogleLoginResponse(response)
+		dispatch(setIsGoogleLoggedIn(true))
 
 		if (response) {
 			dispatch(

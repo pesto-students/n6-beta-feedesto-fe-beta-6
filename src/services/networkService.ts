@@ -50,7 +50,7 @@ class NetworkHelper {
 		const token = localStorage.getItem('token')
 
 		if (loginType && token) {
-			headers.token = `Bearer ${loginType} ${token}`
+			headers['Authorization'] = `${loginType} ${token}`
 		}
 
 		try {
