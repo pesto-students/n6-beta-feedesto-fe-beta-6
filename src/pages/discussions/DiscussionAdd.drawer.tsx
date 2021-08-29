@@ -1,11 +1,10 @@
-import { Box, FormLabel, Input, Stack, Textarea } from '@chakra-ui/react'
+import { Box, FormLabel, Grid, Input, Stack, Textarea } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
-import React, { ChangeEvent, useState } from 'react'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'store'
+import { fillAddDiscussionFormFields } from 'store/modules/discussion/discussionSlice'
 
-export interface DiscussionAddFormProps {
-	title: string
-	description: string
-}
 export interface DiscussionAddDrawerProps {
 	drawer: {
 		isOpen: boolean
@@ -16,33 +15,21 @@ export interface DiscussionAddDrawerProps {
 		getButtonProps: (props?: any) => any
 		getDisclosureProps: (props?: any) => any
 	}
-	onSubmit: ({ title, description }: DiscussionAddFormProps) => void
+	onSubmit: () => void
 }
 export default function DiscussionAddDrawer({
 	drawer,
 	onSubmit,
 }: DiscussionAddDrawerProps) {
-	const [title, setTitle] = useState('')
-	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) =>
-		setTitle(e.target.value)
-
-	const [description, setDescription] = useState('')
-	const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) =>
-		setDescription(e.target.value)
-
-	const handleOnSubmit = () => {
-		onSubmit({
-			title,
-			description,
-		})
-	}
+	const dispatch = useDispatch()
+	const { discussion, user } = useSelector((state: RootState) => state)
 
 	return (
 		<FormDrawer
 			formId="discussion-add-drawer"
 			title="Add Discussion"
 			drawer={drawer}
-			onSubmit={handleOnSubmit}
+			onSubmit={() => onSubmit()}
 		>
 			<Stack spacing="24px">
 				<Box>
@@ -50,19 +37,84 @@ export default function DiscussionAddDrawer({
 					<Input
 						id="title"
 						placeholder="Please enter discussion title"
-						value={title}
-						onChange={handleTitleChange}
+						value={discussion.addDiscussionForm.title}
+						onChange={(e) =>
+							dispatch(
+								fillAddDiscussionFormFields({
+									title: e.target.value,
+								}),
+							)
+						}
 					/>
 				</Box>
 
 				<Box>
-					<FormLabel htmlFor="desc">Description</FormLabel>
+					<FormLabel htmlFor="description">Description</FormLabel>
 					<Textarea
-						id="desc"
-						value={description}
-						onChange={handleDescriptionChange}
+						id="description"
+						value={discussion.addDiscussionForm.description}
+						onChange={(e) => {
+							dispatch(
+								fillAddDiscussionFormFields({
+									description: e.target.value,
+								}),
+							)
+						}}
 					/>
 				</Box>
+				<div className="grid grid-cols-2 gap-x-5">
+					<div className="col-span-1">
+						<Box>
+							<FormLabel htmlFor="startDate">
+								Start Date
+							</FormLabel>
+							<Input
+								type="datetime-local"
+								id="startDate"
+								value={discussion.addDiscussionForm.startDate}
+								onChange={(e) =>
+									dispatch(
+										fillAddDiscussionFormFields({
+											startDate: e.target.value,
+										}),
+									)
+								}
+							/>
+						</Box>
+					</div>
+					<div className="col-span-1">
+						<Box>
+							<FormLabel htmlFor="endDate">End Date</FormLabel>
+							<Input
+								type="datetime-local"
+								id="endDate"
+								value={discussion.addDiscussionForm.endDate}
+								onChange={(e) =>
+									dispatch(
+										fillAddDiscussionFormFields({
+											endDate: e.target.value,
+										}),
+									)
+								}
+							/>
+						</Box>
+					</div>
+					{/* <Box>
+						<FormLabel htmlFor="participantIds">End Date</FormLabel>
+						<Input
+							type="datetime-local"
+							id="endDate"
+							value={discussion.addDiscussionForm.endDate}
+							onChange={(e) =>
+								dispatch(
+									fillAddDiscussionFormFields({
+										endDate: e.target.value,
+									}),
+								)
+							}
+						/>
+					</Box> */}
+				</div>
 			</Stack>
 		</FormDrawer>
 	)

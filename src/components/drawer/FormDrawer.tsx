@@ -38,6 +38,7 @@ const FormDrawer: FunctionComponent<FormDrawerProps> = ({
 				isOpen={drawer.isOpen}
 				placement="right"
 				onClose={drawer.onClose}
+				size="lg"
 			>
 				<DrawerOverlay />
 				<DrawerContent>
@@ -47,6 +48,7 @@ const FormDrawer: FunctionComponent<FormDrawerProps> = ({
 					<DrawerBody>
 						<form
 							id={formId}
+							autoComplete="off"
 							onSubmit={(e) => {
 								e.preventDefault()
 								if (onSubmit) onSubmit()

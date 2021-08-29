@@ -1,6 +1,7 @@
-import { AddIcon } from '@chakra-ui/icons'
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import {
 	Button,
+	IconButton,
 	Table,
 	TableCaption,
 	Tbody,
@@ -10,45 +11,47 @@ import {
 	Tr,
 	useDisclosure,
 } from '@chakra-ui/react'
-import BaseLayout from '../../components/layout/AdminLayout'
-import DiscussionAddDrawer, {
-	DiscussionAddFormProps,
-} from './DiscussionAdd.drawer'
-import React from 'react'
+import TimeAgo from 'javascript-time-ago'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'store'
+import {
+	addDiscussion,
+	deleteDiscussion,
+	fetchDiscussionList,
+} from 'store/modules/discussion/discussionSlice'
+import DiscussionAddDrawer from './DiscussionAdd.drawer'
 
 const DiscussionsPage = () => {
+	const dispatch = useDispatch()
+	const { discussion } = useSelector((state: RootState) => state)
+	const timeAgo = new TimeAgo('en-US')
 	const drawer = useDisclosure()
+
 	const disucssionController = {
 		add: {
 			drawer: drawer,
-			form: {
-				title: '',
-				description: '',
-			},
-			async submit({ title, description }: DiscussionAddFormProps) {
+			async submit() {
 				try {
-					let result = await fetch(
-						'https://api.feedesto.com/disucssion/add/v1',
-						{
-							method: 'POST',
-							body: JSON.stringify({ title, description }),
-						},
-					).then((res) => {
-						return res.json()
-					})
+					await addDiscussion(discussion.addDiscussionForm)
+					dispatch(fetchDiscussionList())
 				} catch (err) {
-					console.error(err)
+					console.log(err)
 				}
 			},
 		},
-	}
-	const disucssions: { id: number; title: string; description: string }[] = [
-		{
-			id: 15,
-			title: 'New Discussion',
-			description: 'Demo description',
+		delete: {
+			async submit(discussionId: string) {
+				await deleteDiscussion({ id: discussionId })
+				dispatch(fetchDiscussionList())
+			},
 		},
-	]
+	}
+
+	useEffect(() => {
+		dispatch(fetchDiscussionList())
+	}, [])
+
 	return (
 		<div>
 			<div className="flex items-center justify-between px-6 py-3">
@@ -73,22 +76,41 @@ const DiscussionsPage = () => {
 			<div className="border-b-2"></div>
 			<div className="mt-3">
 				<Table variant="simple">
-					<TableCaption>
-						Imperial to metric conversion factors
-					</TableCaption>
+					{!discussion.discussionList.length && (
+						<TableCaption>
+							These were all the Discussions
+						</TableCaption>
+					)}
 					<Thead>
 						<Tr>
-							<Th>ID</Th>
 							<Th>Title</Th>
 							<Th>Description</Th>
+							<Th className="text-right">Actions</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
-						{disucssions.map((disucssion) => (
-							<Tr key={disucssion.id}>
-								<Td>{disucssion.id}</Td>
-								<Td>{disucssion.title}</Td>
-								<Td isTruncated>{disucssion.description}</Td>
+						{discussion.discussionList.map((discussion) => (
+							<Tr key={discussion.id}>
+								<Td>{discussion.title}</Td>
+								<Td>{discussion.description}</Td>
+								<Td className="text-right">
+									<IconButton
+										aria-label="delete"
+										icon={<DeleteIcon />}
+										size="sm"
+										backgroundColor="red.100"
+										_hover={{
+											backgroundColor: 'red.200',
+										}}
+										color="red.600"
+										className="shadow"
+										onClick={() =>
+											disucssionController.delete.submit(
+												discussion.id,
+											)
+										}
+									/>
+								</Td>
 							</Tr>
 						))}
 					</Tbody>
@@ -96,7 +118,7 @@ const DiscussionsPage = () => {
 			</div>
 			<DiscussionAddDrawer
 				drawer={disucssionController.add.drawer}
-				onSubmit={disucssionController.add.submit}
+				onSubmit={() => disucssionController.add.submit()}
 			></DiscussionAddDrawer>
 		</div>
 	)

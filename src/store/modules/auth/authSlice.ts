@@ -1,9 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { APP } from 'navigation/routes'
-import { GoogleLoginResponse } from 'react-google-login'
-import toast from 'react-hot-toast'
-import { useHistory } from 'react-router-dom'
-import { sendRequest } from 'services/networkService'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import _ from 'lodash'
 import { LoginType, SelectedTab } from '../../../types/enums'
 import {
 	loginUser,
@@ -78,10 +74,11 @@ export const authSlice = createSlice({
 				payload: { email, googleUserId, name, organizationId },
 			}: PayloadAction<Partial<RegisterUserBody>>,
 		) => {
-			if (email) state.registerUserForm.email = email
-			if (googleUserId) state.registerUserForm.googleUserId = googleUserId
-			if (name) state.registerUserForm.name = name
-			if (organizationId)
+			if (!_.isUndefined(email)) state.registerUserForm.email = email
+			if (!_.isUndefined(googleUserId))
+				state.registerUserForm.googleUserId = googleUserId
+			if (!_.isUndefined(name)) state.registerUserForm.name = name
+			if (!_.isUndefined(organizationId))
 				state.registerUserForm.organizationId = organizationId
 		},
 		fillAuthRegisterOrganizationFields: (
@@ -90,11 +87,12 @@ export const authSlice = createSlice({
 				payload: { email, googleUserId, name, organizationName },
 			}: PayloadAction<Partial<RegisterOrganizationBody>>,
 		) => {
-			if (email) state.registerOrganizationForm.email = email
-			if (googleUserId)
+			if (!_.isUndefined(email))
+				state.registerOrganizationForm.email = email
+			if (!_.isUndefined(googleUserId))
 				state.registerOrganizationForm.googleUserId = googleUserId
-			if (name) state.registerOrganizationForm.name = name
-			if (organizationName)
+			if (!_.isUndefined(name)) state.registerOrganizationForm.name = name
+			if (!_.isUndefined(organizationName))
 				state.registerOrganizationForm.organizationName =
 					organizationName
 		},
