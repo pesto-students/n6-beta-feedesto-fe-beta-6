@@ -2,9 +2,9 @@ import { ChevronLeftIcon } from '@chakra-ui/icons'
 import { Button, Input, Link, Select } from '@chakra-ui/react'
 import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { registerUser } from 'store/modules/auth/services'
 import { RootState } from '../../../store'
 import {
-	registerUser,
 	fillAuthRegisterUserFields,
 	setAuthSelectedTab,
 } from '../../../store/modules/auth/authSlice'

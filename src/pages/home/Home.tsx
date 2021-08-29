@@ -9,11 +9,11 @@ import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { RootState } from 'store'
+import { loginUser } from 'store/modules/auth/services'
 import {
 	fillAuthLoginUserFields,
 	fillAuthRegisterOrganizationFields,
 	fillAuthRegisterUserFields,
-	loginUser,
 	setIsGoogleLoggedIn,
 } from '../../store/modules/auth/authSlice'
 import GetStarted from './GetStarted'
