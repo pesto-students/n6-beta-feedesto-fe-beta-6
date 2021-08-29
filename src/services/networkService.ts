@@ -31,6 +31,7 @@ export interface NetworkHelperPutRequestArguments {
 }
 
 export interface NetworkHelperDeleteRequestArguments {
+	body?: object
 	publicRequest?: boolean
 	showToast?: boolean
 }
@@ -127,7 +128,7 @@ class NetworkHelper {
 		url: string,
 		args?: NetworkHelperDeleteRequestArguments,
 	): Promise<T> {
-		return this.request<T, undefined>({ ...args, url, method: 'DELETE' })
+		return this.request<T, any>({ ...args, url, method: 'DELETE' })
 	}
 }
 
