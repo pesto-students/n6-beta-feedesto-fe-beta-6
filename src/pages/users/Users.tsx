@@ -24,8 +24,6 @@ const UsersPage = () => {
 	const { user } = useSelector((state: RootState) => state)
 	const timeAgo = new TimeAgo('en-US')
 
-	const [actionCounter, setActionCounter] = useState(0)
-
 	const handleUserApprove = async (userId: string) => {
 		await updateUserApprovalStatus({ userId, status: true })
 		dispatch(fetchUserList())
