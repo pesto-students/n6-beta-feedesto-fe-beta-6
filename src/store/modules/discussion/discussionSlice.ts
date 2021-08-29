@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import _ from 'lodash'
-import { AddDiscussionBody, fetchDiscussionList } from './services'
+import {
+	AddDiscussionBody,
+	fetchDiscussionList,
+	UpdateDiscussionBody,
+} from './services'
 
 export interface Discussion {
 	id: string
@@ -17,6 +21,7 @@ export interface Discussion {
 export interface DiscussionState {
 	discussionList: Discussion[]
 	addDiscussionForm: AddDiscussionBody
+	updateDiscussionForm: UpdateDiscussionBody
 }
 
 const initialState: DiscussionState = {
@@ -28,6 +33,15 @@ const initialState: DiscussionState = {
 		endDate: '',
 		participantIds: [],
 		viewerIds: [],
+	},
+	updateDiscussionForm: {
+		id: '',
+		update: {
+			title: '',
+			description: '',
+			startDate: '',
+			endDate: '',
+		},
 	},
 }
 
@@ -63,6 +77,28 @@ export const discussionSlice = createSlice({
 		resetAddDiscussionFormFields: (state) => {
 			state.addDiscussionForm = initialState.addDiscussionForm
 		},
+		fillUpdateDiscussionFormFields: (
+			state,
+			{
+				payload: { id, update },
+			}: PayloadAction<Partial<UpdateDiscussionBody>>,
+		) => {
+			if (!_.isUndefined(id)) state.updateDiscussionForm.id = id
+
+			if (_.isUndefined(update)) return
+			const { title, description, startDate, endDate } = update
+			if (!_.isUndefined(title))
+				state.updateDiscussionForm.update.title = title
+			if (!_.isUndefined(description))
+				state.updateDiscussionForm.update.description = description
+			if (!_.isUndefined(startDate))
+				state.updateDiscussionForm.update.startDate = startDate
+			if (!_.isUndefined(endDate))
+				state.updateDiscussionForm.update.endDate = endDate
+		},
+		resetUpdateDiscussionFormFields: (state) => {
+			state.addDiscussionForm = initialState.addDiscussionForm
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(fetchDiscussionList.fulfilled, (state, action) => {
@@ -75,8 +111,12 @@ export const discussionSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { fillAddDiscussionFormFields, resetAddDiscussionFormFields } =
-	discussionSlice.actions
+export const {
+	fillAddDiscussionFormFields,
+	resetAddDiscussionFormFields,
+	fillUpdateDiscussionFormFields,
+	resetUpdateDiscussionFormFields,
+} = discussionSlice.actions
 
 export default discussionSlice.reducer
 export * from './services'

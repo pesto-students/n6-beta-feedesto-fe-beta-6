@@ -23,6 +23,21 @@ export const addDiscussion = async (data: AddDiscussionBody) => {
 		showToast: true,
 	})
 }
+export interface UpdateDiscussionBody {
+	id: string
+	update: {
+		title?: string
+		description?: string
+		startDate?: string
+		endDate?: string
+	}
+}
+export const updateDiscussion = async (data: UpdateDiscussionBody) => {
+	return await sendRequest.put('discussion', {
+		body: data,
+		showToast: true,
+	})
+}
 
 export interface DeleteDiscussionBody {
 	id: string

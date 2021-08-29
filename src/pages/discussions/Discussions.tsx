@@ -1,4 +1,4 @@
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
+import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
 	Avatar,
 	Button,
@@ -23,26 +23,43 @@ import {
 	deleteDiscussion,
 	Discussion,
 	fetchDiscussionList,
+	fillUpdateDiscussionFormFields,
 	resetAddDiscussionFormFields,
+	updateDiscussion,
 } from 'store/modules/discussion/discussionSlice'
 import DiscussionAddDrawer from './DiscussionAdd.drawer'
 import dayjs from 'dayjs'
 import DiscussionStatus from './components/DiscussionStatus'
+import DiscussionUpdateDrawer from './DiscussionUpdate.drawer'
 
 const DiscussionsPage = () => {
 	const dispatch = useDispatch()
 	const { discussion } = useSelector((state: RootState) => state)
 	const timeAgo = new TimeAgo('en-US')
-	const drawer = useDisclosure()
+	const discussionAddDrawer = useDisclosure()
+	const discussionUpdateDrawer = useDisclosure()
 
 	const disucssionController = {
 		add: {
-			drawer: drawer,
+			drawer: discussionAddDrawer,
 			async submit() {
 				try {
 					await addDiscussion(discussion.addDiscussionForm)
 					dispatch(fetchDiscussionList())
-					drawer.onClose()
+					discussionAddDrawer.onClose()
+					dispatch(resetAddDiscussionFormFields())
+				} catch (err) {
+					console.log(err)
+				}
+			},
+		},
+		update: {
+			drawer: discussionUpdateDrawer,
+			async submit() {
+				try {
+					await updateDiscussion(discussion.updateDiscussionForm)
+					dispatch(fetchDiscussionList())
+					discussionUpdateDrawer.onClose()
 					dispatch(resetAddDiscussionFormFields())
 				} catch (err) {
 					console.log(err)
@@ -55,6 +72,25 @@ const DiscussionsPage = () => {
 				dispatch(fetchDiscussionList())
 			},
 		},
+	}
+
+	const handleUpdateButtonClick = (discussion: Discussion) => {
+		dispatch(
+			fillUpdateDiscussionFormFields({
+				id: discussion.id,
+				update: {
+					title: discussion.title,
+					description: discussion.description,
+					startDate: dayjs(new Date(discussion.startDate))
+						.format('YYYY-MM-DDTHH:mm')
+						.toString(),
+					endDate: dayjs(new Date(discussion.endDate)).format(
+						'YYYY-MM-DDTHH:mm',
+					),
+				},
+			}),
+		)
+		disucssionController.update.drawer.onOpen()
 	}
 
 	useEffect(() => {
@@ -95,8 +131,6 @@ const DiscussionsPage = () => {
 							<Th>Title</Th>
 							<Th>Start From</Th>
 							<Th>End At</Th>
-							<Th textAlign="center">Participants</Th>
-							<Th textAlign="center">Viewers</Th>
 							<Th textAlign="center">Status</Th>
 							<Th textAlign="right">Actions</Th>
 						</Tr>
@@ -104,14 +138,21 @@ const DiscussionsPage = () => {
 					<Tbody>
 						{discussion.discussionList.map((discussion) => (
 							<Tr key={discussion.id}>
-								<Td>{discussion.title}</Td>
+								<Td
+									maxWidth="xs"
+									overflow="hidden"
+									textOverflow="ellipsis"
+									whiteSpace="nowrap"
+								>
+									{discussion.title}
+								</Td>
 								<Td>
 									<div>
 										{timeAgo.format(
 											new Date(discussion.startDate),
 										)}
 									</div>
-									<div className="text-sm text-gray-500">
+									<div className="text-sm text-gray-500 whitespace-nowrap">
 										{dayjs(discussion.startDate)
 											.format('D MMM, YYYY hh:MM A')
 											.toString()}
@@ -123,38 +164,50 @@ const DiscussionsPage = () => {
 											new Date(discussion.endDate),
 										)}
 									</div>
-									<div className="text-sm text-gray-500">
+									<div className="text-sm text-gray-500 whitespace-nowrap">
 										{dayjs(discussion.endDate)
 											.format('D MMM, YYYY hh:MM A')
 											.toString()}
 									</div>
 								</Td>
 								<Td textAlign="center">
-									{discussion.participantIds.length}
-								</Td>
-								<Td textAlign="center">
-									{discussion.viewerIds.length}
-								</Td>
-								<Td textAlign="center">
 									<DiscussionStatus discussion={discussion} />
 								</Td>
 								<Td textAlign="right">
-									<IconButton
-										aria-label="delete"
-										icon={<DeleteIcon />}
-										size="sm"
-										backgroundColor="red.100"
-										_hover={{
-											backgroundColor: 'red.200',
-										}}
-										color="red.600"
-										className="shadow"
-										onClick={() =>
-											disucssionController.delete.submit(
-												discussion.id,
-											)
-										}
-									/>
+									<div className="flex items-center justify-end">
+										<IconButton
+											aria-label="edit"
+											icon={<EditIcon />}
+											size="sm"
+											backgroundColor="yellow.100"
+											_hover={{
+												backgroundColor: 'yellow.200',
+											}}
+											color="yellow.600"
+											className="shadow mr-2"
+											onClick={() => {
+												handleUpdateButtonClick(
+													discussion,
+												)
+											}}
+										/>
+										<IconButton
+											aria-label="delete"
+											icon={<DeleteIcon />}
+											size="sm"
+											backgroundColor="red.100"
+											_hover={{
+												backgroundColor: 'red.200',
+											}}
+											color="red.600"
+											className="shadow"
+											onClick={() =>
+												disucssionController.delete.submit(
+													discussion.id,
+												)
+											}
+										/>
+									</div>
 								</Td>
 							</Tr>
 						))}
@@ -165,6 +218,10 @@ const DiscussionsPage = () => {
 				drawer={disucssionController.add.drawer}
 				onSubmit={() => disucssionController.add.submit()}
 			></DiscussionAddDrawer>
+			<DiscussionUpdateDrawer
+				drawer={disucssionController.update.drawer}
+				onSubmit={() => disucssionController.update.submit()}
+			></DiscussionUpdateDrawer>
 		</div>
 	)
 }
