@@ -2,12 +2,18 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
 import { Discussion } from '../discussionSlice'
 
-export const fetchDiscussionList = createAsyncThunk<Discussion[]>(
-	'discussions',
-	async () => {
-		return await sendRequest.get<Discussion[]>(`discussion`)
-	},
-)
+export const fetchDiscussionList = createAsyncThunk<
+	Discussion[],
+	{
+		id?: string
+		participantId?: string
+		asParticipant?: boolean
+	}
+>('discussions', async (params = {}) => {
+	return await sendRequest.get<Discussion[]>(`discussion`, {
+		params,
+	})
+})
 
 export interface AddDiscussionBody {
 	title: string
