@@ -23,6 +23,7 @@ import {
 	deleteDiscussion,
 	Discussion,
 	fetchDiscussionList,
+	resetAddDiscussionFormFields,
 } from 'store/modules/discussion/discussionSlice'
 import DiscussionAddDrawer from './DiscussionAdd.drawer'
 import dayjs from 'dayjs'
@@ -42,6 +43,7 @@ const DiscussionsPage = () => {
 					await addDiscussion(discussion.addDiscussionForm)
 					dispatch(fetchDiscussionList())
 					drawer.onClose()
+					dispatch(resetAddDiscussionFormFields())
 				} catch (err) {
 					console.log(err)
 				}

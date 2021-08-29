@@ -75,7 +75,8 @@ export const discussionSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { fillAddDiscussionFormFields } = discussionSlice.actions
+export const { fillAddDiscussionFormFields, resetAddDiscussionFormFields } =
+	discussionSlice.actions
 
 export default discussionSlice.reducer
 export * from './services'
