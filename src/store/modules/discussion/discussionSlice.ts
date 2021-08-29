@@ -60,6 +60,9 @@ export const discussionSlice = createSlice({
 			if (!_.isUndefined(viewerIds))
 				state.addDiscussionForm.viewerIds = viewerIds
 		},
+		resetAddDiscussionFormFields: (state) => {
+			state.addDiscussionForm = initialState.addDiscussionForm
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(fetchDiscussionList.fulfilled, (state, action) => {

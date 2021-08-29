@@ -1,9 +1,12 @@
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import {
+	Avatar,
 	Button,
 	IconButton,
 	Table,
 	TableCaption,
+	Tag,
+	TagLabel,
 	Tbody,
 	Td,
 	Th,
@@ -18,9 +21,12 @@ import { RootState } from 'store'
 import {
 	addDiscussion,
 	deleteDiscussion,
+	Discussion,
 	fetchDiscussionList,
 } from 'store/modules/discussion/discussionSlice'
 import DiscussionAddDrawer from './DiscussionAdd.drawer'
+import dayjs from 'dayjs'
+import DiscussionStatus from './components/DiscussionStatus'
 
 const DiscussionsPage = () => {
 	const dispatch = useDispatch()
@@ -35,6 +41,7 @@ const DiscussionsPage = () => {
 				try {
 					await addDiscussion(discussion.addDiscussionForm)
 					dispatch(fetchDiscussionList())
+					drawer.onClose()
 				} catch (err) {
 					console.log(err)
 				}
@@ -84,16 +91,52 @@ const DiscussionsPage = () => {
 					<Thead>
 						<Tr>
 							<Th>Title</Th>
-							<Th>Description</Th>
-							<Th className="text-right">Actions</Th>
+							<Th>Start From</Th>
+							<Th>End At</Th>
+							<Th textAlign="center">Participants</Th>
+							<Th textAlign="center">Viewers</Th>
+							<Th textAlign="center">Status</Th>
+							<Th textAlign="right">Actions</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
 						{discussion.discussionList.map((discussion) => (
 							<Tr key={discussion.id}>
 								<Td>{discussion.title}</Td>
-								<Td>{discussion.description}</Td>
-								<Td className="text-right">
+								<Td>
+									<div>
+										{timeAgo.format(
+											new Date(discussion.startDate),
+										)}
+									</div>
+									<div className="text-sm text-gray-500">
+										{dayjs(discussion.startDate)
+											.format('D MMM, YYYY hh:MM A')
+											.toString()}
+									</div>
+								</Td>
+								<Td>
+									<div>
+										{timeAgo.format(
+											new Date(discussion.endDate),
+										)}
+									</div>
+									<div className="text-sm text-gray-500">
+										{dayjs(discussion.endDate)
+											.format('D MMM, YYYY hh:MM A')
+											.toString()}
+									</div>
+								</Td>
+								<Td textAlign="center">
+									{discussion.participantIds.length}
+								</Td>
+								<Td textAlign="center">
+									{discussion.viewerIds.length}
+								</Td>
+								<Td textAlign="center">
+									<DiscussionStatus discussion={discussion} />
+								</Td>
+								<Td textAlign="right">
 									<IconButton
 										aria-label="delete"
 										icon={<DeleteIcon />}
