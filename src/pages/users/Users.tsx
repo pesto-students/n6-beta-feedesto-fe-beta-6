@@ -10,20 +10,40 @@ import {
 	Tr,
 } from '@chakra-ui/react'
 import TimeAgo from 'javascript-time-ago'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { fetchUserList } from 'store/modules/user/services'
+import {
+	deleteUser,
+	fetchUserList,
+	updateUserApprovalStatus,
+} from 'store/modules/user/services'
 
 const UsersPage = () => {
 	const dispatch = useDispatch()
 	const { user } = useSelector((state: RootState) => state)
+	const timeAgo = new TimeAgo('en-US')
+
+	const [actionCounter, setActionCounter] = useState(0)
+
+	const handleUserApprove = async (userId: string) => {
+		await updateUserApprovalStatus({ userId, status: true })
+		dispatch(fetchUserList())
+	}
+
+	const handleUserReject = async (userId: string) => {
+		await updateUserApprovalStatus({ userId, status: false })
+		dispatch(fetchUserList())
+	}
+
+	const handleUserDelete = async (id: string) => {
+		await deleteUser({ id })
+		dispatch(fetchUserList())
+	}
 
 	useEffect(() => {
 		dispatch(fetchUserList())
 	}, [])
-
-	const timeAgo = new TimeAgo('en-US')
 
 	return (
 		<div>
@@ -83,6 +103,9 @@ const UsersPage = () => {
 												: 'green.600'
 										}
 										className="shadow"
+										onClick={() =>
+											handleUserApprove(user.id)
+										}
 									/>
 									<IconButton
 										aria-label="reject"
@@ -104,6 +127,9 @@ const UsersPage = () => {
 												: 'red.100'
 										}
 										className="mx-2 shadow"
+										onClick={() =>
+											handleUserReject(user.id)
+										}
 									/>
 									<IconButton
 										aria-label="delete"
@@ -115,6 +141,9 @@ const UsersPage = () => {
 										}}
 										color="red.600"
 										className="shadow"
+										onClick={() =>
+											handleUserDelete(user.id)
+										}
 									/>
 								</Td>
 							</Tr>

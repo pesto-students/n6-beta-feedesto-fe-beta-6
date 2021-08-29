@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
-import { fetchUserList } from './services'
+import { fetchUserList, updateUserApprovalStatus } from './services'
 
 export interface User {
 	id: string
