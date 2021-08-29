@@ -31,6 +31,7 @@ const Home = () => {
 	) => {
 		response = response as GoogleLoginResponse
 		setGoogleLoginResponse(response)
+		dispatch(setIsGoogleLoggedIn(true))
 
 		if (response) {
 			dispatch(
@@ -55,6 +56,11 @@ const Home = () => {
 	}, [auth.isAuthenticated])
 
 	useEffect(() => {
+		console.log(
+			auth.isGoogleLoggedIn,
+			auth.isAuthenticated,
+			googleLoginResponse,
+		)
 		if (
 			auth.isGoogleLoggedIn &&
 			!auth.isAuthenticated &&

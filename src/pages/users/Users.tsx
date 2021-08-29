@@ -1,28 +1,12 @@
-import React from 'react'
 import { Table, TableCaption, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
-import AdminLayout from 'components/layout/AdminLayout'
-
-export enum UserStatus {
-	PENDING,
-	VERIFIED,
-	REJECTED,
-}
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'store'
 
 const UsersPage = () => {
-	// const userController = {}
-	const users: {
-		id: number
-		name: string
-		email: string
-		status: UserStatus
-	}[] = [
-		{
-			id: 15,
-			name: 'New User',
-			email: 'new.user327@gmail.com',
-			status: UserStatus.PENDING,
-		},
-	]
+	const dispatch = useDispatch()
+	const { user } = useSelector((state: RootState) => state)
+
 	return (
 		<div>
 			<div className="px-6 py-3">
@@ -50,12 +34,12 @@ const UsersPage = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{users.map((user) => (
+						{user.userList.map((user) => (
 							<Tr key={user.id}>
 								<Td>{user.id}</Td>
 								<Td>{user.name}</Td>
 								<Td>{user.email}</Td>
-								<Td>{user.status}</Td>
+								<Td>{user.isVerified}</Td>
 							</Tr>
 						))}
 					</Tbody>
