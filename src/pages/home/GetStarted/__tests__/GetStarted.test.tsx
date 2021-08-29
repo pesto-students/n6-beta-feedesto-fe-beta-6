@@ -1,7 +1,7 @@
 import React from 'react'
 import GetStarted from '..'
 
-import { render } from 'utils/test-utils'
+import { render } from 'utils/testUtils'
 import EntityTypeInput from '../EntityTypeInput'
 
 describe('<GetStarted />', () => {

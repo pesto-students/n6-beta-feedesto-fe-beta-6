@@ -1,20 +1,18 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
+import { RootState } from 'store'
 import { ROOT } from './routes'
 
-const PrivateRoute = ({ children, ...args }) => {
-	let authorized = false
+const UserPrivateRoute = ({ children, ...args }: any) => {
+	const { auth } = useSelector((state: RootState) => state)
 
 	return (
 		<Route
 			{...args}
 			render={({ location }) =>
-				authorized ? (
-					<>
-						{children}
-						<br />
-						<div>This is a protected route</div>
-					</>
+				auth.isAuthenticated ? (
+					<>{children}</>
 				) : (
 					<Redirect
 						to={{
@@ -28,4 +26,4 @@ const PrivateRoute = ({ children, ...args }) => {
 	)
 }
 
-export default PrivateRoute
+export default UserPrivateRoute

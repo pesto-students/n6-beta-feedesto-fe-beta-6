@@ -2,11 +2,11 @@ import { ChevronLeftIcon } from '@chakra-ui/icons'
 import { Button, Input, Link, Select } from '@chakra-ui/react'
 import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { registerUser } from 'store/modules/auth/services'
 import { RootState } from '../../../store'
 import {
-	userNameInputTextUpdate,
-	organizationUpdate,
-	tabUpdate,
+	fillAuthRegisterUserFields,
+	setAuthSelectedTab,
 } from '../../../store/modules/auth/authSlice'
 import { fetchOrganizationList } from '../../../store/modules/organization/organizationSlice'
 import { SelectedTab } from '../../../types/enums'
@@ -31,9 +31,13 @@ const UserDetailInputs: React.FC = () => {
 					<Input
 						placeholder="Saurabh Singh"
 						background="white"
-						value={auth.userNameInputText}
+						value={auth.registerUserForm.name}
 						onChange={(e) =>
-							dispatch(userNameInputTextUpdate(e.target.value))
+							dispatch(
+								fillAuthRegisterUserFields({
+									name: e.target.value,
+								}),
+							)
 						}
 					/>
 				</div>
@@ -44,14 +48,18 @@ const UserDetailInputs: React.FC = () => {
 					<Select
 						placeholder="Select option"
 						background="white"
-						value={auth.selectedOrganizationId}
+						value={auth.registerUserForm.organizationId}
 						onChange={(val) => {
-							dispatch(organizationUpdate(val.target.value))
+							dispatch(
+								fillAuthRegisterUserFields({
+									organizationId: val.target.value,
+								}),
+							)
 						}}
 					>
 						{organization.organizationList.map((org) => (
 							<option value={org.id} key={org.id}>
-								{org.login}
+								{org.name}
 							</option>
 						))}
 					</Select>
@@ -64,6 +72,9 @@ const UserDetailInputs: React.FC = () => {
 					_hover={{ bg: 'gray.800' }}
 					_active={{ bg: 'gray.700' }}
 					isFullWidth={true}
+					onClick={() =>
+						dispatch(registerUser(auth.registerUserForm))
+					}
 				>
 					Finish
 				</Button>
@@ -72,7 +83,7 @@ const UserDetailInputs: React.FC = () => {
 				<Link
 					color="gray.600"
 					onClick={() => {
-						dispatch(tabUpdate(SelectedTab.GET_STARTED))
+						dispatch(setAuthSelectedTab(SelectedTab.GET_STARTED))
 					}}
 				>
 					<div className="flex items-center justify-center">
