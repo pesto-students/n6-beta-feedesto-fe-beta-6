@@ -45,7 +45,7 @@ const DiscussionsPage = () => {
 			async submit() {
 				try {
 					await addDiscussion(discussion.addDiscussionForm)
-					dispatch(fetchDiscussionList())
+					dispatch(fetchDiscussionList({}))
 					discussionAddDrawer.onClose()
 					dispatch(resetAddDiscussionFormFields())
 				} catch (err) {
@@ -58,7 +58,7 @@ const DiscussionsPage = () => {
 			async submit() {
 				try {
 					await updateDiscussion(discussion.updateDiscussionForm)
-					dispatch(fetchDiscussionList())
+					dispatch(fetchDiscussionList({}))
 					discussionUpdateDrawer.onClose()
 					dispatch(resetAddDiscussionFormFields())
 				} catch (err) {
@@ -69,7 +69,7 @@ const DiscussionsPage = () => {
 		delete: {
 			async submit(discussionId: string) {
 				await deleteDiscussion({ id: discussionId })
-				dispatch(fetchDiscussionList())
+				dispatch(fetchDiscussionList({}))
 			},
 		},
 	}
@@ -94,7 +94,7 @@ const DiscussionsPage = () => {
 	}
 
 	useEffect(() => {
-		dispatch(fetchDiscussionList())
+		dispatch(fetchDiscussionList({}))
 	}, [])
 
 	return (
