@@ -10,6 +10,9 @@ import {
 	setIsGoogleLoggedIn,
 } from 'store/modules/auth/authSlice'
 import { LoginType } from 'types/enums'
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
+TimeAgo.addDefaultLocale(en)
 
 export default function App() {
 	const dispatch = useDispatch()

@@ -56,11 +56,6 @@ const Home = () => {
 	}, [auth.isAuthenticated])
 
 	useEffect(() => {
-		console.log(
-			auth.isGoogleLoggedIn,
-			auth.isAuthenticated,
-			googleLoginResponse,
-		)
 		if (
 			auth.isGoogleLoggedIn &&
 			!auth.isAuthenticated &&
