@@ -1,34 +1,90 @@
-import React from 'react'
 import { Image } from '@chakra-ui/react'
+import { APP } from 'navigation/routes'
+import React, { useEffect, useState } from 'react'
 import {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
 } from 'react-google-login'
-import { useDispatch } from 'react-redux'
+import toast from 'react-hot-toast'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { RootState } from 'store'
 import {
-	googleAuthTokenUpdate,
-	tabUpdate,
-	userNameInputTextUpdate,
+	fillAuthLoginUserFields,
+	fillAuthRegisterOrganizationFields,
+	fillAuthRegisterUserFields,
+	loginUser,
+	setIsGoogleLoggedIn,
 } from '../../store/modules/auth/authSlice'
-import { SelectedTab } from '../../types/enums'
 import GetStarted from './GetStarted'
 
 const Home = () => {
 	const dispatch = useDispatch()
+	const { auth } = useSelector((state: RootState) => state)
+	const [googleLoginResponse, setGoogleLoginResponse] =
+		useState<GoogleLoginResponse | null>(null)
+	const history = useHistory()
 
-	const handleGoogleLoginSuccess = (
+	const handleGoogleLoginSuccess = async (
 		response: GoogleLoginResponse | GoogleLoginResponseOffline,
 	) => {
 		response = response as GoogleLoginResponse
+		setGoogleLoginResponse(response)
+		dispatch(setIsGoogleLoggedIn(true))
+
 		if (response) {
 			dispatch(
-				userNameInputTextUpdate(response.getBasicProfile().getName()),
+				loginUser({
+					googleUserId: response.getBasicProfile().getId(),
+				}),
 			)
-			dispatch(googleAuthTokenUpdate(response.tokenId))
-
-			dispatch(tabUpdate(SelectedTab.DETAILS_INPUT))
 		}
 	}
+
+	useEffect(() => {
+		if (auth.isAuthenticated) {
+			toast.success('Authentication Successful', {
+				position: 'bottom-right',
+			})
+			history.push(APP)
+		}
+	}, [auth.isAuthenticated])
+
+	useEffect(() => {
+		if (
+			auth.isGoogleLoggedIn &&
+			!auth.isAuthenticated &&
+			googleLoginResponse
+		) {
+			fillRegistrationPrefillDetails(googleLoginResponse)
+		}
+	}, [auth.isGoogleLoggedIn])
+
+	const fillRegistrationPrefillDetails = (response: GoogleLoginResponse) => {
+		const name = response.getBasicProfile().getName()
+		const email = response.getBasicProfile().getEmail()
+		const googleUserId = response.getBasicProfile().getId()
+		dispatch(
+			fillAuthRegisterUserFields({
+				name,
+				googleUserId,
+				email,
+			}),
+		)
+		dispatch(
+			fillAuthRegisterOrganizationFields({
+				name,
+				email,
+				googleUserId,
+			}),
+		)
+		dispatch(
+			fillAuthLoginUserFields({
+				googleUserId: response.getBasicProfile().getId(),
+			}),
+		)
+	}
+
 	const handleGoogleLoginFailure = (response: GoogleLoginResponse) => {
 		console.log(response)
 	}

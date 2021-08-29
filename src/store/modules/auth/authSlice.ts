@@ -1,72 +1,172 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { APP } from 'navigation/routes'
+import { GoogleLoginResponse } from 'react-google-login'
+import { useHistory } from 'react-router-dom'
+import { sendRequest } from 'services/networkService'
 import { LoginType, SelectedTab } from '../../../types/enums'
 
 export interface AuthState {
+	loginUserForm: LoginUserBody
+	registerUserForm: RegisterUserBody
+	registerOrganizationForm: RegisterOrganizationBody
 	loginType: LoginType
 	selectedTab: SelectedTab
-	googleAuthToken?: string
-	userNameInputText?: string
-	selectedOrganizationId?: string
-	organizationStrength?: string
-	organizationNameInputText?: string
-	organizationDesignationInputText?: string
+	isGoogleLoggedIn: boolean
+	isAuthenticated: boolean
+	authToken?: string
 }
 
 const initialState: AuthState = {
 	loginType: LoginType.USER,
-	userNameInputText: '',
-	organizationNameInputText: '',
-	organizationDesignationInputText: '',
+	loginUserForm: {
+		googleUserId: '',
+	},
+	registerOrganizationForm: {
+		email: '',
+		googleUserId: '',
+		name: '',
+		organizationName: '',
+	},
+	registerUserForm: {
+		email: '',
+		googleUserId: '',
+		name: '',
+		organizationId: '',
+	},
 	selectedTab: SelectedTab.GET_STARTED,
+	isGoogleLoggedIn: false,
+	isAuthenticated: false,
 }
+
+export interface LoginUserBody {
+	googleUserId: string
+}
+export const loginUser = createAsyncThunk<any, LoginUserBody>(
+	'auth/login',
+	async (data) => {
+		return await sendRequest.post('auth/login', {
+			body: data,
+		})
+	},
+)
+export interface RegisterUserBody {
+	name: string
+	email: string
+	googleUserId: string
+	organizationId: string
+}
+export const registerUser = createAsyncThunk<any, RegisterUserBody>(
+	'auth/register/user',
+	async (data) => {
+		return await sendRequest.post('auth/register/user', {
+			body: data,
+		})
+	},
+)
+
+export interface RegisterOrganizationBody {
+	name: string
+	organizationName: string
+	email: string
+	googleUserId: string
+}
+
+export const registerOrganization = createAsyncThunk<
+	any,
+	RegisterOrganizationBody
+>('auth/register/organization', async (data) => {
+	return await sendRequest.post('auth/register/organization', {
+		body: data,
+	})
+})
 
 export const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
-		tabUpdate: (state, action: PayloadAction<SelectedTab>) => {
+		setAuthSelectedTab: (state, action: PayloadAction<SelectedTab>) => {
 			state.selectedTab = action.payload
 		},
-		loginTypeUpdate: (state, action: PayloadAction<LoginType>) => {
+		setAuthLoginType: (state, action: PayloadAction<LoginType>) => {
 			state.loginType = action.payload
 		},
-		googleAuthTokenUpdate: (state, action: PayloadAction<string>) => {
-			state.googleAuthToken = action.payload
+		setIsGoogleLoggedIn: (state, action: PayloadAction<boolean>) => {
+			state.isGoogleLoggedIn = action.payload
 		},
-		userNameInputTextUpdate: (state, action: PayloadAction<string>) => {
-			state.userNameInputText = action.payload
-		},
-		organizationUpdate: (state, action: PayloadAction<string>) => {
-			state.selectedOrganizationId = action.payload
-		},
-		organizationStrengthUpdate: (state, action: PayloadAction<string>) => {
-			state.organizationStrength = action.payload
-		},
-		organizationNameInputTextUpdate: (
+		fillAuthLoginUserFields: (
 			state,
-			action: PayloadAction<string>,
+			action: PayloadAction<LoginUserBody>,
 		) => {
-			state.organizationNameInputText = action.payload
+			state.loginUserForm = action.payload
 		},
-		organizationDesignationInputTextUpdate: (
+		fillAuthRegisterUserFields: (
 			state,
-			action: PayloadAction<string>,
+			{
+				payload: { email, googleUserId, name, organizationId },
+			}: PayloadAction<Partial<RegisterUserBody>>,
 		) => {
-			state.organizationDesignationInputText = action.payload
+			if (email) state.registerUserForm.email = email
+			if (googleUserId) state.registerUserForm.googleUserId = googleUserId
+			if (name) state.registerUserForm.name = name
+			if (organizationId)
+				state.registerUserForm.organizationId = organizationId
 		},
+		fillAuthRegisterOrganizationFields: (
+			state,
+			{
+				payload: { email, googleUserId, name, organizationName },
+			}: PayloadAction<Partial<RegisterOrganizationBody>>,
+		) => {
+			if (email) state.registerOrganizationForm.email = email
+			if (googleUserId)
+				state.registerOrganizationForm.googleUserId = googleUserId
+			if (name) state.registerOrganizationForm.name = name
+			if (organizationName)
+				state.registerOrganizationForm.organizationName =
+					organizationName
+		},
+	},
+	extraReducers: (builder) => {
+		// User Login Success
+		builder.addCase(
+			loginUser.fulfilled,
+			(state, action: PayloadAction<{ token: string }>) => {
+				state.isAuthenticated = true
+				state.authToken = action.payload.token
+			},
+		)
+		builder.addCase(
+			registerUser.rejected,
+			(state, action: PayloadAction<any>) => {
+				state.isAuthenticated = false
+				state.selectedTab = SelectedTab.DETAILS_INPUT
+			},
+		)
+		builder.addCase(
+			registerUser.fulfilled,
+			(state, action: PayloadAction<{ token: string }>) => {
+				state.isAuthenticated = true
+				state.authToken = action.payload.token
+			},
+		)
+		builder.addCase(
+			registerOrganization.fulfilled,
+			(state, action: PayloadAction<{ token: string }>) => {
+				state.isAuthenticated = true
+				state.authToken = action.payload.token
+			},
+		)
 	},
 })
 
 // Action creators are generated for each case reducer function
 export const {
-	loginTypeUpdate,
-	organizationUpdate,
-	organizationDesignationInputTextUpdate,
-	organizationNameInputTextUpdate,
-	tabUpdate,
-	userNameInputTextUpdate,
-	googleAuthTokenUpdate,
-	organizationStrengthUpdate,
+	setAuthLoginType,
+	setAuthSelectedTab,
+	setIsGoogleLoggedIn,
+	fillAuthLoginUserFields,
+	fillAuthRegisterOrganizationFields,
+	fillAuthRegisterUserFields,
 } = authSlice.actions
 
 export default authSlice.reducer

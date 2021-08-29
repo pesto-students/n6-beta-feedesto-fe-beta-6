@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { sendRequest } from 'services/networkService'
 
 export interface Organization {
 	id: number
 	name: string
-	login: string
 }
 
 export interface OrganizationState {
@@ -18,8 +18,7 @@ export const fetchOrganizationList = createAsyncThunk<Organization[]>(
 	'organizations/list',
 	// if you type your function argument here
 	async () => {
-		const response = await fetch(`https://api.github.com/users`)
-		return (await response.json()) as Organization[]
+		return await sendRequest.get<Organization[]>(`organization`)
 	},
 )
 

@@ -1,14 +1,12 @@
 import { ChevronLeftIcon } from '@chakra-ui/icons'
-import { Button, Input, Link, Select } from '@chakra-ui/react'
+import { Button, Input, Link } from '@chakra-ui/react'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import {
-	userNameInputTextUpdate,
-	organizationNameInputTextUpdate,
-	organizationStrengthUpdate,
-	organizationDesignationInputTextUpdate,
-	tabUpdate,
+	registerOrganization,
+	fillAuthRegisterOrganizationFields,
+	setAuthSelectedTab,
 } from '../../../store/modules/auth/authSlice'
 import { SelectedTab } from '../../../types/enums'
 
@@ -24,9 +22,13 @@ const OrganizationDetailInputs: React.FC = () => {
 					<Input
 						placeholder="Saurabh Singh"
 						background="white"
-						value={auth.userNameInputText}
+						value={auth.registerOrganizationForm.name}
 						onChange={(e) =>
-							dispatch(userNameInputTextUpdate(e.target.value))
+							dispatch(
+								fillAuthRegisterOrganizationFields({
+									name: e.target.value,
+								}),
+							)
 						}
 					/>
 				</div>
@@ -41,20 +43,22 @@ const OrganizationDetailInputs: React.FC = () => {
 						background="white"
 						onChange={(e) =>
 							dispatch(
-								organizationNameInputTextUpdate(e.target.value),
+								fillAuthRegisterOrganizationFields({
+									organizationName: e.target.value,
+								}),
 							)
 						}
 						autoFocus
 					/>
 				</div>
 			</div>
-			<div className="pt-3">
+			{/* <div className="pt-3">
 				<div className="text-gray-700 font-semibold">Strength</div>
 				<div className="pt-1">
 					<Select
 						placeholder="Select option"
 						background="white"
-						value={auth.selectedOrganizationId}
+						value={auth.registerOrganizationForm.}
 						onChange={(val) => {
 							dispatch(
 								organizationStrengthUpdate(val.target.value),
@@ -89,7 +93,7 @@ const OrganizationDetailInputs: React.FC = () => {
 						}
 					/>
 				</div>
-			</div>
+			</div> */}
 			<div className="pt-6">
 				<Button
 					className="text-white"
@@ -97,6 +101,11 @@ const OrganizationDetailInputs: React.FC = () => {
 					_hover={{ bg: 'gray.800' }}
 					_active={{ bg: 'gray.700' }}
 					isFullWidth={true}
+					onClick={() =>
+						dispatch(
+							registerOrganization(auth.registerOrganizationForm),
+						)
+					}
 				>
 					Finish
 				</Button>
@@ -105,7 +114,7 @@ const OrganizationDetailInputs: React.FC = () => {
 				<Link
 					color="gray.600"
 					onClick={() => {
-						dispatch(tabUpdate(SelectedTab.GET_STARTED))
+						dispatch(setAuthSelectedTab(SelectedTab.GET_STARTED))
 					}}
 				>
 					<div className="flex items-center justify-center">

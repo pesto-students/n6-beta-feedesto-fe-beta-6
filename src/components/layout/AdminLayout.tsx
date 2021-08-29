@@ -1,3 +1,4 @@
+import { DISCUSSIONS, USERS } from 'navigation/routes'
 import React from 'react'
 import * as Icon from 'react-bootstrap-icons'
 import Sidebar from './Sidebar'
@@ -8,12 +9,12 @@ class AdminLayout extends React.Component<{ name?: string }> {
 		{
 			label: 'Users',
 			icon: <Icon.People size={24} />,
-			link: '/users',
+			link: USERS,
 		},
 		{
 			label: 'Discussions',
 			icon: <Icon.ChatText size={24} />,
-			link: '/discussions',
+			link: DISCUSSIONS,
 		},
 	]
 	render() {
