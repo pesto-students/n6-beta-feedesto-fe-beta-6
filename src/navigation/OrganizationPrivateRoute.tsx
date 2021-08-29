@@ -6,7 +6,7 @@ import { RootState } from 'store'
 import { LoginType } from 'types/enums'
 import { APP, ROOT } from './routes'
 
-const OrganizationRoute = ({ children, ...args }: any) => {
+const OrganizationPrivateRoute = ({ children, ...args }: any) => {
 	const { auth } = useSelector((state: RootState) => state)
 	return (
 		<Route
@@ -38,4 +38,4 @@ const OrganizationRoute = ({ children, ...args }: any) => {
 	)
 }
 
-export default OrganizationRoute
+export default OrganizationPrivateRoute

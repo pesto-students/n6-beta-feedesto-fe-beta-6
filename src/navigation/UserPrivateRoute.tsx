@@ -1,3 +1,4 @@
+import UserLayout from 'components/layout/UserLayout'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
@@ -12,7 +13,7 @@ const UserPrivateRoute = ({ children, ...args }: any) => {
 			{...args}
 			render={({ location }) =>
 				auth.isAuthenticated ? (
-					<>{children}</>
+					<UserLayout>{children}</UserLayout>
 				) : (
 					<Redirect
 						to={{
