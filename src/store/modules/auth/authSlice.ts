@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { APP } from 'navigation/routes'
 import { GoogleLoginResponse } from 'react-google-login'
+import toast from 'react-hot-toast'
 import { useHistory } from 'react-router-dom'
 import { sendRequest } from 'services/networkService'
 import { LoginType, SelectedTab } from '../../../types/enums'
@@ -136,7 +137,7 @@ export const authSlice = createSlice({
 			},
 		)
 		builder.addCase(
-			registerUser.rejected,
+			loginUser.rejected,
 			(state, action: PayloadAction<any>) => {
 				state.isAuthenticated = false
 				state.selectedTab = SelectedTab.DETAILS_INPUT

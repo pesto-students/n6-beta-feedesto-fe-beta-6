@@ -78,11 +78,6 @@ const Home = () => {
 				googleUserId,
 			}),
 		)
-		dispatch(
-			fillAuthLoginUserFields({
-				googleUserId: response.getBasicProfile().getId(),
-			}),
-		)
 	}
 
 	const handleGoogleLoginFailure = (response: GoogleLoginResponse) => {

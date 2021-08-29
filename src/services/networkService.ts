@@ -71,21 +71,23 @@ class NetworkHelper {
 						axiosResponse.status >= 500 ||
 						axiosResponse.status == 404
 					) {
-						toast.error('Some Error Occured', {
-							icon: 'warning',
-						})
+						if (showToast) {
+							toast.error('Some Error Occured', {
+								icon: 'warning',
+							})
+						}
 					} else {
-						toast.error(
-							axiosResponse.data?.error?.message ??
-								'Something went wrong !',
-							{},
-						)
+						if (showToast) {
+							toast.error(
+								axiosResponse.data?.error?.message ??
+									'Something went wrong !',
+								{},
+							)
+						}
 					}
-
-					return axiosResponse.data
+					throw axiosResponse.data
 				}
 			}
-			console.log(err)
 			throw err
 		}
 	}

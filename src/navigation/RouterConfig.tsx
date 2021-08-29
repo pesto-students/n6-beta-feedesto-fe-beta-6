@@ -3,13 +3,17 @@ import Discussions from 'pages/discussions/Discussions'
 import Home from 'pages/home/Home'
 import Users from 'pages/users/Users'
 import { Route, Switch } from 'react-router-dom'
-import { DISCUSSIONS, ROOT, USERS } from './routes'
+import { APP, DISCUSSIONS, ROOT, USERS } from './routes'
 import OrganizationPrivateRoute from './OrganizationPrivateRoute'
+import UserPrivateRoute from './UserPrivateRoute'
 
 const RouterConfig = () => {
 	return (
 		<Switch>
 			<Route exact component={Home} path={ROOT} />
+			<UserPrivateRoute exact path={APP}>
+				<div></div>
+			</UserPrivateRoute>
 			<OrganizationPrivateRoute exact path={USERS}>
 				<Users />
 			</OrganizationPrivateRoute>
