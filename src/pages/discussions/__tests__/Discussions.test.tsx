@@ -1,11 +1,9 @@
-import { renderWithRouter } from 'utils/testUtils'
-import DiscussionsPage from '../Discussions'
 import React from 'react'
+import { render } from 'utils/testUtils'
+import DiscussionsPage from '../Discussions'
 
 describe('<DiscussionsPage />', () => {
-	const { getByText } = renderWithRouter(<DiscussionsPage />, {
-		route: '/discussions',
-	})
+	const { getByText } = render(<DiscussionsPage />)
 	it('should show discussions label', () => {
 		const title = getByText('available discussions', {
 			exact: false,

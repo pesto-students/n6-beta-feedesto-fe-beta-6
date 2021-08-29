@@ -5,6 +5,9 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { store } from 'store'
 import theme from 'theme'
+import en from 'javascript-time-ago/locale/en'
+import TimeAgo from 'javascript-time-ago'
+TimeAgo.addDefaultLocale(en)
 
 const AllTheProviders: FC = ({ children }) => {
 	return (
