@@ -54,8 +54,14 @@ export const authSlice = createSlice({
 		setAuthSelectedTab: (state, action: PayloadAction<SelectedTab>) => {
 			state.selectedTab = action.payload
 		},
+		setAuthToken: (state, action: PayloadAction<string>) => {
+			state.authToken = action.payload
+		},
 		setAuthLoginType: (state, action: PayloadAction<LoginType>) => {
 			state.loginType = action.payload
+		},
+		setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
+			state.isAuthenticated = action.payload
 		},
 		setIsGoogleLoggedIn: (state, action: PayloadAction<boolean>) => {
 			state.isGoogleLoggedIn = action.payload
@@ -92,6 +98,11 @@ export const authSlice = createSlice({
 				state.registerOrganizationForm.organizationName =
 					organizationName
 		},
+		logOutUser: (state) => {
+			state = initialState
+			localStorage.clear()
+			location.href = '/'
+		},
 	},
 	extraReducers: (builder) => {
 		// User Login Success
@@ -100,6 +111,8 @@ export const authSlice = createSlice({
 			(state, action: PayloadAction<{ token: string }>) => {
 				state.isAuthenticated = true
 				state.authToken = action.payload.token
+				localStorage.setItem('token', state.authToken)
+				localStorage.setItem('loginType', state.loginType)
 			},
 		)
 		builder.addCase(
@@ -114,6 +127,8 @@ export const authSlice = createSlice({
 			(state, action: PayloadAction<{ token: string }>) => {
 				state.isAuthenticated = true
 				state.authToken = action.payload.token
+				localStorage.setItem('token', state.authToken)
+				localStorage.setItem('loginType', state.loginType)
 			},
 		)
 		builder.addCase(
@@ -121,6 +136,8 @@ export const authSlice = createSlice({
 			(state, action: PayloadAction<{ token: string }>) => {
 				state.isAuthenticated = true
 				state.authToken = action.payload.token
+				localStorage.setItem('token', state.authToken)
+				localStorage.setItem('loginType', state.loginType)
 			},
 		)
 	},
@@ -129,11 +146,14 @@ export const authSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
 	setAuthLoginType,
+	setAuthToken,
 	setAuthSelectedTab,
+	setIsAuthenticated,
 	setIsGoogleLoggedIn,
 	fillAuthLoginUserFields,
 	fillAuthRegisterOrganizationFields,
 	fillAuthRegisterUserFields,
+	logOutUser,
 } = authSlice.actions
 
 export default authSlice.reducer

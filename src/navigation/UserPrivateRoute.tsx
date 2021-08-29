@@ -12,7 +12,7 @@ const UserPrivateRoute = ({ children, ...args }: any) => {
 			{...args}
 			render={({ location }) =>
 				auth.isAuthenticated ? (
-					<>{args.children}</>
+					<>{children}</>
 				) : (
 					<Redirect
 						to={{

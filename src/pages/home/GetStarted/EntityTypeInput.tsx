@@ -27,7 +27,7 @@ const EntityTypeInput = ({
 		if (e === 'user') {
 			dispatch(setAuthLoginType(LoginType.USER))
 		} else {
-			dispatch(setAuthLoginType(LoginType.ORGANISATION))
+			dispatch(setAuthLoginType(LoginType.ORGANIZATION))
 		}
 	}
 
@@ -51,7 +51,7 @@ const EntityTypeInput = ({
 
 					<Radio
 						className="col"
-						value={LoginType.ORGANISATION}
+						value={LoginType.ORGANIZATION}
 						data-testid="entity-type-organization-radio"
 					>
 						Organization

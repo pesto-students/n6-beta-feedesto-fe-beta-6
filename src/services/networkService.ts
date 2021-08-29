@@ -44,12 +44,22 @@ class NetworkHelper {
 		showToast,
 	}: NetworkHelperRequestArguments<R>): Promise<T> {
 		axios.defaults.baseURL = env.BASE_URL
+		const headers: any = {}
+
+		const loginType = localStorage.getItem('loginType')
+		const token = localStorage.getItem('token')
+
+		if (loginType && token) {
+			headers.token = `Bearer ${loginType} ${token}`
+		}
+
 		try {
 			const axiosResponse = await axios.request({
 				url,
 				method,
 				params,
 				data: body,
+				headers,
 			})
 
 			// If server sends unauthorized user then logOut

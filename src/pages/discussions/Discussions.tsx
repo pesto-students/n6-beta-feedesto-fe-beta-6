@@ -36,7 +36,6 @@ const DiscussionsPage = () => {
 					).then((res) => {
 						return res.json()
 					})
-					console.log(result)
 				} catch (err) {
 					console.error(err)
 				}
@@ -51,59 +50,55 @@ const DiscussionsPage = () => {
 		},
 	]
 	return (
-		<BaseLayout>
-			<div>
-				<div className="flex items-center justify-between px-6 py-3">
-					<div>
-						<div className="text-3xl text-gray-700 font-semibold">
-							Discussions
-						</div>
-						<div className="text-gray-600">
-							Here you will see all the available discussions
-						</div>
+		<div>
+			<div className="flex items-center justify-between px-6 py-3">
+				<div>
+					<div className="text-3xl text-gray-700 font-semibold">
+						Discussions
 					</div>
-					<div>
-						<Button
-							leftIcon={<AddIcon />}
-							colorScheme="teal"
-							onClick={disucssionController.add.drawer.onOpen}
-						>
-							Add Discussion
-						</Button>
+					<div className="text-gray-600">
+						Here you will see all the available discussions
 					</div>
 				</div>
-				<div className="border-b-2"></div>
-				<div className="mt-3">
-					<Table variant="simple">
-						<TableCaption>
-							Imperial to metric conversion factors
-						</TableCaption>
-						<Thead>
-							<Tr>
-								<Th>ID</Th>
-								<Th>Title</Th>
-								<Th>Description</Th>
+				<div>
+					<Button
+						leftIcon={<AddIcon />}
+						colorScheme="teal"
+						onClick={disucssionController.add.drawer.onOpen}
+					>
+						Add Discussion
+					</Button>
+				</div>
+			</div>
+			<div className="border-b-2"></div>
+			<div className="mt-3">
+				<Table variant="simple">
+					<TableCaption>
+						Imperial to metric conversion factors
+					</TableCaption>
+					<Thead>
+						<Tr>
+							<Th>ID</Th>
+							<Th>Title</Th>
+							<Th>Description</Th>
+						</Tr>
+					</Thead>
+					<Tbody>
+						{disucssions.map((disucssion) => (
+							<Tr key={disucssion.id}>
+								<Td>{disucssion.id}</Td>
+								<Td>{disucssion.title}</Td>
+								<Td isTruncated>{disucssion.description}</Td>
 							</Tr>
-						</Thead>
-						<Tbody>
-							{disucssions.map((disucssion) => (
-								<Tr key={disucssion.id}>
-									<Td>{disucssion.id}</Td>
-									<Td>{disucssion.title}</Td>
-									<Td isTruncated>
-										{disucssion.description}
-									</Td>
-								</Tr>
-							))}
-						</Tbody>
-					</Table>
-				</div>
+						))}
+					</Tbody>
+				</Table>
 			</div>
 			<DiscussionAddDrawer
 				drawer={disucssionController.add.drawer}
 				onSubmit={disucssionController.add.submit}
 			></DiscussionAddDrawer>
-		</BaseLayout>
+		</div>
 	)
 }
 

@@ -16,7 +16,6 @@ const initialState: OrganizationState = {
 
 export const fetchOrganizationList = createAsyncThunk<Organization[]>(
 	'organizations/list',
-	// if you type your function argument here
 	async () => {
 		return await sendRequest.get<Organization[]>(`organization`)
 	},

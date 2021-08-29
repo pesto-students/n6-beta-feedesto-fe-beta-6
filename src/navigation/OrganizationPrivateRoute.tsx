@@ -1,3 +1,4 @@
+import AdminLayout from 'components/layout/AdminLayout'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
@@ -12,11 +13,10 @@ const OrganizationRoute = ({ children, ...args }: any) => {
 			{...args}
 			render={({ location }) =>
 				auth.isAuthenticated ? (
-					auth.loginType === LoginType.ORGANISATION ? (
-						<>
-							<div>{auth.isAuthenticated}</div>
-							{args.children}
-						</>
+					auth.loginType === LoginType.ORGANIZATION ? (
+						<AdminLayout>
+							<>{children}</>
+						</AdminLayout>
 					) : (
 						<Redirect
 							to={{

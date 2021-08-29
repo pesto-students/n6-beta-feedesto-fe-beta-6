@@ -1,5 +1,5 @@
 import { Image } from '@chakra-ui/react'
-import { APP } from 'navigation/routes'
+import { APP, USERS } from 'navigation/routes'
 import React, { useEffect, useState } from 'react'
 import {
 	GoogleLoginResponse,
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { RootState } from 'store'
 import { loginUser } from 'store/modules/auth/services'
+import { LoginType } from 'types/enums'
 import {
 	fillAuthLoginUserFields,
 	fillAuthRegisterOrganizationFields,
@@ -30,7 +31,6 @@ const Home = () => {
 	) => {
 		response = response as GoogleLoginResponse
 		setGoogleLoginResponse(response)
-		dispatch(setIsGoogleLoggedIn(true))
 
 		if (response) {
 			dispatch(
@@ -46,7 +46,11 @@ const Home = () => {
 			toast.success('Authentication Successful', {
 				position: 'bottom-right',
 			})
-			history.push(APP)
+			if (auth.loginType === LoginType.ORGANIZATION) {
+				history.push(USERS)
+			} else {
+				history.push(APP)
+			}
 		}
 	}, [auth.isAuthenticated])
 
