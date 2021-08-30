@@ -27,8 +27,8 @@ const UserLayout = ({ children, ...args }: any) => {
 	}, [])
 	return (
 		<div>
-			<div className="py-4 px-12 bg-gray-100 shadow-lg">
-				<div className="flex items-center justify-between">
+			<div className="px-12 bg-gray-100 fixed top-0 z-10 left-0 right-0 shadow-lg h-20">
+				<div className="h-full flex items-center justify-between">
 					<Image
 						className="h-14"
 						src="/feedesto.svg"
@@ -66,7 +66,10 @@ const UserLayout = ({ children, ...args }: any) => {
 					</Menu>
 				</div>
 			</div>
-			{children}
+			<div className="h-screen flex flex-col">
+				<div className="flex flex-none h-20"></div>
+				<div className="flex-1">{children}</div>
+			</div>
 		</div>
 	)
 }
