@@ -27,7 +27,7 @@ const UserLayout = ({ children, ...args }: any) => {
 	}, [])
 	return (
 		<div>
-			<div className="py-4 px-12 bg-gray-100">
+			<div className="py-4 px-12 bg-gray-100 shadow-lg">
 				<div className="flex items-center justify-between">
 					<Image
 						className="h-14"
