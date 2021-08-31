@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
 import { RootState } from 'store'
 import { LoginType } from 'types/enums'
-import { APP, ROOT } from './routes'
+import { DASHBOARD, ROOT } from './routes'
 
 const OrganizationPrivateRoute = ({ children, ...args }: any) => {
 	const { auth } = useSelector((state: RootState) => state)
@@ -20,7 +20,7 @@ const OrganizationPrivateRoute = ({ children, ...args }: any) => {
 					) : (
 						<Redirect
 							to={{
-								pathname: APP,
+								pathname: DASHBOARD,
 								state: { from: location },
 							}}
 						/>

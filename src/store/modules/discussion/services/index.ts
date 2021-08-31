@@ -29,6 +29,7 @@ export const addDiscussion = async (data: AddDiscussionBody) => {
 		showToast: true,
 	})
 }
+
 export interface UpdateDiscussionBody {
 	id: string
 	update: {

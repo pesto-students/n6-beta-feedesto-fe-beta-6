@@ -9,23 +9,23 @@ import OrganizationPrivateRoute from './OrganizationPrivateRoute'
 import {
 	ADMIN_DISCUSSIONS,
 	ADMIN_USERS,
-	APP,
-	APP_DISCUSSION,
+	DASHBOARD,
+	DASHBOARD_DISCUSSION,
 	ROOT,
 } from './routes'
 import UserPrivateRoute from './UserPrivateRoute'
-import AppPage from 'pages/app/App'
-import DiscussionPage from 'pages/app/discussion/Discussion'
+import AppPage from 'pages/dashboard/Dashboard'
+import DiscussionPage from 'pages/dashboard/discussion/Discussion'
 
 const RouterConfig = () => {
 	const dispatch = useDispatch()
 	return (
 		<Switch>
 			<Route exact component={Home} path={ROOT} />
-			<UserPrivateRoute exact path={APP}>
+			<UserPrivateRoute exact path={DASHBOARD}>
 				<AppPage />
 			</UserPrivateRoute>
-			<UserPrivateRoute path={APP_DISCUSSION + '/:id'}>
+			<UserPrivateRoute path={DASHBOARD_DISCUSSION + '/:id'}>
 				<DiscussionPage />
 			</UserPrivateRoute>
 			<OrganizationPrivateRoute exact path={ADMIN_USERS}>

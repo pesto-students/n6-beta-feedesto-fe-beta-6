@@ -1,5 +1,5 @@
 import { Image } from '@chakra-ui/react'
-import { ADMIN_USERS, APP } from 'navigation/routes'
+import { ADMIN_USERS, DASHBOARD } from 'navigation/routes'
 import React, { useEffect, useState } from 'react'
 import {
 	GoogleLoginResponse,
@@ -50,7 +50,7 @@ const Home = () => {
 			if (auth.loginType === LoginType.ORGANIZATION) {
 				history.push(ADMIN_USERS)
 			} else {
-				history.push(APP)
+				history.push(DASHBOARD)
 			}
 		}
 	}, [auth.isAuthenticated])

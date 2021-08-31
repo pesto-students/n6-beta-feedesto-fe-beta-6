@@ -1,6 +1,6 @@
 import { Box, Button, Icon, IconButton, Textarea } from '@chakra-ui/react'
 import TimeAgo from 'javascript-time-ago'
-import { APP } from 'navigation/routes'
+import { DASHBOARD } from 'navigation/routes'
 import React, { useEffect } from 'react'
 import * as Icons from 'react-bootstrap-icons'
 import { useDispatch, useSelector } from 'react-redux'
@@ -44,7 +44,7 @@ const DiscussionPage = () => {
 	const [discussion] = discussionStore.discussionList
 
 	if (!discussion) {
-		history.replace(APP)
+		history.replace(DASHBOARD)
 		return <></>
 	}
 

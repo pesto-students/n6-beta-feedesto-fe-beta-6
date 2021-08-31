@@ -1,7 +1,7 @@
 import { Table, TableCaption, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
-import { APP_DISCUSSION } from 'navigation/routes'
+import { DASHBOARD_DISCUSSION } from 'navigation/routes'
 import DiscussionStatus from 'pages/admin/discussions/components/DiscussionStatus'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -59,7 +59,9 @@ const DiscussionsPage = () => {
 								key={discussion.id}
 								onClick={() => {
 									history.push(
-										APP_DISCUSSION + '/' + discussion.id,
+										DASHBOARD_DISCUSSION +
+											'/' +
+											discussion.id,
 									)
 								}}
 								className="hover:bg-gray-100 transition-all duration-200 cursor-pointer"
