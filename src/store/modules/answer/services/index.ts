@@ -10,10 +10,20 @@ export const fetchAnswerList = createAsyncThunk<
 		userId?: string
 	}
 >('answers', async (params = {}) => {
+	return fetchAnswers(params)
+})
+
+export const fetchAnswers = async (
+	params: {
+		_id?: string
+		discussionId?: string
+		userId?: string
+	} = {},
+) => {
 	return await sendRequest.get<Answer[]>(`answer`, {
 		params,
 	})
-})
+}
 
 export interface AddAnswerBody {
 	discussionId: string

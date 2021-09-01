@@ -10,18 +10,22 @@ import {
 } from '@chakra-ui/react'
 import TimeAgo from 'javascript-time-ago'
 import { DASHBOARD } from 'navigation/routes'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as Icons from 'react-bootstrap-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
+import { Form } from 'services/form'
 import { RootState } from 'store'
 import {
 	addAnswer,
 	addAnswerDownvote,
 	addAnswerUpvote,
+	Answer,
 	fetchAnswerList,
+	fetchAnswers,
 	fillAddAnswerFormFields,
 } from 'store/modules/answer/answerSlice'
+import { AddCommentBody } from 'store/modules/comment/services'
 import { fetchDiscussionList } from 'store/modules/discussion/services'
 
 const DiscussionPage = () => {
@@ -36,6 +40,25 @@ const DiscussionPage = () => {
 	const timeAgo = new TimeAgo('en-US')
 	const history = useHistory()
 
+	const [answerList, setAnswerList] = useState<
+		(Answer & { addCommentForm: Form<AddCommentBody> })[]
+	>([])
+
+	const fetchDiscussionAnswers = async () => {
+		const answers = await fetchAnswers({ discussionId })
+		setAnswerList(
+			answers.map((el) => {
+				return {
+					...el,
+					addCommentForm: new Form<AddCommentBody>({
+						answerId: el._id,
+						content: '',
+					}),
+				}
+			}),
+		)
+	}
+
 	useEffect(() => {
 		dispatch(
 			fetchDiscussionList({
@@ -43,24 +66,24 @@ const DiscussionPage = () => {
 				asParticipant: true,
 			}),
 		)
-		dispatch(fetchAnswerList({ discussionId }))
+		fetchDiscussionAnswers()
 		dispatch(fillAddAnswerFormFields({ content: '', discussionId }))
 	}, [])
 
 	const handleSubmitAnswer = async () => {
 		if (!answerStore.addAnswerForm.content) return
 		await addAnswer(answerStore.addAnswerForm)
-		dispatch(fetchAnswerList({ discussionId }))
+		fetchDiscussionAnswers()
 		dispatch(fillAddAnswerFormFields({ content: '' }))
 	}
 
 	const handleAnswerUpvote = async (answerId: string) => {
 		await addAnswerUpvote({ answerId })
-		dispatch(fetchAnswerList({ discussionId }))
+		fetchDiscussionAnswers()
 	}
 	const handleAnswerDownvote = async (answerId: string) => {
 		await addAnswerDownvote({ answerId })
-		dispatch(fetchAnswerList({ discussionId }))
+		fetchDiscussionAnswers()
 	}
 
 	const [discussion] = discussionStore.discussionList
@@ -144,7 +167,7 @@ const DiscussionPage = () => {
 								</div>
 							</div>
 							<div className="flex-1">
-								{answerStore.answerList.map((answer, index) => {
+								{answerList.map((answer, index) => {
 									return (
 										<div key={answer._id} className="my-5">
 											<div className="flex">
@@ -212,6 +235,12 @@ const DiscussionPage = () => {
 																pr="3rem"
 																type="text"
 																placeholder="Add your comments here..."
+																onChange={(
+																	e,
+																) => {
+																	answer.addCommentForm.fields.content =
+																		e.target.value
+																}}
 															/>
 															<InputRightElement width="3rem">
 																<IconButton
@@ -222,7 +251,11 @@ const DiscussionPage = () => {
 																	icon={
 																		<Icons.CursorFill />
 																	}
-																	onClick={() => {}}
+																	onClick={() => {
+																		answer.addCommentForm.submit(
+																			'comment',
+																		)
+																	}}
 																></IconButton>
 															</InputRightElement>
 														</InputGroup>
