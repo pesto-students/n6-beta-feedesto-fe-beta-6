@@ -3,9 +3,13 @@ import _ from 'lodash'
 import { AddAnswerBody, fetchAnswerList } from './services'
 
 export interface Answer {
-	id: string
+	_id: string
 	discussionId: string
 	userId: string
+	upvoteCount: number
+	downvoteCount: number
+	hasUpvoted: boolean
+	hasDownvoted: boolean
 	content: string
 	createdAt: string
 	modifiedAt: string

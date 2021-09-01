@@ -5,7 +5,7 @@ import { Answer } from '../answerSlice'
 export const fetchAnswerList = createAsyncThunk<
 	Answer[],
 	{
-		id?: string
+		_id?: string
 		discussionId?: string
 		userId?: string
 	}
@@ -22,6 +22,25 @@ export interface AddAnswerBody {
 }
 export const addAnswer = async (data: AddAnswerBody) => {
 	return await sendRequest.post('answer', {
+		body: data,
+		showToast: true,
+	})
+}
+
+export interface AddAnswerUpvoteBody {
+	answerId: string
+}
+export const addAnswerUpvote = async (data: AddAnswerUpvoteBody) => {
+	return await sendRequest.post('answer/upvote', {
+		body: data,
+		showToast: true,
+	})
+}
+export interface AddAnswerDownvoteBody {
+	answerId: string
+}
+export const addAnswerDownvote = async (data: AddAnswerDownvoteBody) => {
+	return await sendRequest.post('answer/downvote', {
 		body: data,
 		showToast: true,
 	})

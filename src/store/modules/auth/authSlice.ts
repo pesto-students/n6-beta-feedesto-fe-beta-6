@@ -24,6 +24,7 @@ export interface AuthState {
 const initialState: AuthState = {
 	loginType: LoginType.USER,
 	loginUserForm: {
+		loginType: LoginType.USER,
 		googleUserId: '',
 	},
 	registerOrganizationForm: {

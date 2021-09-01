@@ -58,7 +58,7 @@ const UserDetailInputs: React.FC = () => {
 						}}
 					>
 						{organization.organizationList.map((org) => (
-							<option value={org.id} key={org.id}>
+							<option value={org._id} key={org._id}>
 								{org.name}
 							</option>
 						))}

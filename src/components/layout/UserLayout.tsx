@@ -16,15 +16,14 @@ import {
 } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
 import * as Icon from 'react-bootstrap-icons'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'store'
 import { logOutUser } from 'store/modules/auth/authSlice'
 
 const UserLayout = ({ children, ...args }: any) => {
 	const dispatch = useDispatch()
+	const { user } = useSelector((state: RootState) => state)
 
-	useEffect(() => {
-		// Fetch User detail here
-	}, [])
 	return (
 		<div>
 			<div className="px-12 bg-gray-100 fixed top-0 z-10 left-0 right-0 shadow-lg h-20">
@@ -39,7 +38,7 @@ const UserLayout = ({ children, ...args }: any) => {
 							<div className="bg-gray-200 hover:bg-gray-300 transition-all duration-300 cursor-pointer px-3 py-2 rounded-lg">
 								<div className="flex items-center gap-x-2">
 									<div className="text-gray-800 font-semibold mx-2">
-										Harshit
+										{user.currentUser.name}
 									</div>
 									<Avatar
 										backgroundColor="gray.300"

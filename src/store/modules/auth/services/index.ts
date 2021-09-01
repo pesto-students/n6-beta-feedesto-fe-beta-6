@@ -1,7 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
+import { LoginType } from 'types/enums'
 
 export interface LoginUserBody {
+	loginType: LoginType
 	googleUserId: string
 }
 export const loginUser = createAsyncThunk<any, LoginUserBody>(

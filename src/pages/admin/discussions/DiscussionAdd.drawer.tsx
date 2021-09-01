@@ -160,11 +160,11 @@ export default function DiscussionAddDrawer({
 									.filter(
 										(el) =>
 											!discussion.addDiscussionForm.participantIds.find(
-												(p) => p === el.id,
+												(p) => p === el._id,
 											),
 									)
 									.map((el) => (
-										<option value={el.id} key={el.id}>
+										<option value={el._id} key={el._id}>
 											{el.name}
 										</option>
 									))}
@@ -173,7 +173,7 @@ export default function DiscussionAddDrawer({
 								{discussion.addDiscussionForm.participantIds.map(
 									(el, index) => {
 										const findUser = user.userList.find(
-											(us) => us.id === el,
+											(us) => us._id === el,
 										)
 										return (
 											<div key={index}>
@@ -201,11 +201,11 @@ export default function DiscussionAddDrawer({
 									.filter(
 										(el) =>
 											!discussion.addDiscussionForm.viewerIds.find(
-												(p) => p === el.id,
+												(p) => p === el._id,
 											),
 									)
 									.map((el) => (
-										<option value={el.id} key={el.id}>
+										<option value={el._id} key={el._id}>
 											{el.name}
 										</option>
 									))}
@@ -214,7 +214,7 @@ export default function DiscussionAddDrawer({
 								{discussion.addDiscussionForm.viewerIds.map(
 									(el, index) => {
 										const findUser = user.userList.find(
-											(us) => us.id === el,
+											(us) => us._id === el,
 										)
 										return (
 											<div key={index}>

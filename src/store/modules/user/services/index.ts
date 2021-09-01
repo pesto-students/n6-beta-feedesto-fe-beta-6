@@ -19,7 +19,7 @@ export const updateUserApprovalStatus = async (
 }
 
 export interface DeleteUserBody {
-	id: string
+	_id: string
 }
 export const deleteUser = async (data: DeleteUserBody) => {
 	return await sendRequest.delete('user', {

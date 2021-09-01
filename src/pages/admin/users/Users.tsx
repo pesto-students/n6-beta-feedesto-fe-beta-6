@@ -34,8 +34,8 @@ const UsersPage = () => {
 		dispatch(fetchUserList())
 	}
 
-	const handleUserDelete = async (id: string) => {
-		await deleteUser({ id })
+	const handleUserDelete = async (_id: string) => {
+		await deleteUser({ _id })
 		dispatch(fetchUserList())
 	}
 
@@ -72,7 +72,7 @@ const UsersPage = () => {
 					</Thead>
 					<Tbody>
 						{user.userList.map((user) => (
-							<Tr key={user.id}>
+							<Tr key={user._id}>
 								<Td>{user.name}</Td>
 								<Td>{user.email}</Td>
 								<Td>{user.isVerified ? 'Yes' : 'No'}</Td>
@@ -102,7 +102,7 @@ const UsersPage = () => {
 										}
 										className="shadow"
 										onClick={() =>
-											handleUserApprove(user.id)
+											handleUserApprove(user._id)
 										}
 									/>
 									<IconButton
@@ -126,7 +126,7 @@ const UsersPage = () => {
 										}
 										className="mx-2 shadow"
 										onClick={() =>
-											handleUserReject(user.id)
+											handleUserReject(user._id)
 										}
 									/>
 									<IconButton
@@ -140,7 +140,7 @@ const UsersPage = () => {
 										color="red.600"
 										className="shadow"
 										onClick={() =>
-											handleUserDelete(user.id)
+											handleUserDelete(user._id)
 										}
 									/>
 								</Td>

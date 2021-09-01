@@ -2,8 +2,11 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
 
 export interface Organization {
-	id: number
+	_id: number
 	name: string
+	userId: string
+	createdAt: Date
+	updatedAt: Date
 }
 
 export interface OrganizationState {

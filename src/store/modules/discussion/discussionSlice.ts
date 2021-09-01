@@ -7,7 +7,7 @@ import {
 } from './services'
 
 export interface Discussion {
-	id: string
+	_id: string
 	organizationId: string
 	title: string
 	description: string
@@ -35,7 +35,7 @@ const initialState: DiscussionState = {
 		viewerIds: [],
 	},
 	updateDiscussionForm: {
-		id: '',
+		_id: '',
 		update: {
 			title: '',
 			description: '',
@@ -80,10 +80,10 @@ export const discussionSlice = createSlice({
 		fillUpdateDiscussionFormFields: (
 			state,
 			{
-				payload: { id, update },
+				payload: { _id, update },
 			}: PayloadAction<Partial<UpdateDiscussionBody>>,
 		) => {
-			if (!_.isUndefined(id)) state.updateDiscussionForm.id = id
+			if (!_.isUndefined(_id)) state.updateDiscussionForm._id = _id
 
 			if (_.isUndefined(update)) return
 			const { title, description, startDate, endDate } = update

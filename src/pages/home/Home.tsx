@@ -8,11 +8,12 @@ import {
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { sendRequest } from 'services/networkService'
 import { RootState } from 'store'
 import { loginUser } from 'store/modules/auth/services'
+import { setCurrentUser, User } from 'store/modules/user/userSlice'
 import { LoginType } from 'types/enums'
 import {
-	fillAuthLoginUserFields,
 	fillAuthRegisterOrganizationFields,
 	fillAuthRegisterUserFields,
 	setIsGoogleLoggedIn,
@@ -36,9 +37,22 @@ const Home = () => {
 		if (response) {
 			dispatch(
 				loginUser({
+					loginType: auth.loginType,
 					googleUserId: response.getBasicProfile().getId(),
 				}),
 			)
+		}
+	}
+
+	const redirectToSpecifiedRoute = async () => {
+		const userList: User[] | undefined = await sendRequest.get('user/get')
+		if (userList?.length) {
+			dispatch(setCurrentUser(userList[0]))
+		}
+		if (auth.loginType === LoginType.ORGANIZATION) {
+			history.push(ADMIN_USERS)
+		} else {
+			history.push(DASHBOARD)
 		}
 	}
 
@@ -47,11 +61,7 @@ const Home = () => {
 			toast.success('Authentication Successful', {
 				position: 'bottom-right',
 			})
-			if (auth.loginType === LoginType.ORGANIZATION) {
-				history.push(ADMIN_USERS)
-			} else {
-				history.push(DASHBOARD)
-			}
+			redirectToSpecifiedRoute()
 		}
 	}, [auth.isAuthenticated])
 

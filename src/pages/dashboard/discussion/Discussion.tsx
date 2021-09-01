@@ -1,4 +1,13 @@
-import { Box, Button, Icon, IconButton, Textarea } from '@chakra-ui/react'
+import {
+	Box,
+	Button,
+	Icon,
+	IconButton,
+	Input,
+	InputGroup,
+	InputRightElement,
+	Textarea,
+} from '@chakra-ui/react'
 import TimeAgo from 'javascript-time-ago'
 import { DASHBOARD } from 'navigation/routes'
 import React, { useEffect } from 'react'
@@ -8,6 +17,8 @@ import { useHistory, useParams } from 'react-router-dom'
 import { RootState } from 'store'
 import {
 	addAnswer,
+	addAnswerDownvote,
+	addAnswerUpvote,
 	fetchAnswerList,
 	fillAddAnswerFormFields,
 } from 'store/modules/answer/answerSlice'
@@ -17,16 +28,18 @@ const DiscussionPage = () => {
 	const params = useParams<{ id: string }>()
 	const discussionId = params.id
 	const dispatch = useDispatch()
-	const { discussion: discussionStore, answer: answerStore } = useSelector(
-		(state: RootState) => state,
-	)
+	const {
+		discussion: discussionStore,
+		answer: answerStore,
+		user: userStore,
+	} = useSelector((state: RootState) => state)
 	const timeAgo = new TimeAgo('en-US')
 	const history = useHistory()
 
 	useEffect(() => {
 		dispatch(
 			fetchDiscussionList({
-				id: discussionId,
+				_id: discussionId,
 				asParticipant: true,
 			}),
 		)
@@ -39,6 +52,15 @@ const DiscussionPage = () => {
 		await addAnswer(answerStore.addAnswerForm)
 		dispatch(fetchAnswerList({ discussionId }))
 		dispatch(fillAddAnswerFormFields({ content: '' }))
+	}
+
+	const handleAnswerUpvote = async (answerId: string) => {
+		await addAnswerUpvote({ answerId })
+		dispatch(fetchAnswerList({ discussionId }))
+	}
+	const handleAnswerDownvote = async (answerId: string) => {
+		await addAnswerDownvote({ answerId })
+		dispatch(fetchAnswerList({ discussionId }))
 	}
 
 	const [discussion] = discussionStore.discussionList
@@ -72,66 +94,20 @@ const DiscussionPage = () => {
 						</div>
 					</div>
 				</div>
-				<div className="col-span-1 h-screen overflow-y-scroll">
+				<div className="col-span-1 h-screen mt-5 overflow-y-scroll">
 					<div className="p-3">
 						<div className="flex flex-col">
-							<div className="flex-1">
-								{answerStore.answerList.map((answer, index) => {
-									return (
-										<div key={answer.id} className="my-5">
-											<div className="flex">
-												<div className="flex-none">
-													<div className="flex flex-col items-center text-gray-500">
-														<div>
-															{index % 2 == 0 ? (
-																<Icons.CaretUpFill
-																	size={26}
-																	className="text-green-600"
-																/>
-															) : (
-																<Icons.CaretUp
-																	size={26}
-																/>
-															)}
-														</div>
-														<div className="textxl font-bold">
-															{(index + 1) * 10}+
-														</div>
-														<div>
-															{index % 3 == 0 &&
-															index % 2 != 0 ? (
-																<Icons.CaretDownFill
-																	size={26}
-																	className="text-red-600"
-																/>
-															) : (
-																<Icons.CaretDown
-																	size={26}
-																/>
-															)}
-														</div>
-													</div>
-												</div>
-												<div className="flex-1">
-													<div className="h-full ml-2 px-5 py-3 rounded-2xl bg-gray-100">
-														{answer.content}
-													</div>
-												</div>
-											</div>
-										</div>
-									)
-								})}
-							</div>
-							<div className="flex-none mt-3">
+							<div className="flex-none">
 								<div className="w-full">
 									<div>
 										<Textarea
 											id="answerInput"
-											placeholder="Start writing here"
+											placeholder="Start writing here..."
 											value={
 												answerStore.addAnswerForm
 													.content
 											}
+											rows={5}
 											onChange={(e) => {
 												dispatch(
 													fillAddAnswerFormFields({
@@ -166,6 +142,96 @@ const DiscussionPage = () => {
 										</div>
 									</div>
 								</div>
+							</div>
+							<div className="flex-1">
+								{answerStore.answerList.map((answer, index) => {
+									return (
+										<div key={answer._id} className="my-5">
+											<div className="flex">
+												<div className="flex-none">
+													<div className="flex flex-col items-center text-gray-500">
+														<div>
+															{answer.hasUpvoted ? (
+																<Icons.CaretUpFill
+																	size={26}
+																	className="text-green-600"
+																/>
+															) : (
+																<Icons.CaretUp
+																	size={26}
+																	className="cursor-pointer"
+																	onClick={() =>
+																		handleAnswerUpvote(
+																			answer._id,
+																		)
+																	}
+																/>
+															)}
+														</div>
+														<div className="textxl font-bold">
+															{answer.upvoteCount -
+																answer.downvoteCount}
+															+
+														</div>
+														<div>
+															{answer.hasDownvoted ? (
+																<Icons.CaretDownFill
+																	size={26}
+																	className="text-red-600"
+																/>
+															) : (
+																<Icons.CaretDown
+																	size={26}
+																	className="cursor-pointer"
+																	onClick={() =>
+																		handleAnswerDownvote(
+																			answer._id,
+																		)
+																	}
+																/>
+															)}
+														</div>
+													</div>
+												</div>
+												<div className="flex-1">
+													<div
+														className={
+															'ml-2 px-5 py-3 rounded-2xl bg-gray-100 ' +
+															(answer.userId ===
+															userStore
+																.currentUser._id
+																? 'bg-gray-700 text-white'
+																: '')
+														}
+													>
+														{answer.content}
+													</div>
+													<div className="ml-2 mt-2 w-full">
+														<InputGroup size="md">
+															<Input
+																pr="3rem"
+																type="text"
+																placeholder="Add your comments here..."
+															/>
+															<InputRightElement width="3rem">
+																<IconButton
+																	aria-label="addComment"
+																	h="1.75rem"
+																	size="sm"
+																	colorScheme="blue"
+																	icon={
+																		<Icons.CursorFill />
+																	}
+																	onClick={() => {}}
+																></IconButton>
+															</InputRightElement>
+														</InputGroup>
+													</div>
+												</div>
+											</div>
+										</div>
+									)
+								})}
 							</div>
 						</div>
 					</div>

@@ -68,7 +68,7 @@ const DiscussionsPage = () => {
 		},
 		delete: {
 			async submit(discussionId: string) {
-				await deleteDiscussion({ id: discussionId })
+				await deleteDiscussion({ _id: discussionId })
 				dispatch(fetchDiscussionList({}))
 			},
 		},
@@ -77,7 +77,7 @@ const DiscussionsPage = () => {
 	const handleUpdateButtonClick = (discussion: Discussion) => {
 		dispatch(
 			fillUpdateDiscussionFormFields({
-				id: discussion.id,
+				_id: discussion._id,
 				update: {
 					title: discussion.title,
 					description: discussion.description,
@@ -137,7 +137,7 @@ const DiscussionsPage = () => {
 					</Thead>
 					<Tbody>
 						{discussion.discussionList.map((discussion) => (
-							<Tr key={discussion.id}>
+							<Tr key={discussion._id}>
 								<Td
 									maxWidth="xs"
 									overflow="hidden"
@@ -203,7 +203,7 @@ const DiscussionsPage = () => {
 											className="shadow"
 											onClick={() =>
 												disucssionController.delete.submit(
-													discussion.id,
+													discussion._id,
 												)
 											}
 										/>

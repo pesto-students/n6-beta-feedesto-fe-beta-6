@@ -5,7 +5,7 @@ import { Discussion } from '../discussionSlice'
 export const fetchDiscussionList = createAsyncThunk<
 	Discussion[],
 	{
-		id?: string
+		_id?: string
 		participantId?: string
 		asParticipant?: boolean
 	}
@@ -31,7 +31,7 @@ export const addDiscussion = async (data: AddDiscussionBody) => {
 }
 
 export interface UpdateDiscussionBody {
-	id: string
+	_id: string
 	update: {
 		title?: string
 		description?: string
@@ -47,7 +47,7 @@ export const updateDiscussion = async (data: UpdateDiscussionBody) => {
 }
 
 export interface DeleteDiscussionBody {
-	id: string
+	_id: string
 }
 export const deleteDiscussion = async (data: DeleteDiscussionBody) => {
 	return await sendRequest.delete('discussion', {

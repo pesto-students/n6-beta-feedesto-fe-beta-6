@@ -56,12 +56,12 @@ const DiscussionsPage = () => {
 					<Tbody>
 						{discussionStore.discussionList.map((discussion) => (
 							<Tr
-								key={discussion.id}
+								key={discussion._id}
 								onClick={() => {
 									history.push(
 										DASHBOARD_DISCUSSION +
 											'/' +
-											discussion.id,
+											discussion._id,
 									)
 								}}
 								className="hover:bg-gray-100 transition-all duration-200 cursor-pointer"
