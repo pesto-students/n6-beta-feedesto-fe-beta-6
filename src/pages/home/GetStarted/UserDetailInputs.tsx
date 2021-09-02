@@ -1,6 +1,6 @@
 import { ChevronLeftIcon } from '@chakra-ui/icons'
 import { Button, Input, Link, Select } from '@chakra-ui/react'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { registerUser } from 'store/modules/auth/services'
 import { RootState } from '../../../store'
@@ -8,20 +8,25 @@ import {
 	fillAuthRegisterUserFields,
 	setAuthSelectedTab,
 } from '../../../store/modules/auth/authSlice'
-import { fetchOrganizationList } from '../../../store/modules/organization/organizationSlice'
+import {
+	fetchOrganizations,
+	Organization,
+} from '../../../store/modules/organization/organizationSlice'
 import { SelectedTab } from '../../../types/enums'
 
 const UserDetailInputs: React.FC = () => {
 	const dispatch = useDispatch()
-	const { organization, auth } = useSelector((state: RootState) => state)
+	const { auth } = useSelector((state: RootState) => state)
 
-	const handleFetchOrganizations = useCallback(async () => {
-		await dispatch(fetchOrganizationList())
-	}, [dispatch])
+	const [organizationList, setOrganizationList] = useState<Organization[]>([])
+
+	const fetchOrganizationList = async () => {
+		setOrganizationList(await fetchOrganizations())
+	}
 
 	useEffect(() => {
-		handleFetchOrganizations()
-	}, [handleFetchOrganizations])
+		fetchOrganizationList()
+	}, [])
 
 	return (
 		<div className="px-6 pt-3 pb-6">
@@ -57,7 +62,7 @@ const UserDetailInputs: React.FC = () => {
 							)
 						}}
 					>
-						{organization.organizationList.map((org) => (
+						{organizationList.map((org) => (
 							<option value={org._id} key={org._id}>
 								{org.name}
 							</option>

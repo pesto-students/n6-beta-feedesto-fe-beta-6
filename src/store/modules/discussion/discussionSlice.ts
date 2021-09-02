@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import _ from 'lodash'
-import {} from './services'
+import { sendRequest } from 'services/networkService'
 
 export interface Discussion {
 	_id: string
@@ -15,6 +15,18 @@ export interface Discussion {
 	modifiedAt: string
 }
 
+export const fetchDiscussions = async (
+	params: {
+		_id?: string
+		participantId?: string
+		asParticipant?: boolean
+	} = {},
+) => {
+	return await sendRequest.get<Discussion[]>(`discussion`, {
+		params,
+	})
+}
+
 export const discussionSlice = createSlice({
 	name: 'discussion',
 	initialState: {},
@@ -25,4 +37,3 @@ export const discussionSlice = createSlice({
 export const {} = discussionSlice.actions
 
 export default discussionSlice.reducer
-export * from './services'
