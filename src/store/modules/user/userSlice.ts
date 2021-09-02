@@ -16,6 +16,9 @@ export interface User {
 export const fetchUsers = async () => {
 	return await sendRequest.get<User[]>(`user`)
 }
+export const fetchUserDetails = async () => {
+	return await sendRequest.get<User[]>(`user/get`)
+}
 
 export interface UserState {
 	currentUser: Partial<User>

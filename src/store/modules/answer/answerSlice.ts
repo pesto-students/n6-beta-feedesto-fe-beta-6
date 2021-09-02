@@ -1,6 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import _ from 'lodash'
-import { AddAnswerBody, fetchAnswerList } from './services'
+import { createSlice } from '@reduxjs/toolkit'
+import { sendRequest } from 'services/networkService'
 
 export interface Answer {
 	_id: string
@@ -14,51 +13,27 @@ export interface Answer {
 	createdAt: string
 	modifiedAt: string
 }
-export interface AnswerState {
-	answerList: Answer[]
-	addAnswerForm: AddAnswerBody
-}
 
-const initialState: AnswerState = {
-	answerList: [],
-	addAnswerForm: {
-		content: '',
-		discussionId: '',
-	},
+export const fetchAnswers = async (
+	params: {
+		_id?: string
+		discussionId?: string
+		userId?: string
+	} = {},
+) => {
+	return await sendRequest.get<Answer[]>(`answer`, {
+		params,
+	})
 }
 
 export const answerSlice = createSlice({
 	name: 'answer',
-	initialState,
-	reducers: {
-		fillAddAnswerFormFields: (
-			state,
-			{
-				payload: { content, discussionId, userId },
-			}: PayloadAction<Partial<AddAnswerBody>>,
-		) => {
-			if (!_.isUndefined(content)) state.addAnswerForm.content = content
-			if (!_.isUndefined(discussionId))
-				state.addAnswerForm.discussionId = discussionId
-			if (!_.isUndefined(userId)) state.addAnswerForm.userId = userId
-		},
-		resetAddAnswerFormFields: (state) => {
-			state.addAnswerForm = initialState.addAnswerForm
-		},
-	},
-	extraReducers: (builder) => {
-		builder.addCase(fetchAnswerList.fulfilled, (state, action) => {
-			state.answerList = action.payload
-		})
-		builder.addCase(fetchAnswerList.rejected, (state, action) => {
-			console.log(action.error?.message)
-		})
-	},
+	initialState: {},
+	reducers: {},
+	extraReducers: (builder) => {},
 })
 
 // Action creators are generated for each case reducer function
-export const { fillAddAnswerFormFields, resetAddAnswerFormFields } =
-	answerSlice.actions
+export const {} = answerSlice.actions
 
 export default answerSlice.reducer
-export * from './services'

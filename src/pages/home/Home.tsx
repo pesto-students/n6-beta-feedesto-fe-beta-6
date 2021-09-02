@@ -11,7 +11,12 @@ import { useHistory } from 'react-router-dom'
 import { sendRequest } from 'services/networkService'
 import { RootState } from 'store'
 import { loginUser } from 'store/modules/auth/services'
-import { fetchUsers, setCurrentUser, User } from 'store/modules/user/userSlice'
+import {
+	fetchUserDetails,
+	fetchUsers,
+	setCurrentUser,
+	User,
+} from 'store/modules/user/userSlice'
 import { LoginType } from 'types/enums'
 import {
 	fillAuthRegisterOrganizationFields,
@@ -45,7 +50,7 @@ const Home = () => {
 	}
 
 	const redirectToSpecifiedRoute = async () => {
-		const userList: User[] | undefined = await fetchUsers()
+		const userList: User[] | undefined = await fetchUserDetails()
 		if (userList?.length) {
 			dispatch(setCurrentUser(userList[0]))
 		}
