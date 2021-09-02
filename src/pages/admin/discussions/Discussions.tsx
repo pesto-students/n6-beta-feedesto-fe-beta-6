@@ -56,7 +56,6 @@ const DiscussionsPage = () => {
 	const dispatch = useDispatch()
 	const { discussion } = useSelector((state: RootState) => state)
 	const timeAgo = new TimeAgo('en-US')
-	const discussionAddDrawer = useDisclosure()
 
 	const addDiscussionFormFieldsInitial = {
 		title: '',
@@ -66,6 +65,7 @@ const DiscussionsPage = () => {
 		participantIds: [],
 		viewerIds: [],
 	}
+	const discussionAddDrawer = useDisclosure()
 	const [addDiscussionFormFields, setAddDiscussionFormFields] = useState<
 		Partial<AddDiscussionBody>
 	>(addDiscussionFormFieldsInitial)
@@ -99,12 +99,14 @@ const DiscussionsPage = () => {
 	}
 
 	const discussionController: {
-		[key: string]: FormDrawerController<unknown>
+		add: FormDrawerController<AddDiscussionBody>
+		update: FormDrawerController<UpdateDiscussionBody>
+		delete: FormDrawerController<DeleteDiscussionBody>
 	} = {
 		add: {
 			drawer: discussionAddDrawer,
 			form: new Form(addDiscussionFormFields),
-			updateFields: (props: Partial<AddDiscussionBody>) =>
+			updateFields: (props) =>
 				setAddDiscussionFormFields({
 					...addDiscussionFormFields,
 					...props,
@@ -125,10 +127,14 @@ const DiscussionsPage = () => {
 		update: {
 			drawer: discussionUpdateDrawer,
 			form: new Form(updateDiscussionFormFields),
-			updateFields: (props: Partial<UpdateDiscussionBody>) =>
+			updateFields: (props) =>
 				setUpdateDiscussionFormFields({
 					...updateDiscussionFormFields,
 					...props,
+					update: {
+						...updateDiscussionFormFields.update,
+						...props.update,
+					},
 				}),
 			load: (discussion: Discussion) => {
 				discussionController.update.updateFields({
@@ -166,13 +172,14 @@ const DiscussionsPage = () => {
 		},
 		delete: {
 			form: new Form(deleteDiscussionFormFields),
-			updateFields: (props: Partial<DeleteDiscussionBody>) =>
+			updateFields: (props) =>
 				setDeleteDiscussionFormFields({
 					...deleteDiscussionFormFields,
 					...props,
 				}),
 			async onSubmit(discussionId: string) {
-				await discussionController.update.form.submit('discussion', {
+				discussionController.delete.form.fields._id = discussionId
+				await discussionController.delete.form.submit('discussion', {
 					method: 'DELETE',
 				})
 				await fetchDiscussionList()

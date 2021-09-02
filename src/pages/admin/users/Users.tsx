@@ -11,37 +11,96 @@ import {
 } from '@chakra-ui/react'
 import TimeAgo from 'javascript-time-ago'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'store'
-import {
-	deleteUser,
-	fetchUserList,
-	updateUserApprovalStatus,
-} from 'store/modules/user/services'
+import { Form } from 'services/form'
+import { fetchUsers, User } from 'store/modules/user/userSlice'
+import { FormDrawerController } from 'types/types'
+
+export interface UpdateUserApprovalStatusBody {
+	userId: string
+	status: boolean
+}
+
+export interface DeleteUserBody {
+	_id: string
+}
 
 const UsersPage = () => {
-	const dispatch = useDispatch()
-	const { user } = useSelector((state: RootState) => state)
 	const timeAgo = new TimeAgo('en-US')
 
-	const handleUserApprove = async (userId: string) => {
-		await updateUserApprovalStatus({ userId, status: true })
-		dispatch(fetchUserList())
-	}
+	const [userList, setUserList] = useState<User[]>([])
 
-	const handleUserReject = async (userId: string) => {
-		await updateUserApprovalStatus({ userId, status: false })
-		dispatch(fetchUserList())
-	}
-
-	const handleUserDelete = async (_id: string) => {
-		await deleteUser({ _id })
-		dispatch(fetchUserList())
+	const fetchUserList = async () => {
+		setUserList(await fetchUsers())
 	}
 
 	useEffect(() => {
-		dispatch(fetchUserList())
+		fetchUserList()
 	}, [])
+
+	const updateUserApprovalStatusFormFieldsInitial: UpdateUserApprovalStatusBody =
+		{
+			userId: '',
+			status: false,
+		}
+	const [
+		updateUserApprovalStatusFormFields,
+		setUpdateUserApprovalStatusFormFields,
+	] = useState<Partial<UpdateUserApprovalStatusBody>>(
+		updateUserApprovalStatusFormFieldsInitial,
+	)
+
+	const deleteUserFormFieldsInitial = {
+		_id: '',
+	}
+	const [deleteUserFormFields, setDeleteUserFormFields] = useState<
+		Partial<DeleteUserBody>
+	>(deleteUserFormFieldsInitial)
+
+	const userController: {
+		delete: FormDrawerController<DeleteUserBody>
+		updateApprovalStatus: FormDrawerController<UpdateUserApprovalStatusBody>
+	} = {
+		delete: {
+			form: new Form(deleteUserFormFields),
+			updateFields: (props: Partial<DeleteUserBody>) =>
+				setDeleteUserFormFields({
+					...deleteUserFormFields,
+					...props,
+				}),
+			async onSubmit(userId: string) {
+				userController.delete.form.fields._id = userId
+				await userController.delete.form.submit('user', {
+					method: 'DELETE',
+				})
+				await fetchUserList()
+			},
+		},
+		updateApprovalStatus: {
+			form: new Form(updateUserApprovalStatusFormFields),
+			updateFields: (props: Partial<UpdateUserApprovalStatusBody>) =>
+				setUpdateUserApprovalStatusFormFields({
+					...updateUserApprovalStatusFormFields,
+					...props,
+				}),
+			async onSubmit({
+				userId,
+				status,
+			}: {
+				userId: string
+				status: boolean
+			}) {
+				userController.updateApprovalStatus.form.fields.userId = userId
+				userController.updateApprovalStatus.form.fields.status = status
+				await userController.updateApprovalStatus.form.submit(
+					'user/verify',
+					{
+						method: 'PUT',
+					},
+				)
+				await fetchUserList()
+			},
+		},
+	}
 
 	return (
 		<div>
@@ -58,7 +117,7 @@ const UsersPage = () => {
 			<div className="border-b-2"></div>
 			<div className="mt-3">
 				<Table variant="simple">
-					{!user.userList.length && (
+					{!userList.length && (
 						<TableCaption>These were all the Users</TableCaption>
 					)}
 					<Thead>
@@ -71,7 +130,7 @@ const UsersPage = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{user.userList.map((user) => (
+						{userList.map((user) => (
 							<Tr key={user._id}>
 								<Td>{user.name}</Td>
 								<Td>{user.email}</Td>
@@ -102,7 +161,12 @@ const UsersPage = () => {
 										}
 										className="shadow"
 										onClick={() =>
-											handleUserApprove(user._id)
+											userController.updateApprovalStatus.onSubmit(
+												{
+													userId: user._id,
+													status: true,
+												},
+											)
 										}
 									/>
 									<IconButton
@@ -126,7 +190,12 @@ const UsersPage = () => {
 										}
 										className="mx-2 shadow"
 										onClick={() =>
-											handleUserReject(user._id)
+											userController.updateApprovalStatus.onSubmit(
+												{
+													userId: user._id,
+													status: false,
+												},
+											)
 										}
 									/>
 									<IconButton
@@ -140,7 +209,9 @@ const UsersPage = () => {
 										color="red.600"
 										className="shadow"
 										onClick={() =>
-											handleUserDelete(user._id)
+											userController.delete.onSubmit(
+												user._id,
+											)
 										}
 									/>
 								</Td>

@@ -1,6 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
-import { fetchUserList, updateUserApprovalStatus } from './services'
 
 export interface User {
 	_id: string
@@ -13,13 +12,16 @@ export interface User {
 	createdAt: string
 	modifiedAt: string
 }
+
+export const fetchUsers = async () => {
+	return await sendRequest.get<User[]>(`user`)
+}
+
 export interface UserState {
-	userList: User[]
 	currentUser: Partial<User>
 }
 
 const initialState: UserState = {
-	userList: [],
 	currentUser: {},
 }
 
@@ -31,14 +33,7 @@ export const userSlice = createSlice({
 			state.currentUser = action.payload
 		},
 	},
-	extraReducers: (builder) => {
-		builder.addCase(fetchUserList.fulfilled, (state, action) => {
-			state.userList = action.payload
-		})
-		builder.addCase(fetchUserList.rejected, (state, action) => {
-			console.log(action.error?.message)
-		})
-	},
+	extraReducers: (builder) => {},
 })
 
 // Action creators are generated for each case reducer function

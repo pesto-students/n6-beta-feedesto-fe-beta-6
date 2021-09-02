@@ -7,9 +7,10 @@ import {
 	Textarea,
 } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store'
+import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
 import { AddDiscussionBody } from './Discussions'
 
@@ -19,6 +20,16 @@ export default function DiscussionAddDrawer({
 	controller: FormDrawerController<AddDiscussionBody>
 }) {
 	const { user } = useSelector((state: RootState) => state)
+
+	const [userList, setUserList] = useState<User[]>([])
+
+	const fetchUserList = async () => {
+		setUserList(await fetchUsers())
+	}
+
+	useEffect(() => {
+		fetchUserList()
+	}, [])
 
 	const addParticipantToDiscussion = (participantId: string) => {
 		const findParticipant = form.fields.participantIds?.find(
@@ -123,7 +134,7 @@ export default function DiscussionAddDrawer({
 									addParticipantToDiscussion(e.target.value)
 								}}
 							>
-								{user.userList
+								{userList
 									.filter(
 										(el) =>
 											!form.fields.participantIds?.find(
@@ -139,7 +150,7 @@ export default function DiscussionAddDrawer({
 							<div>
 								{form.fields.participantIds?.map(
 									(el, index) => {
-										const findUser = user.userList.find(
+										const findUser = userList.find(
 											(us) => us._id === el,
 										)
 										return (
@@ -164,7 +175,7 @@ export default function DiscussionAddDrawer({
 									e.target.value = ''
 								}}
 							>
-								{user.userList
+								{userList
 									.filter(
 										(el) =>
 											!form.fields.viewerIds?.find(
@@ -179,7 +190,7 @@ export default function DiscussionAddDrawer({
 							</Select>
 							<div>
 								{form.fields.viewerIds?.map((el, index) => {
-									const findUser = user.userList.find(
+									const findUser = userList.find(
 										(us) => us._id === el,
 									)
 									return (
