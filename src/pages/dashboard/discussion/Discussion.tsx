@@ -26,7 +26,10 @@ import {
 	fillAddAnswerFormFields,
 } from 'store/modules/answer/answerSlice'
 import { AddCommentBody } from 'store/modules/comment/services'
-import { fetchDiscussionList } from 'store/modules/discussion/services'
+import {
+	Discussion,
+	fetchDiscussions,
+} from 'store/modules/discussion/discussionSlice'
 
 const DiscussionPage = () => {
 	const params = useParams<{ id: string }>()
@@ -59,14 +62,23 @@ const DiscussionPage = () => {
 		)
 	}
 
+	const [discussionDetails, setDiscussionDetails] = useState<Discussion>()
+	const fetchDiscussionDetails = async () => {
+		const [discussion] = await fetchDiscussions({
+			_id: discussionId,
+			asParticipant: true,
+		})
+
+		if (!discussion) {
+			history.replace(DASHBOARD)
+			return <></>
+		}
+
+		setDiscussionDetails(discussion)
+	}
+
 	useEffect(() => {
-		dispatch(
-			fetchDiscussionList({
-				_id: discussionId,
-				asParticipant: true,
-			}),
-		)
-		fetchDiscussionAnswers()
+		fetchDiscussionDetails(), fetchDiscussionAnswers()
 		dispatch(fillAddAnswerFormFields({ content: '', discussionId }))
 	}, [])
 
@@ -86,12 +98,7 @@ const DiscussionPage = () => {
 		fetchDiscussionAnswers()
 	}
 
-	const [discussion] = discussionStore.discussionList
-
-	if (!discussion) {
-		history.replace(DASHBOARD)
-		return <></>
-	}
+	if (!discussionDetails) return null
 
 	return (
 		<div className="h-full">
@@ -99,9 +106,9 @@ const DiscussionPage = () => {
 				<div className="col-span-1 bg-gray-200 h-full overflow-hidden">
 					<div className="p-4">
 						<div className="text-2xl font-semibold">
-							{discussion.title}
+							{discussionDetails.title}
 						</div>
-						<div>{discussion.description}</div>
+						<div>{discussionDetails.description}</div>
 						<div className="absolute bottom-3">
 							<Button
 								className="cursor-pointer"

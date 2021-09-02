@@ -15,39 +15,108 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react'
 import TimeAgo from 'javascript-time-ago'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import {
-	addDiscussion,
-	deleteDiscussion,
 	Discussion,
-	fetchDiscussionList,
-	fillUpdateDiscussionFormFields,
-	resetAddDiscussionFormFields,
-	updateDiscussion,
+	fetchDiscussions,
 } from 'store/modules/discussion/discussionSlice'
 import DiscussionAddDrawer from './DiscussionAdd.drawer'
 import dayjs from 'dayjs'
 import DiscussionStatus from './components/DiscussionStatus'
 import DiscussionUpdateDrawer from './DiscussionUpdate.drawer'
+import { Form } from 'services/form'
+import { FormDrawerController } from 'types/types'
+
+export interface AddDiscussionBody {
+	title: string
+	description: string
+	startDate: string
+	endDate: string
+	participantIds: string[]
+	viewerIds: string[]
+}
+
+export interface UpdateDiscussionBody {
+	_id: string
+	update: {
+		title?: string
+		description?: string
+		startDate?: string
+		endDate?: string
+	}
+}
+
+export interface DeleteDiscussionBody {
+	_id: string
+}
 
 const DiscussionsPage = () => {
 	const dispatch = useDispatch()
 	const { discussion } = useSelector((state: RootState) => state)
 	const timeAgo = new TimeAgo('en-US')
 	const discussionAddDrawer = useDisclosure()
-	const discussionUpdateDrawer = useDisclosure()
 
-	const disucssionController = {
+	const addDiscussionFormFieldsInitial = {
+		title: '',
+		description: '',
+		startDate: '',
+		endDate: '',
+		participantIds: [],
+		viewerIds: [],
+	}
+	const [addDiscussionFormFields, setAddDiscussionFormFields] = useState<
+		Partial<AddDiscussionBody>
+	>(addDiscussionFormFieldsInitial)
+
+	const updateDiscussionFormFieldsInitial = {
+		_id: '',
+		update: {
+			title: '',
+			description: '',
+			startDate: '',
+			endDate: '',
+		},
+	}
+	const discussionUpdateDrawer = useDisclosure()
+	const [updateDiscussionFormFields, setUpdateDiscussionFormFields] =
+		useState<Partial<UpdateDiscussionBody>>(
+			updateDiscussionFormFieldsInitial,
+		)
+
+	const deleteDiscussionFormFieldsInitial = {
+		_id: '',
+	}
+	const [deleteDiscussionFormFields, setDeleteDiscussionFormFields] =
+		useState<Partial<DeleteDiscussionBody>>(
+			deleteDiscussionFormFieldsInitial,
+		)
+
+	const [discussionList, setDiscussionList] = useState<Discussion[]>([])
+	const fetchDiscussionList = async () => {
+		setDiscussionList(await fetchDiscussions())
+	}
+
+	const discussionController: {
+		[key: string]: FormDrawerController<unknown>
+	} = {
 		add: {
 			drawer: discussionAddDrawer,
-			async submit() {
+			form: new Form(addDiscussionFormFields),
+			updateFields: (props: Partial<AddDiscussionBody>) =>
+				setAddDiscussionFormFields({
+					...addDiscussionFormFields,
+					...props,
+				}),
+			async onSubmit() {
 				try {
-					await addDiscussion(discussion.addDiscussionForm)
-					dispatch(fetchDiscussionList({}))
+					await discussionController.add.form.submit('discussion', {
+						method: 'POST',
+					})
+					await fetchDiscussionList()
 					discussionAddDrawer.onClose()
-					dispatch(resetAddDiscussionFormFields())
+					setAddDiscussionFormFields(addDiscussionFormFieldsInitial)
 				} catch (err) {
 					console.log(err)
 				}
@@ -55,46 +124,64 @@ const DiscussionsPage = () => {
 		},
 		update: {
 			drawer: discussionUpdateDrawer,
-			async submit() {
+			form: new Form(updateDiscussionFormFields),
+			updateFields: (props: Partial<UpdateDiscussionBody>) =>
+				setUpdateDiscussionFormFields({
+					...updateDiscussionFormFields,
+					...props,
+				}),
+			load: (discussion: Discussion) => {
+				discussionController.update.updateFields({
+					_id: discussion._id,
+					update: {
+						title: discussion.title,
+						description: discussion.description,
+						startDate: dayjs(new Date(discussion.startDate))
+							.format('YYYY-MM-DDTHH:mm')
+							.toString(),
+						endDate: dayjs(new Date(discussion.endDate)).format(
+							'YYYY-MM-DDTHH:mm',
+						),
+					},
+				})
+				discussionController.update.drawer?.onOpen()
+			},
+			async onSubmit() {
 				try {
-					await updateDiscussion(discussion.updateDiscussionForm)
-					dispatch(fetchDiscussionList({}))
+					await discussionController.update.form.submit(
+						'discussion',
+						{
+							method: 'PUT',
+						},
+					)
+					await fetchDiscussionList()
 					discussionUpdateDrawer.onClose()
-					dispatch(resetAddDiscussionFormFields())
+					setUpdateDiscussionFormFields(
+						updateDiscussionFormFieldsInitial,
+					)
 				} catch (err) {
 					console.log(err)
 				}
 			},
 		},
 		delete: {
-			async submit(discussionId: string) {
-				await deleteDiscussion({ _id: discussionId })
-				dispatch(fetchDiscussionList({}))
+			form: new Form(deleteDiscussionFormFields),
+			updateFields: (props: Partial<DeleteDiscussionBody>) =>
+				setDeleteDiscussionFormFields({
+					...deleteDiscussionFormFields,
+					...props,
+				}),
+			async onSubmit(discussionId: string) {
+				await discussionController.update.form.submit('discussion', {
+					method: 'DELETE',
+				})
+				await fetchDiscussionList()
 			},
 		},
 	}
 
-	const handleUpdateButtonClick = (discussion: Discussion) => {
-		dispatch(
-			fillUpdateDiscussionFormFields({
-				_id: discussion._id,
-				update: {
-					title: discussion.title,
-					description: discussion.description,
-					startDate: dayjs(new Date(discussion.startDate))
-						.format('YYYY-MM-DDTHH:mm')
-						.toString(),
-					endDate: dayjs(new Date(discussion.endDate)).format(
-						'YYYY-MM-DDTHH:mm',
-					),
-				},
-			}),
-		)
-		disucssionController.update.drawer.onOpen()
-	}
-
 	useEffect(() => {
-		dispatch(fetchDiscussionList({}))
+		fetchDiscussionList()
 	}, [])
 
 	return (
@@ -112,7 +199,7 @@ const DiscussionsPage = () => {
 					<Button
 						leftIcon={<AddIcon />}
 						colorScheme="teal"
-						onClick={disucssionController.add.drawer.onOpen}
+						onClick={discussionController.add.drawer?.onOpen}
 					>
 						Add Discussion
 					</Button>
@@ -121,7 +208,7 @@ const DiscussionsPage = () => {
 			<div className="border-b-2"></div>
 			<div className="mt-3">
 				<Table variant="simple">
-					{!discussion.discussionList.length && (
+					{!discussionList.length && (
 						<TableCaption>
 							These were all the Discussions
 						</TableCaption>
@@ -136,7 +223,7 @@ const DiscussionsPage = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{discussion.discussionList.map((discussion) => (
+						{discussionList.map((discussion) => (
 							<Tr key={discussion._id}>
 								<Td
 									maxWidth="xs"
@@ -186,7 +273,7 @@ const DiscussionsPage = () => {
 											color="yellow.600"
 											className="shadow mr-2"
 											onClick={() => {
-												handleUpdateButtonClick(
+												discussionController.update.load?.(
 													discussion,
 												)
 											}}
@@ -202,7 +289,7 @@ const DiscussionsPage = () => {
 											color="red.600"
 											className="shadow"
 											onClick={() =>
-												disucssionController.delete.submit(
+												discussionController.delete.onSubmit(
 													discussion._id,
 												)
 											}
@@ -215,12 +302,10 @@ const DiscussionsPage = () => {
 				</Table>
 			</div>
 			<DiscussionAddDrawer
-				drawer={disucssionController.add.drawer}
-				onSubmit={() => disucssionController.add.submit()}
+				controller={discussionController.add}
 			></DiscussionAddDrawer>
 			<DiscussionUpdateDrawer
-				drawer={disucssionController.update.drawer}
-				onSubmit={() => disucssionController.update.submit()}
+				controller={discussionController.update}
 			></DiscussionUpdateDrawer>
 		</div>
 	)
