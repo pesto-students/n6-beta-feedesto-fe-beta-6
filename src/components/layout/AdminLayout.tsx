@@ -1,4 +1,4 @@
-import { ADMIN_DISCUSSIONS, ADMIN_USERS } from 'navigation/routes'
+import { Routes } from 'navigation/routes'
 import React from 'react'
 import * as Icon from 'react-bootstrap-icons'
 import Sidebar from './Sidebar'
@@ -9,12 +9,12 @@ const AdminLayout = ({ children, ...args }: any) => {
 		{
 			label: 'Users',
 			icon: <Icon.People size={24} />,
-			link: ADMIN_USERS,
+			link: Routes.ADMIN_USERS,
 		},
 		{
 			label: 'Discussions',
 			icon: <Icon.ChatText size={24} />,
-			link: ADMIN_DISCUSSIONS,
+			link: Routes.ADMIN_DISCUSSIONS,
 		},
 	]
 	return (

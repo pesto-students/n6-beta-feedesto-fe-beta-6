@@ -1,5 +1,7 @@
-export const ROOT = '/'
-export const DASHBOARD = '/dashboard'
-export const DASHBOARD_DISCUSSION = '/dashboard/discussion'
-export const ADMIN_USERS = '/admin/users'
-export const ADMIN_DISCUSSIONS = '/admin/discussions'
+export const Routes = {
+	ROOT: '/',
+	DASHBOARD: '/dashboard',
+	DASHBOARD_DISCUSSION: '/dashboard/discussion',
+	ADMIN_USERS: '/admin/users',
+	ADMIN_DISCUSSIONS: '/admin/discussions',
+}

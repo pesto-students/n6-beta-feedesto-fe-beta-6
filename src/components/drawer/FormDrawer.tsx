@@ -48,20 +48,18 @@ const FormDrawer: FunctionComponent<FormDrawerProps> = ({
 				<DrawerContent>
 					<DrawerCloseButton />
 					<DrawerHeader borderBottomWidth="1px">{title}</DrawerHeader>
-
 					<DrawerBody>
 						<form
 							id={formId}
 							autoComplete="off"
 							onSubmit={(e) => {
 								e.preventDefault()
-								if (onSubmit) onSubmit()
+								if (typeof onSubmit === 'function') onSubmit()
 							}}
 						>
 							{children}
 						</form>
 					</DrawerBody>
-
 					<DrawerFooter borderTopWidth="1px">
 						<Button
 							variant="outline"

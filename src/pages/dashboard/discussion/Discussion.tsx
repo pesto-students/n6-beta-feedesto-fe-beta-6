@@ -6,8 +6,9 @@ import {
 	InputRightElement,
 	Textarea,
 } from '@chakra-ui/react'
+import classNames from 'classnames'
 import TimeAgo from 'javascript-time-ago'
-import { DASHBOARD } from 'navigation/routes'
+import { Routes } from 'navigation/routes'
 import React, { useEffect, useState } from 'react'
 import * as Icons from 'react-bootstrap-icons'
 import { useSelector } from 'react-redux'
@@ -70,7 +71,7 @@ const DiscussionPage = () => {
 		})
 
 		if (!discussion) {
-			history.replace(DASHBOARD)
+			history.replace(Routes.DASHBOARD)
 			return <></>
 		}
 
@@ -307,14 +308,16 @@ const DiscussionPage = () => {
 												</div>
 												<div className="flex-1">
 													<div
-														className={
-															'ml-2 px-5 py-3 rounded-2xl bg-gray-100 ' +
-															(answer.userId ===
-															userStore
-																.currentUser._id
-																? 'bg-gray-700 text-white'
-																: '')
-														}
+														className={classNames(
+															'ml-2 px-5 py-3 rounded-2xl bg-gray-100 ',
+															{
+																'bg-gray-700 text-white':
+																	answer.userId ===
+																	userStore
+																		.currentUser
+																		._id,
+															},
+														)}
 													>
 														{answer.content}
 													</div>
@@ -375,15 +378,16 @@ const DiscussionPage = () => {
 															</div>
 															<div className="flex-1">
 																<div
-																	className={
-																		'ml-2 px-5 py-3 rounded-2xl bg-gray-100 ' +
-																		(answer.userId ===
-																		userStore
-																			.currentUser
-																			._id
-																			? 'bg-gray-700 text-white'
-																			: '')
-																	}
+																	className={classNames(
+																		'ml-2 px-5 py-3 rounded-2xl bg-gray-100',
+																		{
+																			'bg-gray-700 text-white':
+																				answer.userId ===
+																				userStore
+																					.currentUser
+																					._id,
+																		},
+																	)}
 																>
 																	{
 																		answer.content

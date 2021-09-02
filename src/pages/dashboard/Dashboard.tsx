@@ -1,7 +1,7 @@
 import { Table, TableCaption, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
-import { DASHBOARD_DISCUSSION } from 'navigation/routes'
+import { Routes } from 'navigation/routes'
 import DiscussionStatus from 'pages/admin/discussions/components/DiscussionStatus'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -60,7 +60,7 @@ const DiscussionsPage = () => {
 								key={discussion._id}
 								onClick={() => {
 									history.push(
-										DASHBOARD_DISCUSSION +
+										Routes.DASHBOARD_DISCUSSION +
 											'/' +
 											discussion._id,
 									)

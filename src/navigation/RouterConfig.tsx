@@ -6,29 +6,23 @@ import Home from 'pages/home/Home'
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import OrganizationPrivateRoute from './OrganizationPrivateRoute'
-import {
-	ADMIN_DISCUSSIONS,
-	ADMIN_USERS,
-	DASHBOARD,
-	DASHBOARD_DISCUSSION,
-	ROOT,
-} from './routes'
+import { Routes } from './routes'
 import UserPrivateRoute from './UserPrivateRoute'
 
 const RouterConfig = () => {
 	return (
 		<Switch>
-			<Route exact component={Home} path={ROOT} />
-			<UserPrivateRoute exact path={DASHBOARD}>
+			<Route exact component={Home} path={Routes.ROOT} />
+			<UserPrivateRoute exact path={Routes.DASHBOARD}>
 				<AppPage />
 			</UserPrivateRoute>
-			<UserPrivateRoute path={DASHBOARD_DISCUSSION + '/:id'}>
+			<UserPrivateRoute path={Routes.DASHBOARD_DISCUSSION + '/:id'}>
 				<DiscussionPage />
 			</UserPrivateRoute>
-			<OrganizationPrivateRoute exact path={ADMIN_USERS}>
+			<OrganizationPrivateRoute exact path={Routes.ADMIN_USERS}>
 				<Users />
 			</OrganizationPrivateRoute>
-			<OrganizationPrivateRoute exact path={ADMIN_DISCUSSIONS}>
+			<OrganizationPrivateRoute exact path={Routes.ADMIN_DISCUSSIONS}>
 				<Discussions />
 			</OrganizationPrivateRoute>
 		</Switch>
