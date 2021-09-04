@@ -15,6 +15,8 @@ import React, { useEffect, useState } from 'react'
 import * as Icons from 'react-bootstrap-icons'
 import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
+import { VariableSizeList } from 'react-window'
+
 import { Form } from 'services/form'
 import { RootState } from 'store'
 import { Answer, fetchAnswers } from 'store/modules/answer/answerSlice'
@@ -274,6 +276,259 @@ const DiscussionPage = () => {
 
 	const isAdmin = userStore.currentUser.isAdmin
 
+	const Row = ({ index }: any) => {
+		const answer = (answerList || [])[index]
+
+		return (
+			<div key={answer._id} className="my-4">
+				<div className="flex">
+					<div className="flex-none">
+						<div className="flex flex-col items-center text-gray-500">
+							<div>
+								{answer.hasUpvoted ? (
+									<Icons.CaretUpFill
+										size={26}
+										className="text-green-600"
+									/>
+								) : (
+									<Icons.CaretUp
+										size={26}
+										className={classNames({
+											'cursor-pointer':
+												!answer.hasUpvoted &&
+												!answer.hasDownvoted,
+										})}
+										onClick={() => {
+											if (
+												answer.hasUpvoted ||
+												answer.hasDownvoted
+											)
+												return
+											answerController.addUpvote.onSubmit(
+												answer._id,
+											)
+										}}
+									/>
+								)}
+							</div>
+							<div className="text-xl font-bold">
+								{answer.upvoteCount - answer.downvoteCount}
+								{!isAdmin && '+'}
+							</div>
+							<div>
+								{answer.hasDownvoted ? (
+									<Icons.CaretDownFill
+										size={26}
+										className="text-red-600"
+									/>
+								) : (
+									<Icons.CaretDown
+										size={26}
+										className={classNames({
+											'cursor-pointer':
+												!answer.hasUpvoted &&
+												!answer.hasDownvoted,
+										})}
+										onClick={() => {
+											if (
+												answer.hasUpvoted ||
+												answer.hasDownvoted
+											)
+												return
+											answerController.addDownvote.onSubmit(
+												answer._id,
+											)
+										}}
+									/>
+								)}
+							</div>
+						</div>
+					</div>
+					<div className="flex-1">
+						{isAdmin && (
+							<div className="flex items-center ml-2 my-1">
+								<Avatar size="2xs" />
+								<div className="text-xs pl-1">
+									{answer.userId?.name}
+								</div>
+							</div>
+						)}
+						<div className="relative">
+							<div
+								className={classNames(
+									'ml-2 px-5 py-3 rounded-2xl rounded-tl-md bg-gray-200',
+									{
+										'bg-gray-700 text-white':
+											answer.userId?._id ===
+											userStore.currentUser._id,
+									},
+								)}
+							>
+								{answer.content}
+							</div>
+							<div className="absolute bottom-1 right-3 text-xs text-gray-500">
+								{dayjs(new Date(answer.createdAt)).format(
+									'D MMM, h:mm A',
+								)}
+							</div>
+						</div>
+						<div className="mt-1">
+							{answer.comments.map((comment) => (
+								<div className="my-2 ml-2" key={comment._id}>
+									<div className="flex">
+										<div className="flex-none">
+											<div className="flex flex-col items-center text-gray-500">
+												<div>
+													{comment.hasUpvoted ? (
+														<Icons.CaretUpFill
+															size={22}
+															className="text-green-600"
+														/>
+													) : (
+														<Icons.CaretUp
+															size={22}
+															className={classNames(
+																{
+																	'cursor-pointer':
+																		!comment.hasUpvoted &&
+																		!comment.hasDownvoted,
+																},
+															)}
+															onClick={() => {
+																if (
+																	comment.hasUpvoted ||
+																	comment.hasDownvoted
+																)
+																	return
+																commentController.addUpvote.onSubmit(
+																	comment._id,
+																)
+															}}
+														/>
+													)}
+												</div>
+												<div className=" font-bold">
+													{comment.upvoteCount -
+														comment.downvoteCount}
+													{!isAdmin && '+'}
+												</div>
+												<div>
+													{comment.hasDownvoted ? (
+														<Icons.CaretDownFill
+															size={22}
+															className="text-red-600"
+														/>
+													) : (
+														<Icons.CaretDown
+															size={22}
+															className={classNames(
+																{
+																	'cursor-pointer':
+																		!comment.hasUpvoted &&
+																		!comment.hasDownvoted,
+																},
+															)}
+															onClick={() => {
+																if (
+																	comment.hasUpvoted ||
+																	comment.hasDownvoted
+																)
+																	return
+																commentController.addDownvote.onSubmit(
+																	comment._id,
+																)
+															}}
+														/>
+													)}
+												</div>
+											</div>
+										</div>
+										<div className="flex-1">
+											<div className="h-full">
+												{isAdmin && (
+													<div className="flex items-center ml-2 my-1">
+														<Avatar size="2xs" />
+														<div className="text-xs pl-1">
+															{
+																comment.userId
+																	?.name
+															}
+														</div>
+													</div>
+												)}
+												<div className="relative">
+													<div
+														className={classNames(
+															'ml-2 px-4 py-2 rounded-xl rounded-tl-md bg-gray-100',
+															{
+																'bg-gray-600 text-white':
+																	comment
+																		.userId
+																		?._id ===
+																	userStore
+																		.currentUser
+																		._id,
+															},
+														)}
+													>
+														{comment.content}
+													</div>
+
+													<div className="absolute bottom-1 right-3 text-xs text-gray-400">
+														{dayjs(
+															new Date(
+																comment.createdAt,
+															),
+														).format(
+															'D MMM, h:mm A',
+														)}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							))}
+							{!isAdmin && (
+								<div className="ml-2 pr-2 mt-2 w-full">
+									<InputGroup size="md">
+										<Input
+											pr="3rem"
+											type="text"
+											placeholder="Add your comments here..."
+											onChange={(e) => {
+												answer.addCommentForm.fields.content =
+													e.target.value
+											}}
+											onKeyPress={(e) => {
+												if (e?.key == 'Enter') {
+													handleCommentAdd(answer)
+													e.preventDefault()
+												}
+											}}
+										/>
+										<InputRightElement width="3rem">
+											<IconButton
+												aria-label="addComment"
+												h="1.75rem"
+												size="sm"
+												colorScheme="blue"
+												icon={<Icons.CursorFill />}
+												onClick={() =>
+													handleCommentAdd(answer)
+												}
+											></IconButton>
+										</InputRightElement>
+									</InputGroup>
+								</div>
+							)}
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
+
 	if (!discussionDetails) return null
 
 	return (
@@ -357,305 +612,14 @@ const DiscussionPage = () => {
 								</div>
 							)}
 							<div className="flex-1">
-								{answerList.map((answer, index) => {
-									return (
-										<div key={answer._id} className="my-4">
-											<div className="flex">
-												<div className="flex-none">
-													<div className="flex flex-col items-center text-gray-500">
-														<div>
-															{answer.hasUpvoted ? (
-																<Icons.CaretUpFill
-																	size={26}
-																	className="text-green-600"
-																/>
-															) : (
-																<Icons.CaretUp
-																	size={26}
-																	className={classNames(
-																		{
-																			'cursor-pointer':
-																				!answer.hasUpvoted &&
-																				!answer.hasDownvoted,
-																		},
-																	)}
-																	onClick={() => {
-																		if (
-																			answer.hasUpvoted ||
-																			answer.hasDownvoted
-																		)
-																			return
-																		answerController.addUpvote.onSubmit(
-																			answer._id,
-																		)
-																	}}
-																/>
-															)}
-														</div>
-														<div className="text-xl font-bold">
-															{answer.upvoteCount -
-																answer.downvoteCount}
-															{!isAdmin && '+'}
-														</div>
-														<div>
-															{answer.hasDownvoted ? (
-																<Icons.CaretDownFill
-																	size={26}
-																	className="text-red-600"
-																/>
-															) : (
-																<Icons.CaretDown
-																	size={26}
-																	className={classNames(
-																		{
-																			'cursor-pointer':
-																				!answer.hasUpvoted &&
-																				!answer.hasDownvoted,
-																		},
-																	)}
-																	onClick={() => {
-																		if (
-																			answer.hasUpvoted ||
-																			answer.hasDownvoted
-																		)
-																			return
-																		answerController.addDownvote.onSubmit(
-																			answer._id,
-																		)
-																	}}
-																/>
-															)}
-														</div>
-													</div>
-												</div>
-												<div className="flex-1">
-													{isAdmin && (
-														<div className="flex items-center ml-2 my-1">
-															<Avatar size="2xs" />
-															<div className="text-xs pl-1">
-																{
-																	answer
-																		.userId
-																		?.name
-																}
-															</div>
-														</div>
-													)}
-													<div className="relative">
-														<div
-															className={classNames(
-																'ml-2 px-5 py-3 rounded-2xl rounded-tl-md bg-gray-200',
-																{
-																	'bg-gray-700 text-white':
-																		answer
-																			.userId
-																			?._id ===
-																		userStore
-																			.currentUser
-																			._id,
-																},
-															)}
-														>
-															{answer.content}
-														</div>
-														<div className="absolute bottom-1 right-3 text-xs text-gray-500">
-															{dayjs(
-																new Date(
-																	answer.createdAt,
-																),
-															).format(
-																'D MMM, h:mm A',
-															)}
-														</div>
-													</div>
-													<div className="mt-1">
-														{answer.comments.map(
-															(comment) => (
-																<div
-																	className="my-2 ml-2"
-																	key={
-																		comment._id
-																	}
-																>
-																	<div className="flex">
-																		<div className="flex-none">
-																			<div className="flex flex-col items-center text-gray-500">
-																				<div>
-																					{comment.hasUpvoted ? (
-																						<Icons.CaretUpFill
-																							size={
-																								22
-																							}
-																							className="text-green-600"
-																						/>
-																					) : (
-																						<Icons.CaretUp
-																							size={
-																								22
-																							}
-																							className={classNames(
-																								{
-																									'cursor-pointer':
-																										!comment.hasUpvoted &&
-																										!comment.hasDownvoted,
-																								},
-																							)}
-																							onClick={() => {
-																								if (
-																									comment.hasUpvoted ||
-																									comment.hasDownvoted
-																								)
-																									return
-																								commentController.addUpvote.onSubmit(
-																									comment._id,
-																								)
-																							}}
-																						/>
-																					)}
-																				</div>
-																				<div className=" font-bold">
-																					{comment.upvoteCount -
-																						comment.downvoteCount}
-																					{!isAdmin &&
-																						'+'}
-																				</div>
-																				<div>
-																					{comment.hasDownvoted ? (
-																						<Icons.CaretDownFill
-																							size={
-																								22
-																							}
-																							className="text-red-600"
-																						/>
-																					) : (
-																						<Icons.CaretDown
-																							size={
-																								22
-																							}
-																							className={classNames(
-																								{
-																									'cursor-pointer':
-																										!comment.hasUpvoted &&
-																										!comment.hasDownvoted,
-																								},
-																							)}
-																							onClick={() => {
-																								if (
-																									comment.hasUpvoted ||
-																									comment.hasDownvoted
-																								)
-																									return
-																								commentController.addDownvote.onSubmit(
-																									comment._id,
-																								)
-																							}}
-																						/>
-																					)}
-																				</div>
-																			</div>
-																		</div>
-																		<div className="flex-1">
-																			<div className="h-full">
-																				{isAdmin && (
-																					<div className="flex items-center ml-2 my-1">
-																						<Avatar size="2xs" />
-																						<div className="text-xs pl-1">
-																							{
-																								comment
-																									.userId
-																									?.name
-																							}
-																						</div>
-																					</div>
-																				)}
-																				<div className="relative">
-																					<div
-																						className={classNames(
-																							'ml-2 px-4 py-2 rounded-xl rounded-tl-md bg-gray-100',
-																							{
-																								'bg-gray-600 text-white':
-																									comment
-																										.userId
-																										?._id ===
-																									userStore
-																										.currentUser
-																										._id,
-																							},
-																						)}
-																					>
-																						{
-																							comment.content
-																						}
-																					</div>
-
-																					<div className="absolute bottom-1 right-3 text-xs text-gray-400">
-																						{dayjs(
-																							new Date(
-																								comment.createdAt,
-																							),
-																						).format(
-																							'D MMM, h:mm A',
-																						)}
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															),
-														)}
-														{!isAdmin && (
-															<div className="ml-2 pr-2 mt-2 w-full">
-																<InputGroup size="md">
-																	<Input
-																		pr="3rem"
-																		type="text"
-																		placeholder="Add your comments here..."
-																		onChange={(
-																			e,
-																		) => {
-																			answer.addCommentForm.fields.content =
-																				e.target.value
-																		}}
-																		onKeyPress={(
-																			e,
-																		) => {
-																			if (
-																				e?.key ==
-																				'Enter'
-																			) {
-																				handleCommentAdd(
-																					answer,
-																				)
-																				e.preventDefault()
-																			}
-																		}}
-																	/>
-																	<InputRightElement width="3rem">
-																		<IconButton
-																			aria-label="addComment"
-																			h="1.75rem"
-																			size="sm"
-																			colorScheme="blue"
-																			icon={
-																				<Icons.CursorFill />
-																			}
-																			onClick={() =>
-																				handleCommentAdd(
-																					answer,
-																				)
-																			}
-																		></IconButton>
-																	</InputRightElement>
-																</InputGroup>
-															</div>
-														)}
-													</div>
-												</div>
-											</div>
-										</div>
-									)
-								})}
+								<VariableSizeList
+									height={screen.height / 1.55}
+									width={screen.width / 2.1}
+									itemCount={answerList.length}
+									itemSize={(i: number) => 35}
+								>
+									{Row}
+								</VariableSizeList>
 							</div>
 						</div>
 					</div>
@@ -664,4 +628,5 @@ const DiscussionPage = () => {
 		</div>
 	)
 }
+
 export default DiscussionPage
