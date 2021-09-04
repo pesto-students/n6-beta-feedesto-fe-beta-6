@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
+import { Comment } from '../comment/commentSlice'
 
 export interface Answer {
 	_id: string
 	discussionId: string
 	userId: string
+	comments: Comment[]
 	upvoteCount: number
 	downvoteCount: number
 	hasUpvoted: boolean

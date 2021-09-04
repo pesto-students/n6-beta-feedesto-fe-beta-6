@@ -16,7 +16,6 @@ import { useHistory, useParams } from 'react-router-dom'
 import { Form } from 'services/form'
 import { RootState } from 'store'
 import { Answer, fetchAnswers } from 'store/modules/answer/answerSlice'
-import { AddCommentBody } from 'store/modules/comment/services'
 import {
 	Discussion,
 	fetchDiscussions,
@@ -35,6 +34,20 @@ export interface AddAnswerUpvoteBody {
 
 export interface AddAnswerDownvoteBody {
 	answerId: string
+}
+
+export interface AddCommentBody {
+	answerId: string
+	content: string
+	userId?: string
+}
+
+export interface AddCommentUpvoteBody {
+	commentId: string
+}
+
+export interface AddCommentDownvoteBody {
+	commentId: string
 }
 
 const DiscussionPage = () => {
@@ -113,6 +126,7 @@ const DiscussionPage = () => {
 				}),
 			async onSubmit() {
 				try {
+					if (!answerController.add.form.fields.content) return
 					await answerController.add.form.submit('answer', {
 						method: 'POST',
 					})
@@ -171,6 +185,87 @@ const DiscussionPage = () => {
 				}
 			},
 		},
+	}
+
+	const addCommentUpvoteFieldsInitial: AddCommentUpvoteBody = {
+		commentId: '',
+	}
+	const [addCommentUpvoteFormFields, setAddCommentUpvoteFormFields] =
+		useState<Partial<AddCommentUpvoteBody>>(addCommentUpvoteFieldsInitial)
+
+	const addCommentDownvoteFieldsInitial: AddCommentDownvoteBody = {
+		commentId: '',
+	}
+	const [addCommentDownvoteFormFields, setAddCommentDownvoteFormFields] =
+		useState<Partial<AddCommentDownvoteBody>>(
+			addCommentDownvoteFieldsInitial,
+		)
+
+	const commentController: {
+		addUpvote: FormDrawerController<AddCommentUpvoteBody>
+		addDownvote: FormDrawerController<AddCommentDownvoteBody>
+	} = {
+		addUpvote: {
+			form: new Form(addCommentUpvoteFormFields),
+			updateFields: (props) =>
+				setAddCommentUpvoteFormFields({
+					...addCommentUpvoteFormFields,
+					...props,
+				}),
+			async onSubmit(commentId: string) {
+				try {
+					commentController.addUpvote.form.fields.commentId =
+						commentId
+					await commentController.addUpvote.form.submit(
+						'comment/upvote',
+						{
+							method: 'POST',
+						},
+					)
+					await fetchDiscussionAnswers()
+					setAddCommentUpvoteFormFields(addCommentUpvoteFieldsInitial)
+				} catch (err) {
+					console.log(err)
+				}
+			},
+		},
+		addDownvote: {
+			form: new Form(addCommentDownvoteFormFields),
+			updateFields: (props) =>
+				setAddCommentDownvoteFormFields({
+					...addCommentDownvoteFormFields,
+					...props,
+				}),
+			async onSubmit(commentId: string) {
+				try {
+					commentController.addDownvote.form.fields.commentId =
+						commentId
+					await commentController.addDownvote.form.submit(
+						'comment/downvote',
+						{
+							method: 'POST',
+						},
+					)
+					await fetchDiscussionAnswers()
+					setAddCommentDownvoteFormFields(
+						addCommentDownvoteFieldsInitial,
+					)
+				} catch (err) {
+					console.log(err)
+				}
+			},
+		},
+	}
+
+	const handleCommentAdd = (
+		answer: Answer & { addCommentForm: Form<AddCommentBody> },
+		e?: React.KeyboardEvent<HTMLInputElement>,
+	) => {
+		if (!answer.addCommentForm.fields.content) return
+		if (e?.key == 'Enter') {
+			answer.addCommentForm.submit('comment')
+			e.preventDefault()
+		}
 	}
 
 	useEffect(() => {
@@ -272,12 +367,23 @@ const DiscussionPage = () => {
 															) : (
 																<Icons.CaretUp
 																	size={26}
-																	className="cursor-pointer"
-																	onClick={() =>
+																	className={classNames(
+																		{
+																			'cursor-pointer':
+																				!answer.hasUpvoted &&
+																				!answer.hasDownvoted,
+																		},
+																	)}
+																	onClick={() => {
+																		if (
+																			answer.hasUpvoted ||
+																			answer.hasDownvoted
+																		)
+																			return
 																		answerController.addUpvote.onSubmit(
 																			answer._id,
 																		)
-																	}
+																	}}
 																/>
 															)}
 														</div>
@@ -295,12 +401,23 @@ const DiscussionPage = () => {
 															) : (
 																<Icons.CaretDown
 																	size={26}
-																	className="cursor-pointer"
-																	onClick={() =>
+																	className={classNames(
+																		{
+																			'cursor-pointer':
+																				!answer.hasUpvoted &&
+																				!answer.hasDownvoted,
+																		},
+																	)}
+																	onClick={() => {
+																		if (
+																			answer.hasUpvoted ||
+																			answer.hasDownvoted
+																		)
+																			return
 																		answerController.addDownvote.onSubmit(
 																			answer._id,
 																		)
-																	}
+																	}}
 																/>
 															)}
 														</div>
@@ -309,7 +426,7 @@ const DiscussionPage = () => {
 												<div className="flex-1">
 													<div
 														className={classNames(
-															'ml-2 px-5 py-3 rounded-2xl bg-gray-100 ',
+															'ml-2 px-5 py-3 rounded-2xl bg-gray-200',
 															{
 																'bg-gray-700 text-white':
 																	answer.userId ===
@@ -321,81 +438,113 @@ const DiscussionPage = () => {
 													>
 														{answer.content}
 													</div>
-													<div className="my-1 ml-2">
-														<div className="flex">
-															<div className="flex-none">
-																<div className="flex flex-col items-center text-gray-500">
-																	<div>
-																		{answer.hasUpvoted ? (
-																			<Icons.CaretUpFill
-																				size={
-																					22
-																				}
-																				className="text-green-600"
-																			/>
-																		) : (
-																			<Icons.CaretUp
-																				size={
-																					22
-																				}
-																				className="cursor-pointer"
-																				onClick={() =>
-																					answerController.addUpvote.onSubmit(
-																						answer._id,
-																					)
-																				}
-																			/>
-																		)}
+													{answer.comments.map(
+														(comment) => (
+															<div
+																className="my-1 ml-2"
+																key={
+																	comment._id
+																}
+															>
+																<div className="flex">
+																	<div className="flex-none">
+																		<div className="flex flex-col items-center text-gray-500">
+																			<div>
+																				{comment.hasUpvoted ? (
+																					<Icons.CaretUpFill
+																						size={
+																							22
+																						}
+																						className="text-green-600"
+																					/>
+																				) : (
+																					<Icons.CaretUp
+																						size={
+																							22
+																						}
+																						className={classNames(
+																							{
+																								'cursor-pointer':
+																									!comment.hasUpvoted &&
+																									!comment.hasDownvoted,
+																							},
+																						)}
+																						onClick={() => {
+																							if (
+																								comment.hasUpvoted ||
+																								comment.hasDownvoted
+																							)
+																								return
+																							commentController.addUpvote.onSubmit(
+																								comment._id,
+																							)
+																						}}
+																					/>
+																				)}
+																			</div>
+																			<div className=" font-bold">
+																				{comment.upvoteCount -
+																					comment.downvoteCount}
+
+																				+
+																			</div>
+																			<div>
+																				{comment.hasDownvoted ? (
+																					<Icons.CaretDownFill
+																						size={
+																							22
+																						}
+																						className="text-red-600"
+																					/>
+																				) : (
+																					<Icons.CaretDown
+																						size={
+																							22
+																						}
+																						className={classNames(
+																							{
+																								'cursor-pointer':
+																									!comment.hasUpvoted &&
+																									!comment.hasDownvoted,
+																							},
+																						)}
+																						onClick={() => {
+																							if (
+																								comment.hasUpvoted ||
+																								comment.hasDownvoted
+																							)
+																								return
+																							commentController.addDownvote.onSubmit(
+																								answer._id,
+																							)
+																						}}
+																					/>
+																				)}
+																			</div>
+																		</div>
 																	</div>
-																	<div className=" font-bold">
-																		{answer.upvoteCount -
-																			answer.downvoteCount}
-																		+
-																	</div>
-																	<div>
-																		{answer.hasDownvoted ? (
-																			<Icons.CaretDownFill
-																				size={
-																					22
-																				}
-																				className="text-red-600"
-																			/>
-																		) : (
-																			<Icons.CaretDown
-																				size={
-																					22
-																				}
-																				className="cursor-pointer"
-																				onClick={() =>
-																					answerController.addDownvote.onSubmit(
-																						answer._id,
-																					)
-																				}
-																			/>
-																		)}
+																	<div className="flex-1">
+																		<div
+																			className={classNames(
+																				'ml-2 px-4 py-2 rounded-xl bg-gray-100 h-full',
+																				{
+																					'bg-gray-600 text-white':
+																						comment.userId ===
+																						userStore
+																							.currentUser
+																							._id,
+																				},
+																			)}
+																		>
+																			{
+																				comment.content
+																			}
+																		</div>
 																	</div>
 																</div>
 															</div>
-															<div className="flex-1">
-																<div
-																	className={classNames(
-																		'ml-2 px-5 py-3 rounded-2xl bg-gray-100',
-																		{
-																			'bg-gray-700 text-white':
-																				answer.userId ===
-																				userStore
-																					.currentUser
-																					._id,
-																		},
-																	)}
-																>
-																	{
-																		answer.content
-																	}
-																</div>
-															</div>
-														</div>
-													</div>
+														),
+													)}
 													<div className="ml-2 pr-2 mt-2 w-full">
 														<InputGroup size="md">
 															<Input
@@ -408,6 +557,14 @@ const DiscussionPage = () => {
 																	answer.addCommentForm.fields.content =
 																		e.target.value
 																}}
+																onKeyPress={(
+																	e,
+																) =>
+																	handleCommentAdd(
+																		answer,
+																		e,
+																	)
+																}
 															/>
 															<InputRightElement width="3rem">
 																<IconButton
@@ -418,11 +575,11 @@ const DiscussionPage = () => {
 																	icon={
 																		<Icons.CursorFill />
 																	}
-																	onClick={() => {
-																		answer.addCommentForm.submit(
-																			'comment',
+																	onClick={() =>
+																		handleCommentAdd(
+																			answer,
 																		)
-																	}}
+																	}
 																></IconButton>
 															</InputRightElement>
 														</InputGroup>
