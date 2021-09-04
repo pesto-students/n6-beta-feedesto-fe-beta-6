@@ -6,6 +6,7 @@ export interface User {
 	name: string
 	email: string
 	googleUserId: string
+	googleAvatarUrl?: string
 	organizationId: string
 	isAdmin: boolean
 	isVerified: boolean

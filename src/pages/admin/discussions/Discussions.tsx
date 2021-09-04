@@ -1,12 +1,9 @@
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
-	Avatar,
 	Button,
 	IconButton,
 	Table,
 	TableCaption,
-	Tag,
-	TagLabel,
 	Tbody,
 	Td,
 	Th,
@@ -14,20 +11,22 @@ import {
 	Tr,
 	useDisclosure,
 } from '@chakra-ui/react'
+import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
+import { Routes } from 'navigation/routes'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router'
+import { Form } from 'services/form'
 import { RootState } from 'store'
 import {
 	Discussion,
 	fetchDiscussions,
 } from 'store/modules/discussion/discussionSlice'
-import DiscussionAddDrawer from './DiscussionAdd.drawer'
-import dayjs from 'dayjs'
-import DiscussionStatus from './components/DiscussionStatus'
-import DiscussionUpdateDrawer from './DiscussionUpdate.drawer'
-import { Form } from 'services/form'
 import { FormDrawerController } from 'types/types'
+import DiscussionStatus from './components/DiscussionStatus'
+import DiscussionAddDrawer from './DiscussionAdd.drawer'
+import DiscussionUpdateDrawer from './DiscussionUpdate.drawer'
 
 export interface AddDiscussionBody {
 	title: string
@@ -53,9 +52,8 @@ export interface DeleteDiscussionBody {
 }
 
 const DiscussionsPage = () => {
-	const dispatch = useDispatch()
-	const { discussion } = useSelector((state: RootState) => state)
 	const timeAgo = new TimeAgo('en-US')
+	const history = useHistory()
 
 	const addDiscussionFormFieldsInitial = {
 		title: '',
@@ -231,7 +229,17 @@ const DiscussionsPage = () => {
 					</Thead>
 					<Tbody>
 						{discussionList.map((discussion) => (
-							<Tr key={discussion._id}>
+							<Tr
+								key={discussion._id}
+								onClick={() => {
+									history.push(
+										Routes.DASHBOARD_DISCUSSION +
+											'/' +
+											discussion._id,
+									)
+								}}
+								className="hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+							>
 								<Td
 									maxWidth="xs"
 									overflow="hidden"

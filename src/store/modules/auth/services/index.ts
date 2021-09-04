@@ -18,6 +18,7 @@ export interface RegisterUserBody {
 	name: string
 	email: string
 	googleUserId: string
+	googleAvatarUrl?: string
 	organizationId: string
 }
 export const registerUser = createAsyncThunk<any, RegisterUserBody>(
@@ -33,6 +34,7 @@ export interface RegisterOrganizationBody {
 	name: string
 	organizationName: string
 	email: string
+	googleAvatarUrl?: string
 	googleUserId: string
 }
 

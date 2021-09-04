@@ -83,21 +83,27 @@ const Home = () => {
 	const fillRegistrationPrefillDetails = (response: GoogleLoginResponse) => {
 		const name = response.getBasicProfile().getName()
 		const email = response.getBasicProfile().getEmail()
+		const googleAvatarUrl = response.getBasicProfile().getImageUrl()
 		const googleUserId = response.getBasicProfile().getId()
-		dispatch(
-			fillAuthRegisterUserFields({
-				name,
-				googleUserId,
-				email,
-			}),
-		)
-		dispatch(
-			fillAuthRegisterOrganizationFields({
-				name,
-				email,
-				googleUserId,
-			}),
-		)
+		if (auth.loginType === LoginType.USER) {
+			dispatch(
+				fillAuthRegisterUserFields({
+					name,
+					googleUserId,
+					email,
+					googleAvatarUrl,
+				}),
+			)
+		} else if (auth.loginType === LoginType.ORGANIZATION) {
+			dispatch(
+				fillAuthRegisterOrganizationFields({
+					name,
+					email,
+					googleUserId,
+					googleAvatarUrl,
+				}),
+			)
+		}
 	}
 
 	const handleGoogleLoginFailure = (response: GoogleLoginResponse) => {

@@ -1,5 +1,6 @@
 import { CheckIcon, CloseIcon, DeleteIcon } from '@chakra-ui/icons'
 import {
+	Avatar,
 	IconButton,
 	Table,
 	TableCaption,
@@ -132,7 +133,15 @@ const UsersPage = () => {
 					<Tbody>
 						{userList.map((user) => (
 							<Tr key={user._id}>
-								<Td>{user.name}</Td>
+								<Td>
+									<div className="flex items-center">
+										<Avatar
+											src={user.googleAvatarUrl}
+											size="sm"
+										/>
+										<div className="pl-2">{user.name}</div>
+									</div>
+								</Td>
 								<Td>{user.email}</Td>
 								<Td>{user.isVerified ? 'Yes' : 'No'}</Td>
 								<Td>

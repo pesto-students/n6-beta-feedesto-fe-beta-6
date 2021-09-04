@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { User } from '../user/userSlice'
 
 export interface Comment {
 	_id: string
 	answerId: string
-	userId: string
+	userId?: User
 	upvoteCount: number
 	downvoteCount: number
 	hasUpvoted: boolean

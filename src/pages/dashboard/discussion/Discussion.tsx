@@ -5,8 +5,10 @@ import {
 	InputGroup,
 	InputRightElement,
 	Textarea,
+	Avatar,
 } from '@chakra-ui/react'
 import classNames from 'classnames'
+import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
 import React, { useEffect, useState } from 'react'
@@ -257,20 +259,20 @@ const DiscussionPage = () => {
 		},
 	}
 
-	const handleCommentAdd = (
+	const handleCommentAdd = async (
 		answer: Answer & { addCommentForm: Form<AddCommentBody> },
-		e?: React.KeyboardEvent<HTMLInputElement>,
 	) => {
 		if (!answer.addCommentForm.fields.content) return
-		if (e?.key == 'Enter') {
-			answer.addCommentForm.submit('comment')
-			e.preventDefault()
-		}
+		await answer.addCommentForm.submit('comment')
+
+		fetchDiscussionAnswers()
 	}
 
 	useEffect(() => {
 		fetchDiscussionDetails(), fetchDiscussionAnswers()
 	}, [])
+
+	const isAdmin = userStore.currentUser.isAdmin
 
 	if (!discussionDetails) return null
 
@@ -301,60 +303,63 @@ const DiscussionPage = () => {
 				<div className="col-span-1 h-screen mt-5 overflow-y-scroll">
 					<div className="p-3">
 						<div className="flex flex-col">
-							<div className="flex-none">
-								<div className="w-full">
-									<div>
-										<Textarea
-											id="answerInput"
-											placeholder="Start writing here..."
-											value={
-												answerController.add.form.fields
-													.content
-											}
-											rows={5}
-											onChange={(e) => {
-												answerController.add.updateFields(
-													{
-														content: e.target.value,
-													},
-												)
-											}}
-											onKeyPress={(e) => {
-												if (e.key == 'Enter') {
-													answerController.add.onSubmit()
-													e.preventDefault()
-												}
-											}}
-											resize="none"
-										></Textarea>
-										<div className="relative float-right right-2 bottom-10 text-white z-20">
-											<Button
-												aria-label="sendAnswer"
-												rightIcon={
-													<Icons.CursorFill
-														size={16}
-													/>
-												}
-												isLoading={
+							{!isAdmin && (
+								<div className="flex-none">
+									<div className="w-full">
+										<div>
+											<Textarea
+												id="answerInput"
+												placeholder="Start writing here..."
+												value={
 													answerController.add.form
-														.submitting
+														.fields.content
 												}
-												colorScheme="blue"
-												size="sm"
-												onClick={() =>
-													answerController.add.onSubmit()
-												}
-											>
-												Send
-											</Button>
+												rows={5}
+												onChange={(e) => {
+													answerController.add.updateFields(
+														{
+															content:
+																e.target.value,
+														},
+													)
+												}}
+												onKeyPress={(e) => {
+													if (e.key == 'Enter') {
+														answerController.add.onSubmit()
+														e.preventDefault()
+													}
+												}}
+												resize="none"
+											></Textarea>
+											<div className="relative float-right right-2 bottom-10 text-white z-10">
+												<Button
+													aria-label="sendAnswer"
+													rightIcon={
+														<Icons.CursorFill
+															size={16}
+														/>
+													}
+													isLoading={
+														answerController.add
+															.form.submitting
+													}
+													colorScheme="blue"
+													size="sm"
+													onClick={() =>
+														answerController.add.onSubmit()
+													}
+												>
+													Send
+												</Button>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							)}
 							<div className="flex-1">
 								{answerList.map((answer, index) => {
 									return (
-										<div key={answer._id} className="my-5">
+										<div key={answer._id} className="my-4">
 											<div className="flex">
 												<div className="flex-none">
 													<div className="flex flex-col items-center text-gray-500">
@@ -390,7 +395,7 @@ const DiscussionPage = () => {
 														<div className="text-xl font-bold">
 															{answer.upvoteCount -
 																answer.downvoteCount}
-															+
+															{!isAdmin && '+'}
 														</div>
 														<div>
 															{answer.hasDownvoted ? (
@@ -424,165 +429,227 @@ const DiscussionPage = () => {
 													</div>
 												</div>
 												<div className="flex-1">
-													<div
-														className={classNames(
-															'ml-2 px-5 py-3 rounded-2xl bg-gray-200',
-															{
-																'bg-gray-700 text-white':
-																	answer.userId ===
-																	userStore
-																		.currentUser
-																		._id,
-															},
-														)}
-													>
-														{answer.content}
-													</div>
-													{answer.comments.map(
-														(comment) => (
-															<div
-																className="my-1 ml-2"
-																key={
-																	comment._id
+													{isAdmin && (
+														<div className="flex items-center ml-2 my-1">
+															<Avatar size="2xs" />
+															<div className="text-xs pl-1">
+																{
+																	answer
+																		.userId
+																		?.name
 																}
-															>
-																<div className="flex">
-																	<div className="flex-none">
-																		<div className="flex flex-col items-center text-gray-500">
-																			<div>
-																				{comment.hasUpvoted ? (
-																					<Icons.CaretUpFill
-																						size={
-																							22
-																						}
-																						className="text-green-600"
-																					/>
-																				) : (
-																					<Icons.CaretUp
-																						size={
-																							22
-																						}
-																						className={classNames(
-																							{
-																								'cursor-pointer':
-																									!comment.hasUpvoted &&
-																									!comment.hasDownvoted,
-																							},
-																						)}
-																						onClick={() => {
-																							if (
-																								comment.hasUpvoted ||
-																								comment.hasDownvoted
-																							)
-																								return
-																							commentController.addUpvote.onSubmit(
-																								comment._id,
-																							)
-																						}}
-																					/>
-																				)}
-																			</div>
-																			<div className=" font-bold">
-																				{comment.upvoteCount -
-																					comment.downvoteCount}
-
-																				+
-																			</div>
-																			<div>
-																				{comment.hasDownvoted ? (
-																					<Icons.CaretDownFill
-																						size={
-																							22
-																						}
-																						className="text-red-600"
-																					/>
-																				) : (
-																					<Icons.CaretDown
-																						size={
-																							22
-																						}
-																						className={classNames(
-																							{
-																								'cursor-pointer':
-																									!comment.hasUpvoted &&
-																									!comment.hasDownvoted,
-																							},
-																						)}
-																						onClick={() => {
-																							if (
-																								comment.hasUpvoted ||
-																								comment.hasDownvoted
-																							)
-																								return
-																							commentController.addDownvote.onSubmit(
-																								answer._id,
-																							)
-																						}}
-																					/>
-																				)}
+															</div>
+														</div>
+													)}
+													<div className="relative">
+														<div
+															className={classNames(
+																'ml-2 px-5 py-3 rounded-2xl rounded-tl-md bg-gray-200',
+																{
+																	'bg-gray-700 text-white':
+																		answer
+																			.userId
+																			?._id ===
+																		userStore
+																			.currentUser
+																			._id,
+																},
+															)}
+														>
+															{answer.content}
+														</div>
+														<div className="absolute bottom-1 right-3 text-xs text-gray-500">
+															{dayjs(
+																new Date(
+																	answer.createdAt,
+																),
+															).format(
+																'D MMM, h:mm A',
+															)}
+														</div>
+													</div>
+													<div className="mt-1">
+														{answer.comments.map(
+															(comment) => (
+																<div
+																	className="my-2 ml-2"
+																	key={
+																		comment._id
+																	}
+																>
+																	<div className="flex">
+																		<div className="flex-none">
+																			<div className="flex flex-col items-center text-gray-500">
+																				<div>
+																					{comment.hasUpvoted ? (
+																						<Icons.CaretUpFill
+																							size={
+																								22
+																							}
+																							className="text-green-600"
+																						/>
+																					) : (
+																						<Icons.CaretUp
+																							size={
+																								22
+																							}
+																							className={classNames(
+																								{
+																									'cursor-pointer':
+																										!comment.hasUpvoted &&
+																										!comment.hasDownvoted,
+																								},
+																							)}
+																							onClick={() => {
+																								if (
+																									comment.hasUpvoted ||
+																									comment.hasDownvoted
+																								)
+																									return
+																								commentController.addUpvote.onSubmit(
+																									comment._id,
+																								)
+																							}}
+																						/>
+																					)}
+																				</div>
+																				<div className=" font-bold">
+																					{comment.upvoteCount -
+																						comment.downvoteCount}
+																					{!isAdmin &&
+																						'+'}
+																				</div>
+																				<div>
+																					{comment.hasDownvoted ? (
+																						<Icons.CaretDownFill
+																							size={
+																								22
+																							}
+																							className="text-red-600"
+																						/>
+																					) : (
+																						<Icons.CaretDown
+																							size={
+																								22
+																							}
+																							className={classNames(
+																								{
+																									'cursor-pointer':
+																										!comment.hasUpvoted &&
+																										!comment.hasDownvoted,
+																								},
+																							)}
+																							onClick={() => {
+																								if (
+																									comment.hasUpvoted ||
+																									comment.hasDownvoted
+																								)
+																									return
+																								commentController.addDownvote.onSubmit(
+																									comment._id,
+																								)
+																							}}
+																						/>
+																					)}
+																				</div>
 																			</div>
 																		</div>
-																	</div>
-																	<div className="flex-1">
-																		<div
-																			className={classNames(
-																				'ml-2 px-4 py-2 rounded-xl bg-gray-100 h-full',
-																				{
-																					'bg-gray-600 text-white':
-																						comment.userId ===
-																						userStore
-																							.currentUser
-																							._id,
-																				},
-																			)}
-																		>
-																			{
-																				comment.content
-																			}
+																		<div className="flex-1">
+																			<div className="h-full">
+																				{isAdmin && (
+																					<div className="flex items-center ml-2 my-1">
+																						<Avatar size="2xs" />
+																						<div className="text-xs pl-1">
+																							{
+																								comment
+																									.userId
+																									?.name
+																							}
+																						</div>
+																					</div>
+																				)}
+																				<div className="relative">
+																					<div
+																						className={classNames(
+																							'ml-2 px-4 py-2 rounded-xl rounded-tl-md bg-gray-100',
+																							{
+																								'bg-gray-600 text-white':
+																									comment
+																										.userId
+																										?._id ===
+																									userStore
+																										.currentUser
+																										._id,
+																							},
+																						)}
+																					>
+																						{
+																							comment.content
+																						}
+																					</div>
+
+																					<div className="absolute bottom-1 right-3 text-xs text-gray-400">
+																						{dayjs(
+																							new Date(
+																								comment.createdAt,
+																							),
+																						).format(
+																							'D MMM, h:mm A',
+																						)}
+																					</div>
+																				</div>
+																			</div>
 																		</div>
 																	</div>
 																</div>
+															),
+														)}
+														{!isAdmin && (
+															<div className="ml-2 pr-2 mt-2 w-full">
+																<InputGroup size="md">
+																	<Input
+																		pr="3rem"
+																		type="text"
+																		placeholder="Add your comments here..."
+																		onChange={(
+																			e,
+																		) => {
+																			answer.addCommentForm.fields.content =
+																				e.target.value
+																		}}
+																		onKeyPress={(
+																			e,
+																		) => {
+																			if (
+																				e?.key ==
+																				'Enter'
+																			) {
+																				handleCommentAdd(
+																					answer,
+																				)
+																				e.preventDefault()
+																			}
+																		}}
+																	/>
+																	<InputRightElement width="3rem">
+																		<IconButton
+																			aria-label="addComment"
+																			h="1.75rem"
+																			size="sm"
+																			colorScheme="blue"
+																			icon={
+																				<Icons.CursorFill />
+																			}
+																			onClick={() =>
+																				handleCommentAdd(
+																					answer,
+																				)
+																			}
+																		></IconButton>
+																	</InputRightElement>
+																</InputGroup>
 															</div>
-														),
-													)}
-													<div className="ml-2 pr-2 mt-2 w-full">
-														<InputGroup size="md">
-															<Input
-																pr="3rem"
-																type="text"
-																placeholder="Add your comments here..."
-																onChange={(
-																	e,
-																) => {
-																	answer.addCommentForm.fields.content =
-																		e.target.value
-																}}
-																onKeyPress={(
-																	e,
-																) =>
-																	handleCommentAdd(
-																		answer,
-																		e,
-																	)
-																}
-															/>
-															<InputRightElement width="3rem">
-																<IconButton
-																	aria-label="addComment"
-																	h="1.75rem"
-																	size="sm"
-																	colorScheme="blue"
-																	icon={
-																		<Icons.CursorFill />
-																	}
-																	onClick={() =>
-																		handleCommentAdd(
-																			answer,
-																		)
-																	}
-																></IconButton>
-															</InputRightElement>
-														</InputGroup>
+														)}
 													</div>
 												</div>
 											</div>

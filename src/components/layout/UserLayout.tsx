@@ -43,11 +43,15 @@ const UserLayout = ({ children, ...args }: any) => {
 									<Avatar
 										backgroundColor="gray.300"
 										size="sm"
+										src={user.currentUser.googleAvatarUrl}
 										icon={
-											<Icon.PersonFill
-												size={16}
-												className="text-gray-500"
-											/>
+											!user.currentUser
+												.googleAvatarUrl ? (
+												<Icon.PersonFill
+													size={16}
+													className="text-gray-500"
+												/>
+											) : undefined
 										}
 									></Avatar>
 								</div>
