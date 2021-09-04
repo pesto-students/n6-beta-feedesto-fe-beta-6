@@ -60,9 +60,7 @@ export class Form<T> {
 			this.reset()
 			return res
 		} catch (err) {
-			if (typeof err.data == 'object') {
-				console.log(err.data.error)
-			}
+			console.log(err)
 			throw err
 		} finally {
 			this.submitting = false
