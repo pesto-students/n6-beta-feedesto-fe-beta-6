@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react'
 import { Form } from 'services/form'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
+import VerificationStatus from './components/VerificationStatus'
 
 export interface UpdateUserApprovalStatusBody {
 	userId: string
@@ -125,7 +126,7 @@ const UsersPage = () => {
 						<Tr>
 							<Th>Name</Th>
 							<Th>Email</Th>
-							<Th>Verified ?</Th>
+							<Th>Status</Th>
 							<Th>Registered At</Th>
 							<Th className="text-right">Actions</Th>
 						</Tr>
@@ -143,7 +144,9 @@ const UsersPage = () => {
 									</div>
 								</Td>
 								<Td>{user.email}</Td>
-								<Td>{user.isVerified ? 'Yes' : 'No'}</Td>
+								<Td>
+									<VerificationStatus user={user} />
+								</Td>
 								<Td>
 									{' '}
 									{timeAgo.format(new Date(user.createdAt))}
@@ -154,17 +157,19 @@ const UsersPage = () => {
 										icon={<CheckIcon />}
 										size="sm"
 										backgroundColor={
-											user.isVerified
+											user.isVerified && user.verifiedAt
 												? 'green.600'
 												: 'green.100'
 										}
 										_hover={{
-											backgroundColor: user.isVerified
-												? 'green.500'
-												: 'green.200',
+											backgroundColor:
+												user.isVerified &&
+												user.verifiedAt
+													? 'green.500'
+													: 'green.200',
 										}}
 										color={
-											user.isVerified
+											user.isVerified && user.verifiedAt
 												? 'green.100'
 												: 'green.600'
 										}
@@ -183,19 +188,21 @@ const UsersPage = () => {
 										icon={<CloseIcon />}
 										size="sm"
 										backgroundColor={
-											user.isVerified
-												? 'red.100'
-												: 'red.600'
-										}
-										_hover={{
-											backgroundColor: user.isVerified
-												? 'red.200'
-												: 'red.500',
-										}}
-										color={
-											user.isVerified
+											!user.isVerified && user.verifiedAt
 												? 'red.600'
 												: 'red.100'
+										}
+										_hover={{
+											backgroundColor:
+												!user.isVerified &&
+												user.verifiedAt
+													? 'red.500'
+													: 'red.200',
+										}}
+										color={
+											!user.isVerified && user.verifiedAt
+												? 'red.100'
+												: 'red.600'
 										}
 										className="mx-2 shadow"
 										onClick={() =>

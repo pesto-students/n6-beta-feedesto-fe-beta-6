@@ -41,7 +41,7 @@ export default function App() {
 			<BrowserRouter>
 				<RouterConfig />
 			</BrowserRouter>
-			<Toaster />
+			<Toaster toastOptions={{ position: 'bottom-right' }} />
 		</>
 	)
 }

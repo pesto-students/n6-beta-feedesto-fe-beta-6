@@ -69,7 +69,7 @@ const UserLayout = ({ children, ...args }: any) => {
 					</Menu>
 				</div>
 			</div>
-			<div className="h-screen flex flex-col">
+			<div className="h-screen flex flex-col  overflow-y-hidden">
 				<div className="flex flex-none h-20"></div>
 				<div className="flex-1">{children}</div>
 			</div>

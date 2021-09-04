@@ -12,6 +12,7 @@ export interface User {
 	isVerified: boolean
 	createdAt: string
 	modifiedAt: string
+	verifiedAt?: string
 }
 
 export const fetchUsers = async () => {

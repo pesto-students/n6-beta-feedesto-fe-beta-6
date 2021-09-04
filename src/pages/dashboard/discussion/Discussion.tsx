@@ -347,7 +347,10 @@ const DiscussionPage = () => {
 					<div className="flex-1">
 						{isAdmin && (
 							<div className="flex items-center ml-2 my-1">
-								<Avatar size="2xs" />
+								<Avatar
+									size="2xs"
+									src={answer.userId?.googleAvatarUrl}
+								/>
 								<div className="text-xs pl-1">
 									{answer.userId?.name}
 								</div>
@@ -447,7 +450,13 @@ const DiscussionPage = () => {
 											<div className="h-full">
 												{isAdmin && (
 													<div className="flex items-center ml-2 my-1">
-														<Avatar size="2xs" />
+														<Avatar
+															size="2xs"
+															src={
+																comment.userId
+																	?.googleAvatarUrl
+															}
+														/>
 														<div className="text-xs pl-1">
 															{
 																comment.userId
@@ -555,7 +564,7 @@ const DiscussionPage = () => {
 						</div>
 					</div>
 				</div>
-				<div className="col-span-1 h-screen mt-5 overflow-y-scroll">
+				<div className="col-span-1 overflow-y-scroll">
 					<div className="p-3">
 						<div className="flex flex-col">
 							{!isAdmin && (
@@ -613,10 +622,12 @@ const DiscussionPage = () => {
 							)}
 							<div className="flex-1">
 								<VariableSizeList
-									height={screen.height / 1.55}
+									height={
+										screen.height / (isAdmin ? 1.1 : 1.6)
+									}
 									width={screen.width / 2.1}
 									itemCount={answerList.length}
-									itemSize={(i: number) => 35}
+									itemSize={(i: number) => 50}
 								>
 									{Row}
 								</VariableSizeList>
