@@ -1,44 +1,20 @@
-import {
-	Box,
-	FormLabel,
-	Grid,
-	Input,
-	Select,
-	Stack,
-	Textarea,
-} from '@chakra-ui/react'
+import { Box, FormLabel, Input, Stack, Textarea } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'store'
-import { fillUpdateDiscussionFormFields } from 'store/modules/discussion/discussionSlice'
-import { User } from 'store/modules/user/userSlice'
-import dayjs from 'dayjs'
+import { FormDrawerController } from 'types/types'
+import { UpdateDiscussionBody } from './Discussions'
 
-export interface DiscussionUpdateDrawerProps {
-	drawer: {
-		isOpen: boolean
-		onOpen: () => void
-		onClose: () => void
-		onToggle: () => void
-		isControlled: boolean
-		getButtonProps: (props?: any) => any
-		getDisclosureProps: (props?: any) => any
-	}
-	onSubmit: () => void
-}
 export default function DiscussionUpdateDrawer({
-	drawer,
-	onSubmit,
-}: DiscussionUpdateDrawerProps) {
-	const dispatch = useDispatch()
-	const { discussion, user } = useSelector((state: RootState) => state)
-
+	controller: { drawer, form, updateFields, onSubmit },
+}: {
+	controller: FormDrawerController<UpdateDiscussionBody>
+}) {
 	return (
 		<FormDrawer
 			formId="discussion-update-drawer"
 			title="Update Discussion"
-			drawer={drawer}
+			drawer={drawer!}
+			form={form}
 			onSubmit={() => onSubmit()}
 		>
 			<Stack spacing="24px">
@@ -47,15 +23,13 @@ export default function DiscussionUpdateDrawer({
 					<Input
 						id="title"
 						placeholder="Please enter discussion title"
-						value={discussion.updateDiscussionForm.update.title}
+						value={form.fields.update?.title}
 						onChange={(e) =>
-							dispatch(
-								fillUpdateDiscussionFormFields({
-									update: {
-										title: e.target.value,
-									},
-								}),
-							)
+							updateFields({
+								update: {
+									title: e.target.value,
+								},
+							})
 						}
 					/>
 				</Box>
@@ -64,17 +38,13 @@ export default function DiscussionUpdateDrawer({
 					<FormLabel htmlFor="description">Description</FormLabel>
 					<Textarea
 						id="description"
-						value={
-							discussion.updateDiscussionForm.update.description
-						}
+						value={form.fields.update?.description}
 						onChange={(e) => {
-							dispatch(
-								fillUpdateDiscussionFormFields({
-									update: {
-										description: e.target.value,
-									},
-								}),
-							)
+							updateFields({
+								update: {
+									description: e.target.value,
+								},
+							})
 						}}
 					/>
 				</Box>
@@ -87,18 +57,13 @@ export default function DiscussionUpdateDrawer({
 							<Input
 								type="datetime-local"
 								id="startDate"
-								value={
-									discussion.updateDiscussionForm.update
-										.startDate
-								}
+								value={form.fields.update?.startDate}
 								onChange={(e) => {
-									dispatch(
-										fillUpdateDiscussionFormFields({
-											update: {
-												startDate: e.target.value,
-											},
-										}),
-									)
+									updateFields({
+										update: {
+											startDate: e.target.value,
+										},
+									})
 								}}
 							/>
 						</Box>
@@ -109,18 +74,13 @@ export default function DiscussionUpdateDrawer({
 							<Input
 								type="datetime-local"
 								id="endDate"
-								value={
-									discussion.updateDiscussionForm.update
-										.endDate
-								}
+								value={form.fields.update?.endDate}
 								onChange={(e) =>
-									dispatch(
-										fillUpdateDiscussionFormFields({
-											update: {
-												endDate: e.target.value,
-											},
-										}),
-									)
+									updateFields({
+										update: {
+											endDate: e.target.value,
+										},
+									})
 								}
 							/>
 						</Box>

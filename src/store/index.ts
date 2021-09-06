@@ -3,6 +3,8 @@ import authReducer from './modules/auth/authSlice'
 import organizationReducer from './modules/organization/organizationSlice'
 import userReducer from './modules/user/userSlice'
 import discussionReducer from './modules/discussion/discussionSlice'
+import answerReducer from './modules/answer/answerSlice'
+import commentReducer from './modules/comment/commentSlice'
 
 export const store = configureStore({
 	reducer: {
@@ -10,6 +12,8 @@ export const store = configureStore({
 		organization: organizationReducer,
 		user: userReducer,
 		discussion: discussionReducer,
+		answer: answerReducer,
+		comment: commentReducer,
 	},
 })
 

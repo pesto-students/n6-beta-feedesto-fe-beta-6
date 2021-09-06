@@ -3,7 +3,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
 import { RootState } from 'store'
-import { ROOT } from './routes'
+import { Routes } from './routes'
 
 const UserPrivateRoute = ({ children, ...args }: any) => {
 	const { auth } = useSelector((state: RootState) => state)
@@ -17,7 +17,7 @@ const UserPrivateRoute = ({ children, ...args }: any) => {
 				) : (
 					<Redirect
 						to={{
-							pathname: ROOT,
+							pathname: Routes.ROOT,
 							state: { from: location },
 						}}
 					/>

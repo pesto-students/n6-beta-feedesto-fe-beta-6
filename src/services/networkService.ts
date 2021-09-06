@@ -1,5 +1,5 @@
 import { useToast } from '@chakra-ui/react'
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
 import authSlice from 'store/modules/auth/authSlice'
 import env from '../configs/env'
@@ -73,7 +73,7 @@ class NetworkHelper {
 			}
 
 			return axiosResponse?.data?.data as T
-		} catch (err) {
+		} catch (err:AxiosError|any) {
 			const axiosError = err
 			const axiosResponse: AxiosResponse = err.response
 			if (axiosResponse) {

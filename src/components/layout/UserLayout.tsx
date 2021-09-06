@@ -16,19 +16,18 @@ import {
 } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
 import * as Icon from 'react-bootstrap-icons'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'store'
 import { logOutUser } from 'store/modules/auth/authSlice'
 
 const UserLayout = ({ children, ...args }: any) => {
 	const dispatch = useDispatch()
+	const { user } = useSelector((state: RootState) => state)
 
-	useEffect(() => {
-		// Fetch User detail here
-	}, [])
 	return (
 		<div>
-			<div className="py-4 px-12 bg-gray-100">
-				<div className="flex items-center justify-between">
+			<div className="px-12 bg-gray-100 fixed top-0 z-10 left-0 right-0 shadow-lg h-20">
+				<div className="h-full flex items-center justify-between">
 					<Image
 						className="h-14"
 						src="/feedesto.svg"
@@ -39,16 +38,20 @@ const UserLayout = ({ children, ...args }: any) => {
 							<div className="bg-gray-200 hover:bg-gray-300 transition-all duration-300 cursor-pointer px-3 py-2 rounded-lg">
 								<div className="flex items-center gap-x-2">
 									<div className="text-gray-800 font-semibold mx-2">
-										Harshit
+										{user.currentUser.name}
 									</div>
 									<Avatar
 										backgroundColor="gray.300"
 										size="sm"
+										src={user.currentUser.googleAvatarUrl}
 										icon={
-											<Icon.PersonFill
-												size={16}
-												className="text-gray-500"
-											/>
+											!user.currentUser
+												.googleAvatarUrl ? (
+												<Icon.PersonFill
+													size={16}
+													className="text-gray-500"
+												/>
+											) : undefined
 										}
 									></Avatar>
 								</div>
@@ -66,7 +69,10 @@ const UserLayout = ({ children, ...args }: any) => {
 					</Menu>
 				</div>
 			</div>
-			{children}
+			<div className="h-screen flex flex-col  overflow-y-hidden">
+				<div className="flex flex-none h-20"></div>
+				<div className="flex-1">{children}</div>
+			</div>
 		</div>
 	)
 }

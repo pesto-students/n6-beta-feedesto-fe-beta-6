@@ -1,75 +1,62 @@
 import {
 	Box,
 	FormLabel,
-	Grid,
 	Input,
 	Select,
 	Stack,
 	Textarea,
 } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { fillAddDiscussionFormFields } from 'store/modules/discussion/discussionSlice'
-import { User } from 'store/modules/user/userSlice'
+import { fetchUsers, User } from 'store/modules/user/userSlice'
+import { FormDrawerController } from 'types/types'
+import { AddDiscussionBody } from './Discussions'
 
-export interface DiscussionAddDrawerProps {
-	drawer: {
-		isOpen: boolean
-		onOpen: () => void
-		onClose: () => void
-		onToggle: () => void
-		isControlled: boolean
-		getButtonProps: (props?: any) => any
-		getDisclosureProps: (props?: any) => any
-	}
-	onSubmit: () => void
-}
 export default function DiscussionAddDrawer({
-	drawer,
-	onSubmit,
-}: DiscussionAddDrawerProps) {
-	const dispatch = useDispatch()
-	const { discussion, user } = useSelector((state: RootState) => state)
+	controller: { drawer, form, updateFields, onSubmit },
+}: {
+	controller: FormDrawerController<AddDiscussionBody>
+}) {
+	const { user } = useSelector((state: RootState) => state)
+
+	const [userList, setUserList] = useState<User[]>([])
+
+	const fetchUserList = async () => {
+		setUserList(await fetchUsers())
+	}
+
+	useEffect(() => {
+		fetchUserList()
+	}, [])
 
 	const addParticipantToDiscussion = (participantId: string) => {
-		const findParticipant =
-			discussion.addDiscussionForm.participantIds.find(
-				(el) => el === participantId,
-			)
+		const findParticipant = form.fields.participantIds?.find(
+			(el) => el === participantId,
+		)
 		if (findParticipant) return
 
-		dispatch(
-			fillAddDiscussionFormFields({
-				participantIds: [
-					...discussion.addDiscussionForm.participantIds,
-					participantId,
-				],
-			}),
-		)
+		updateFields({
+			participantIds: [...form.fields.participantIds!, participantId],
+		})
 	}
+
 	const addViewerToDiscussion = (viewerId: string) => {
-		const findViewer = discussion.addDiscussionForm.viewerIds.find(
-			(el) => el === viewerId,
-		)
+		const findViewer = form.fields.viewerIds?.find((el) => el === viewerId)
 		if (findViewer) return
 
-		dispatch(
-			fillAddDiscussionFormFields({
-				viewerIds: [
-					...discussion.addDiscussionForm.viewerIds,
-					viewerId,
-				],
-			}),
-		)
+		updateFields({
+			viewerIds: [...form.fields.viewerIds!, viewerId],
+		})
 	}
 
 	return (
 		<FormDrawer
 			formId="discussion-add-drawer"
 			title="Add Discussion"
-			drawer={drawer}
+			drawer={drawer!}
+			form={form}
 			onSubmit={() => onSubmit()}
 		>
 			<Stack spacing="24px">
@@ -78,14 +65,12 @@ export default function DiscussionAddDrawer({
 					<Input
 						id="title"
 						placeholder="Please enter discussion title"
-						value={discussion.addDiscussionForm.title}
-						onChange={(e) =>
-							dispatch(
-								fillAddDiscussionFormFields({
-									title: e.target.value,
-								}),
-							)
-						}
+						value={form.fields.title}
+						onChange={(e) => {
+							updateFields({
+								title: e.target.value,
+							})
+						}}
 					/>
 				</Box>
 
@@ -93,13 +78,11 @@ export default function DiscussionAddDrawer({
 					<FormLabel htmlFor="description">Description</FormLabel>
 					<Textarea
 						id="description"
-						value={discussion.addDiscussionForm.description}
+						value={form.fields.description}
 						onChange={(e) => {
-							dispatch(
-								fillAddDiscussionFormFields({
-									description: e.target.value,
-								}),
-							)
+							updateFields({
+								description: e.target.value,
+							})
 						}}
 					/>
 				</Box>
@@ -112,13 +95,11 @@ export default function DiscussionAddDrawer({
 							<Input
 								type="datetime-local"
 								id="startDate"
-								value={discussion.addDiscussionForm.startDate}
+								value={form.fields.startDate}
 								onChange={(e) =>
-									dispatch(
-										fillAddDiscussionFormFields({
-											startDate: e.target.value,
-										}),
-									)
+									updateFields({
+										startDate: e.target.value,
+									})
 								}
 							/>
 						</Box>
@@ -129,13 +110,11 @@ export default function DiscussionAddDrawer({
 							<Input
 								type="datetime-local"
 								id="endDate"
-								value={discussion.addDiscussionForm.endDate}
+								value={form.fields.endDate}
 								onChange={(e) =>
-									dispatch(
-										fillAddDiscussionFormFields({
-											endDate: e.target.value,
-										}),
-									)
+									updateFields({
+										endDate: e.target.value,
+									})
 								}
 							/>
 						</Box>
@@ -153,27 +132,26 @@ export default function DiscussionAddDrawer({
 								background="white"
 								onChange={(e) => {
 									addParticipantToDiscussion(e.target.value)
-									e.target.value = ''
 								}}
 							>
-								{user.userList
+								{userList
 									.filter(
 										(el) =>
-											!discussion.addDiscussionForm.participantIds.find(
-												(p) => p === el.id,
+											!form.fields.participantIds?.find(
+												(p) => p === el._id,
 											),
 									)
 									.map((el) => (
-										<option value={el.id} key={el.id}>
+										<option value={el._id} key={el._id}>
 											{el.name}
 										</option>
 									))}
 							</Select>
 							<div>
-								{discussion.addDiscussionForm.participantIds.map(
+								{form.fields.participantIds?.map(
 									(el, index) => {
-										const findUser = user.userList.find(
-											(us) => us.id === el,
+										const findUser = userList.find(
+											(us) => us._id === el,
 										)
 										return (
 											<div key={index}>
@@ -197,32 +175,28 @@ export default function DiscussionAddDrawer({
 									e.target.value = ''
 								}}
 							>
-								{user.userList
+								{userList
 									.filter(
 										(el) =>
-											!discussion.addDiscussionForm.viewerIds.find(
-												(p) => p === el.id,
+											!form.fields.viewerIds?.find(
+												(p) => p === el._id,
 											),
 									)
 									.map((el) => (
-										<option value={el.id} key={el.id}>
+										<option value={el._id} key={el._id}>
 											{el.name}
 										</option>
 									))}
 							</Select>
 							<div>
-								{discussion.addDiscussionForm.viewerIds.map(
-									(el, index) => {
-										const findUser = user.userList.find(
-											(us) => us.id === el,
-										)
-										return (
-											<div key={index}>
-												{findUser?.name}
-											</div>
-										)
-									},
-								)}
+								{form.fields.viewerIds?.map((el, index) => {
+									const findUser = userList.find(
+										(us) => us._id === el,
+									)
+									return (
+										<div key={index}>{findUser?.name}</div>
+									)
+								})}
 							</div>
 						</Box>
 					</div>

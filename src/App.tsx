@@ -16,7 +16,8 @@ TimeAgo.addDefaultLocale(en)
 
 export default function App() {
 	const dispatch = useDispatch()
-	useEffect(() => {
+
+	const checkLocalAuthentication = () => {
 		const token = localStorage.getItem('token')
 		if (token) {
 			dispatch(setAuthToken(token))
@@ -29,13 +30,18 @@ export default function App() {
 			dispatch(setIsAuthenticated(true))
 			dispatch(setIsGoogleLoggedIn(true))
 		}
+	}
+
+	useEffect(() => {
+		checkLocalAuthentication()
 	})
+
 	return (
-		<div>
+		<>
 			<BrowserRouter>
 				<RouterConfig />
 			</BrowserRouter>
-			<Toaster />
-		</div>
+			<Toaster toastOptions={{ position: 'bottom-right' }} />
+		</>
 	)
 }

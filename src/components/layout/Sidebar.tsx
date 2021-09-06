@@ -1,12 +1,10 @@
-import React, { Dispatch } from 'react'
 import { Box, Image } from '@chakra-ui/react'
-import { Component } from 'react'
+import React from 'react'
 import * as Icons from 'react-bootstrap-icons'
-import SidebarItem, { SidebarItemProps } from './SidebarItem'
 import { useDispatch } from 'react-redux'
-import { logOutUser } from 'store/modules/auth/authSlice'
 import { useHistory } from 'react-router-dom'
-import { ROOT } from 'navigation/routes'
+import { logOutUser } from 'store/modules/auth/authSlice'
+import SidebarItem, { SidebarItemProps } from './SidebarItem'
 
 const Sidebar = ({ items }: { items: SidebarItemProps[] }) => {
 	const dispatch = useDispatch()
@@ -14,7 +12,6 @@ const Sidebar = ({ items }: { items: SidebarItemProps[] }) => {
 
 	const handleLogOut = () => {
 		dispatch(logOutUser())
-		// history.push(ROOT)
 	}
 	return (
 		<Box alignSelf="center">

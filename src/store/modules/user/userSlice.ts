@@ -1,41 +1,47 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
-import { fetchUserList, updateUserApprovalStatus } from './services'
 
 export interface User {
-	id: string
+	_id: string
 	name: string
 	email: string
 	googleUserId: string
+	googleAvatarUrl?: string
 	organizationId: string
 	isAdmin: boolean
 	isVerified: boolean
 	createdAt: string
 	modifiedAt: string
+	verifiedAt?: string
 }
+
+export const fetchUsers = async () => {
+	return await sendRequest.get<User[]>(`user`)
+}
+export const fetchUserDetails = async () => {
+	return await sendRequest.get<User[]>(`user/get`)
+}
+
 export interface UserState {
-	userList: User[]
+	currentUser: Partial<User>
 }
 
 const initialState: UserState = {
-	userList: [],
+	currentUser: {},
 }
 
 export const userSlice = createSlice({
 	name: 'user',
 	initialState,
-	reducers: {},
-	extraReducers: (builder) => {
-		builder.addCase(fetchUserList.fulfilled, (state, action) => {
-			state.userList = action.payload
-		})
-		builder.addCase(fetchUserList.rejected, (state, action) => {
-			console.log(action.error?.message)
-		})
+	reducers: {
+		setCurrentUser: (state, action: PayloadAction<User>) => {
+			state.currentUser = action.payload
+		},
 	},
+	extraReducers: (builder) => {},
 })
 
 // Action creators are generated for each case reducer function
-// export const { } = userSlice.actions
+export const { setCurrentUser } = userSlice.actions
 
 export default userSlice.reducer

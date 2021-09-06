@@ -1,5 +1,6 @@
 import { CheckIcon, CloseIcon, DeleteIcon } from '@chakra-ui/icons'
 import {
+	Avatar,
 	IconButton,
 	Table,
 	TableCaption,
@@ -11,37 +12,97 @@ import {
 } from '@chakra-ui/react'
 import TimeAgo from 'javascript-time-ago'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'store'
-import {
-	deleteUser,
-	fetchUserList,
-	updateUserApprovalStatus,
-} from 'store/modules/user/services'
+import { Form } from 'services/form'
+import { fetchUsers, User } from 'store/modules/user/userSlice'
+import { FormDrawerController } from 'types/types'
+import VerificationStatus from './components/VerificationStatus'
+
+export interface UpdateUserApprovalStatusBody {
+	userId: string
+	status: boolean
+}
+
+export interface DeleteUserBody {
+	_id: string
+}
 
 const UsersPage = () => {
-	const dispatch = useDispatch()
-	const { user } = useSelector((state: RootState) => state)
 	const timeAgo = new TimeAgo('en-US')
 
-	const handleUserApprove = async (userId: string) => {
-		await updateUserApprovalStatus({ userId, status: true })
-		dispatch(fetchUserList())
-	}
+	const [userList, setUserList] = useState<User[]>([])
 
-	const handleUserReject = async (userId: string) => {
-		await updateUserApprovalStatus({ userId, status: false })
-		dispatch(fetchUserList())
-	}
-
-	const handleUserDelete = async (id: string) => {
-		await deleteUser({ id })
-		dispatch(fetchUserList())
+	const fetchUserList = async () => {
+		setUserList(await fetchUsers())
 	}
 
 	useEffect(() => {
-		dispatch(fetchUserList())
+		fetchUserList()
 	}, [])
+
+	const updateUserApprovalStatusFormFieldsInitial: UpdateUserApprovalStatusBody =
+		{
+			userId: '',
+			status: false,
+		}
+	const [
+		updateUserApprovalStatusFormFields,
+		setUpdateUserApprovalStatusFormFields,
+	] = useState<Partial<UpdateUserApprovalStatusBody>>(
+		updateUserApprovalStatusFormFieldsInitial,
+	)
+
+	const deleteUserFormFieldsInitial = {
+		_id: '',
+	}
+	const [deleteUserFormFields, setDeleteUserFormFields] = useState<
+		Partial<DeleteUserBody>
+	>(deleteUserFormFieldsInitial)
+
+	const userController: {
+		delete: FormDrawerController<DeleteUserBody>
+		updateApprovalStatus: FormDrawerController<UpdateUserApprovalStatusBody>
+	} = {
+		delete: {
+			form: new Form(deleteUserFormFields),
+			updateFields: (props: Partial<DeleteUserBody>) =>
+				setDeleteUserFormFields({
+					...deleteUserFormFields,
+					...props,
+				}),
+			async onSubmit(userId: string) {
+				userController.delete.form.fields._id = userId
+				await userController.delete.form.submit('user', {
+					method: 'DELETE',
+				})
+				await fetchUserList()
+			},
+		},
+		updateApprovalStatus: {
+			form: new Form(updateUserApprovalStatusFormFields),
+			updateFields: (props: Partial<UpdateUserApprovalStatusBody>) =>
+				setUpdateUserApprovalStatusFormFields({
+					...updateUserApprovalStatusFormFields,
+					...props,
+				}),
+			async onSubmit({
+				userId,
+				status,
+			}: {
+				userId: string
+				status: boolean
+			}) {
+				userController.updateApprovalStatus.form.fields.userId = userId
+				userController.updateApprovalStatus.form.fields.status = status
+				await userController.updateApprovalStatus.form.submit(
+					'user/verify',
+					{
+						method: 'PUT',
+					},
+				)
+				await fetchUserList()
+			},
+		},
+	}
 
 	return (
 		<div>
@@ -58,24 +119,34 @@ const UsersPage = () => {
 			<div className="border-b-2"></div>
 			<div className="mt-3">
 				<Table variant="simple">
-					{!user.userList.length && (
+					{!userList.length && (
 						<TableCaption>These were all the Users</TableCaption>
 					)}
 					<Thead>
 						<Tr>
 							<Th>Name</Th>
 							<Th>Email</Th>
-							<Th>Verified ?</Th>
+							<Th>Status</Th>
 							<Th>Registered At</Th>
 							<Th className="text-right">Actions</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
-						{user.userList.map((user) => (
-							<Tr key={user.id}>
-								<Td>{user.name}</Td>
+						{userList.map((user) => (
+							<Tr key={user._id}>
+								<Td>
+									<div className="flex items-center">
+										<Avatar
+											src={user.googleAvatarUrl}
+											size="sm"
+										/>
+										<div className="pl-2">{user.name}</div>
+									</div>
+								</Td>
 								<Td>{user.email}</Td>
-								<Td>{user.isVerified ? 'Yes' : 'No'}</Td>
+								<Td>
+									<VerificationStatus user={user} />
+								</Td>
 								<Td>
 									{' '}
 									{timeAgo.format(new Date(user.createdAt))}
@@ -86,23 +157,30 @@ const UsersPage = () => {
 										icon={<CheckIcon />}
 										size="sm"
 										backgroundColor={
-											user.isVerified
+											user.isVerified && user.verifiedAt
 												? 'green.600'
 												: 'green.100'
 										}
 										_hover={{
-											backgroundColor: user.isVerified
-												? 'green.500'
-												: 'green.200',
+											backgroundColor:
+												user.isVerified &&
+												user.verifiedAt
+													? 'green.500'
+													: 'green.200',
 										}}
 										color={
-											user.isVerified
+											user.isVerified && user.verifiedAt
 												? 'green.100'
 												: 'green.600'
 										}
 										className="shadow"
 										onClick={() =>
-											handleUserApprove(user.id)
+											userController.updateApprovalStatus.onSubmit(
+												{
+													userId: user._id,
+													status: true,
+												},
+											)
 										}
 									/>
 									<IconButton
@@ -110,23 +188,30 @@ const UsersPage = () => {
 										icon={<CloseIcon />}
 										size="sm"
 										backgroundColor={
-											user.isVerified
-												? 'red.100'
-												: 'red.600'
-										}
-										_hover={{
-											backgroundColor: user.isVerified
-												? 'red.200'
-												: 'red.500',
-										}}
-										color={
-											user.isVerified
+											!user.isVerified && user.verifiedAt
 												? 'red.600'
 												: 'red.100'
 										}
+										_hover={{
+											backgroundColor:
+												!user.isVerified &&
+												user.verifiedAt
+													? 'red.500'
+													: 'red.200',
+										}}
+										color={
+											!user.isVerified && user.verifiedAt
+												? 'red.100'
+												: 'red.600'
+										}
 										className="mx-2 shadow"
 										onClick={() =>
-											handleUserReject(user.id)
+											userController.updateApprovalStatus.onSubmit(
+												{
+													userId: user._id,
+													status: false,
+												},
+											)
 										}
 									/>
 									<IconButton
@@ -140,7 +225,9 @@ const UsersPage = () => {
 										color="red.600"
 										className="shadow"
 										onClick={() =>
-											handleUserDelete(user.id)
+											userController.delete.onSubmit(
+												user._id,
+											)
 										}
 									/>
 								</Td>

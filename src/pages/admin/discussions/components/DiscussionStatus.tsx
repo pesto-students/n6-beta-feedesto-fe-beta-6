@@ -31,7 +31,7 @@ const DiscussionStatus = ({ discussion }: { discussion: Discussion }) => {
 				<TagLabel className="text-green-700">Live</TagLabel>
 			</Tag>
 		)
-	return <div></div>
+	return null
 }
 
 export default DiscussionStatus

@@ -48,18 +48,13 @@ export class Form<T> {
 			this.submitting = true
 			const res = await sendRequest.request<any, T>({
 				url,
-				body:
-					method != 'DELETE'
-						? this.isFormData
-							? this.getData()
-							: this.fields
-						: undefined,
+				body: this.isFormData ? this.getData() : this.fields,
 				method,
 				showToast,
 			})
 			this.reset()
 			return res
-		} catch (err) {
+		} catch (err: any) {
 			if (typeof err.data == 'object') {
 				console.log(err.data.error)
 			}
