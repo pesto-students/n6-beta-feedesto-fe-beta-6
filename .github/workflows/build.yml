@@ -32,9 +32,3 @@ jobs:
 
       - name: Build project
         run: yarn build
-
-      - name: Upload Dist
-        uses: actions/upload-artifact@v1
-        with:
-          name: production-code
-          path: build

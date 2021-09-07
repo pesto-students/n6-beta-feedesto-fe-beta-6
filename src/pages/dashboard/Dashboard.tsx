@@ -1,25 +1,29 @@
 import { Table, TableCaption, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
+import { Routes } from 'navigation/routes'
 import DiscussionStatus from 'pages/admin/discussions/components/DiscussionStatus'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { RootState } from 'store'
-import { fetchDiscussionList } from 'store/modules/discussion/discussionSlice'
+import {
+	Discussion,
+	fetchDiscussions,
+} from 'store/modules/discussion/discussionSlice'
 
 const DiscussionsPage = () => {
 	const dispatch = useDispatch()
-	const { discussion: discussionStore } = useSelector(
-		(state: RootState) => state,
-	)
 	const timeAgo = new TimeAgo('en-US')
+	const history = useHistory()
+
+	const [discussionList, setDiscussionList] = useState<Discussion[]>([])
+	const fetchDiscussionList = async () => {
+		setDiscussionList(await fetchDiscussions({ asParticipant: true }))
+	}
 
 	useEffect(() => {
-		dispatch(
-			fetchDiscussionList({
-				asParticipant: true,
-			}),
-		)
+		fetchDiscussionList()
 	}, [])
 
 	return (
@@ -37,7 +41,7 @@ const DiscussionsPage = () => {
 			<div className="border-b-2"></div>
 			<div className="mt-3">
 				<Table variant="simple">
-					{!discussionStore.discussionList.length && (
+					{!discussionList.length && (
 						<TableCaption>
 							These were all the Discussions
 						</TableCaption>
@@ -51,8 +55,18 @@ const DiscussionsPage = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{discussionStore.discussionList.map((discussion) => (
-							<Tr key={discussion.id}>
+						{discussionList.map((discussion) => (
+							<Tr
+								key={discussion._id}
+								onClick={() => {
+									history.push(
+										Routes.DASHBOARD_DISCUSSION +
+											'/' +
+											discussion._id,
+									)
+								}}
+								className="hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+							>
 								<Td
 									maxWidth="xs"
 									overflow="hidden"

@@ -9,20 +9,23 @@ import {
 	DrawerOverlay,
 } from '@chakra-ui/react'
 import React, { FunctionComponent } from 'react'
+import { Form } from 'services/form'
 
+export interface DrawerDisclosureProps {
+	isOpen: boolean
+	onOpen: () => void
+	onClose: () => void
+	onToggle: () => void
+	isControlled: boolean
+	getButtonProps: (props?: any) => any
+	getDisclosureProps: (props?: any) => any
+}
 export interface FormDrawerProps {
 	formId: string
-	title: string
-	drawer: {
-		isOpen: boolean
-		onOpen: () => void
-		onClose: () => void
-		onToggle: () => void
-		isControlled: boolean
-		getButtonProps: (props?: any) => any
-		getDisclosureProps: (props?: any) => any
-	}
+	form: Form<any>
+	drawer: DrawerDisclosureProps
 	onSubmit: Function
+	title: string
 }
 
 const FormDrawer: FunctionComponent<FormDrawerProps> = ({
@@ -31,6 +34,7 @@ const FormDrawer: FunctionComponent<FormDrawerProps> = ({
 	onSubmit,
 	formId,
 	children,
+	form,
 }) => {
 	return (
 		<>
@@ -44,20 +48,18 @@ const FormDrawer: FunctionComponent<FormDrawerProps> = ({
 				<DrawerContent>
 					<DrawerCloseButton />
 					<DrawerHeader borderBottomWidth="1px">{title}</DrawerHeader>
-
 					<DrawerBody>
 						<form
 							id={formId}
 							autoComplete="off"
 							onSubmit={(e) => {
 								e.preventDefault()
-								if (onSubmit) onSubmit()
+								if (typeof onSubmit === 'function') onSubmit()
 							}}
 						>
 							{children}
 						</form>
 					</DrawerBody>
-
 					<DrawerFooter borderTopWidth="1px">
 						<Button
 							variant="outline"
@@ -66,7 +68,13 @@ const FormDrawer: FunctionComponent<FormDrawerProps> = ({
 						>
 							Cancel
 						</Button>
-						<Button colorScheme="blue" type="submit" form={formId}>
+						<Button
+							colorScheme="blue"
+							type="submit"
+							form={formId}
+							isLoading={form.submitting}
+							disabled={form.submitting}
+						>
 							Submit
 						</Button>
 					</DrawerFooter>

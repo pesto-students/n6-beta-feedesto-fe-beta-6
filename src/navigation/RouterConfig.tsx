@@ -1,27 +1,28 @@
 import Discussions from 'pages/admin/discussions/Discussions'
-import Home from 'pages/home/Home'
 import Users from 'pages/admin/users/Users'
+import AppPage from 'pages/dashboard/Dashboard'
+import DiscussionPage from 'pages/dashboard/discussion/Discussion'
+import Home from 'pages/home/Home'
 import React from 'react'
-import { useDispatch } from 'react-redux'
 import { Route, Switch } from 'react-router-dom'
-import { logOutUser } from 'store/modules/auth/authSlice'
 import OrganizationPrivateRoute from './OrganizationPrivateRoute'
-import { ADMIN_DISCUSSIONS, ADMIN_USERS, APP, ROOT } from './routes'
+import { Routes } from './routes'
 import UserPrivateRoute from './UserPrivateRoute'
-import AppPage from 'pages/app/App'
 
 const RouterConfig = () => {
-	const dispatch = useDispatch()
 	return (
 		<Switch>
-			<Route exact component={Home} path={ROOT} />
-			<UserPrivateRoute exact path={APP}>
+			<Route exact component={Home} path={Routes.ROOT} />
+			<UserPrivateRoute exact path={Routes.DASHBOARD}>
 				<AppPage />
 			</UserPrivateRoute>
-			<OrganizationPrivateRoute exact path={ADMIN_USERS}>
+			<UserPrivateRoute path={Routes.DASHBOARD_DISCUSSION + '/:id'}>
+				<DiscussionPage />
+			</UserPrivateRoute>
+			<OrganizationPrivateRoute exact path={Routes.ADMIN_USERS}>
 				<Users />
 			</OrganizationPrivateRoute>
-			<OrganizationPrivateRoute exact path={ADMIN_DISCUSSIONS}>
+			<OrganizationPrivateRoute exact path={Routes.ADMIN_DISCUSSIONS}>
 				<Discussions />
 			</OrganizationPrivateRoute>
 		</Switch>

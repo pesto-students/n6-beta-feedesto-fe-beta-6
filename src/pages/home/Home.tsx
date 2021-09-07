@@ -1,5 +1,5 @@
 import { Image } from '@chakra-ui/react'
-import { ADMIN_USERS, APP } from 'navigation/routes'
+import { Routes } from 'navigation/routes'
 import React, { useEffect, useState } from 'react'
 import {
 	GoogleLoginResponse,
@@ -8,11 +8,17 @@ import {
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { sendRequest } from 'services/networkService'
 import { RootState } from 'store'
 import { loginUser } from 'store/modules/auth/services'
+import {
+	fetchUserDetails,
+	fetchUsers,
+	setCurrentUser,
+	User,
+} from 'store/modules/user/userSlice'
 import { LoginType } from 'types/enums'
 import {
-	fillAuthLoginUserFields,
 	fillAuthRegisterOrganizationFields,
 	fillAuthRegisterUserFields,
 	setIsGoogleLoggedIn,
@@ -36,9 +42,22 @@ const Home = () => {
 		if (response) {
 			dispatch(
 				loginUser({
+					loginType: auth.loginType,
 					googleUserId: response.getBasicProfile().getId(),
 				}),
 			)
+		}
+	}
+
+	const redirectToSpecifiedRoute = async () => {
+		const userList: User[] | undefined = await fetchUserDetails()
+		if (userList?.length) {
+			dispatch(setCurrentUser(userList[0]))
+		}
+		if (auth.loginType === LoginType.ORGANIZATION) {
+			history.push(Routes.ADMIN_USERS)
+		} else {
+			history.push(Routes.DASHBOARD)
 		}
 	}
 
@@ -47,11 +66,7 @@ const Home = () => {
 			toast.success('Authentication Successful', {
 				position: 'bottom-right',
 			})
-			if (auth.loginType === LoginType.ORGANIZATION) {
-				history.push(ADMIN_USERS)
-			} else {
-				history.push(APP)
-			}
+			redirectToSpecifiedRoute()
 		}
 	}, [auth.isAuthenticated])
 
@@ -68,21 +83,27 @@ const Home = () => {
 	const fillRegistrationPrefillDetails = (response: GoogleLoginResponse) => {
 		const name = response.getBasicProfile().getName()
 		const email = response.getBasicProfile().getEmail()
+		const googleAvatarUrl = response.getBasicProfile().getImageUrl()
 		const googleUserId = response.getBasicProfile().getId()
-		dispatch(
-			fillAuthRegisterUserFields({
-				name,
-				googleUserId,
-				email,
-			}),
-		)
-		dispatch(
-			fillAuthRegisterOrganizationFields({
-				name,
-				email,
-				googleUserId,
-			}),
-		)
+		if (auth.loginType === LoginType.USER) {
+			dispatch(
+				fillAuthRegisterUserFields({
+					name,
+					googleUserId,
+					email,
+					googleAvatarUrl,
+				}),
+			)
+		} else if (auth.loginType === LoginType.ORGANIZATION) {
+			dispatch(
+				fillAuthRegisterOrganizationFields({
+					name,
+					email,
+					googleUserId,
+					googleAvatarUrl,
+				}),
+			)
+		}
 	}
 
 	const handleGoogleLoginFailure = (response: GoogleLoginResponse) => {

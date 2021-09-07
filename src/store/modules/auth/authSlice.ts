@@ -24,6 +24,7 @@ export interface AuthState {
 const initialState: AuthState = {
 	loginType: LoginType.USER,
 	loginUserForm: {
+		loginType: LoginType.USER,
 		googleUserId: '',
 	},
 	registerOrganizationForm: {
@@ -71,12 +72,20 @@ export const authSlice = createSlice({
 		fillAuthRegisterUserFields: (
 			state,
 			{
-				payload: { email, googleUserId, name, organizationId },
+				payload: {
+					email,
+					googleUserId,
+					googleAvatarUrl,
+					name,
+					organizationId,
+				},
 			}: PayloadAction<Partial<RegisterUserBody>>,
 		) => {
 			if (!_.isUndefined(email)) state.registerUserForm.email = email
 			if (!_.isUndefined(googleUserId))
 				state.registerUserForm.googleUserId = googleUserId
+			if (!_.isUndefined(googleAvatarUrl))
+				state.registerUserForm.googleAvatarUrl = googleAvatarUrl
 			if (!_.isUndefined(name)) state.registerUserForm.name = name
 			if (!_.isUndefined(organizationId))
 				state.registerUserForm.organizationId = organizationId
@@ -84,13 +93,21 @@ export const authSlice = createSlice({
 		fillAuthRegisterOrganizationFields: (
 			state,
 			{
-				payload: { email, googleUserId, name, organizationName },
+				payload: {
+					email,
+					googleUserId,
+					googleAvatarUrl,
+					name,
+					organizationName,
+				},
 			}: PayloadAction<Partial<RegisterOrganizationBody>>,
 		) => {
 			if (!_.isUndefined(email))
 				state.registerOrganizationForm.email = email
 			if (!_.isUndefined(googleUserId))
 				state.registerOrganizationForm.googleUserId = googleUserId
+			if (!_.isUndefined(googleAvatarUrl))
+				state.registerUserForm.googleAvatarUrl = googleAvatarUrl
 			if (!_.isUndefined(name)) state.registerOrganizationForm.name = name
 			if (!_.isUndefined(organizationName))
 				state.registerOrganizationForm.organizationName =
