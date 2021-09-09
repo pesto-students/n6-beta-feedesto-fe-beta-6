@@ -12,9 +12,11 @@ import {
 import { LoginType } from 'types/enums'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import withErrorHandler from 'errorBoundary'
+
 TimeAgo.addDefaultLocale(en)
 
-export default function App() {
+function App() {
 	const dispatch = useDispatch()
 
 	const checkLocalAuthentication = () => {
@@ -45,3 +47,6 @@ export default function App() {
 		</>
 	)
 }
+
+const AppComp = withErrorHandler(App)
+export default AppComp
