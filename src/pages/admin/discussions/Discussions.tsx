@@ -185,6 +185,10 @@ const DiscussionsPage = () => {
 		},
 	}
 
+	const routeToDiscussionView = (discussionId: string) => {
+		history.push(Routes.DASHBOARD_DISCUSSION + '/' + discussionId)
+	}
+
 	useEffect(() => {
 		fetchDiscussionList()
 	}, [])
@@ -231,13 +235,6 @@ const DiscussionsPage = () => {
 						{discussionList.map((discussion) => (
 							<Tr
 								key={discussion._id}
-								onClick={() => {
-									history.push(
-										Routes.DASHBOARD_DISCUSSION +
-											'/' +
-											discussion._id,
-									)
-								}}
 								className="hover:bg-gray-100 transition-all duration-200 cursor-pointer"
 							>
 								<Td
@@ -245,10 +242,17 @@ const DiscussionsPage = () => {
 									overflow="hidden"
 									textOverflow="ellipsis"
 									whiteSpace="nowrap"
+									onClick={() =>
+										routeToDiscussionView(discussion._id)
+									}
 								>
 									{discussion.title}
 								</Td>
-								<Td>
+								<Td
+									onClick={() =>
+										routeToDiscussionView(discussion._id)
+									}
+								>
 									<div>
 										{timeAgo.format(
 											new Date(discussion.startDate),
@@ -260,7 +264,11 @@ const DiscussionsPage = () => {
 											.toString()}
 									</div>
 								</Td>
-								<Td>
+								<Td
+									onClick={() =>
+										routeToDiscussionView(discussion._id)
+									}
+								>
 									<div>
 										{timeAgo.format(
 											new Date(discussion.endDate),
@@ -272,7 +280,12 @@ const DiscussionsPage = () => {
 											.toString()}
 									</div>
 								</Td>
-								<Td textAlign="center">
+								<Td
+									onClick={() =>
+										routeToDiscussionView(discussion._id)
+									}
+									textAlign="center"
+								>
 									<DiscussionStatus discussion={discussion} />
 								</Td>
 								<Td textAlign="right">
