@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { bugsnagClient } from './configs/bugsnag'
+import { bugSnagClient } from './configs/bugsnag'
 
 const withErrorHandler = (WrappedComponent) => {
 	class WithErrorHandler extends React.Component {
@@ -12,7 +12,7 @@ const withErrorHandler = (WrappedComponent) => {
 		componentDidCatch(error, info) {
 			// Display fallback UI
 			this.setState({ hasError: true })
-			bugsnagClient.notify(error)
+			bugSnagClient.notify(error)
 		}
 
 		render() {
