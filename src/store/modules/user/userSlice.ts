@@ -16,7 +16,8 @@ export interface User {
 }
 
 export const fetchUsers = async () => {
-	return await sendRequest.get<User[]>(`user`)
+	const users = await sendRequest.get<User[]>(`user`)
+	return users.filter((el) => !el.isAdmin)
 }
 export const fetchUserDetails = async () => {
 	return await sendRequest.get<User[]>(`user/get`)

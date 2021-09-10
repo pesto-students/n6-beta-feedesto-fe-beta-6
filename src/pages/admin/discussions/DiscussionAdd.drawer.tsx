@@ -175,6 +175,9 @@ export default function DiscussionAddDrawer({
 										(el) =>
 											!form.fields.participantIds?.find(
 												(p) => p === el._id,
+											) &&
+											!form.fields.viewerIds?.find(
+												(p) => p === el._id,
 											),
 									)
 									.map((el) => (
@@ -236,6 +239,9 @@ export default function DiscussionAddDrawer({
 								{userList
 									.filter(
 										(el) =>
+											!form.fields.participantIds?.find(
+												(p) => p === el._id,
+											) &&
 											!form.fields.viewerIds?.find(
 												(p) => p === el._id,
 											),
