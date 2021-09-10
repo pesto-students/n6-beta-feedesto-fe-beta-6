@@ -1,14 +1,20 @@
+import { CloseIcon, EditIcon } from '@chakra-ui/icons'
 import {
 	Box,
 	FormLabel,
+	IconButton,
 	Input,
 	Select,
 	Stack,
 	Textarea,
+	Table,
+	Tr,
+	Td,
 } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { copyObject } from 'services/form'
 import { RootState } from 'store'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
@@ -42,12 +48,42 @@ export default function DiscussionAddDrawer({
 		})
 	}
 
+	const removeParticipantFromDiscussion = (participantId: string) => {
+		const findParticipantIndex = form.fields.participantIds?.findIndex(
+			(el) => el === participantId,
+		)
+		if (findParticipantIndex === undefined) return
+
+		const tempParticipantIds: string[] = copyObject(
+			form.fields.participantIds ?? [],
+		)
+		tempParticipantIds.splice(findParticipantIndex, 1)
+
+		updateFields({
+			participantIds: tempParticipantIds,
+		})
+	}
+
 	const addViewerToDiscussion = (viewerId: string) => {
 		const findViewer = form.fields.viewerIds?.find((el) => el === viewerId)
 		if (findViewer) return
 
 		updateFields({
 			viewerIds: [...form.fields.viewerIds!, viewerId],
+		})
+	}
+
+	const removeViewerFromDiscussion = (viewerId: string) => {
+		const findViewerIndex = form.fields.viewerIds?.findIndex(
+			(el) => el === viewerId,
+		)
+		if (findViewerIndex === undefined) return
+
+		const tempViewerIds: string[] = copyObject(form.fields.viewerIds ?? [])
+		tempViewerIds.splice(findViewerIndex, 1)
+
+		updateFields({
+			viewerIds: tempViewerIds,
 		})
 	}
 
@@ -147,19 +183,41 @@ export default function DiscussionAddDrawer({
 										</option>
 									))}
 							</Select>
-							<div>
-								{form.fields.participantIds?.map(
-									(el, index) => {
-										const findUser = userList.find(
-											(us) => us._id === el,
-										)
-										return (
-											<div key={index}>
-												{findUser?.name}
-											</div>
-										)
-									},
-								)}
+							<div className="rounded-b-lg bg-gray-50 overflow-hidden">
+								<Table variant="striped" size="sm">
+									{form.fields.participantIds?.map(
+										(el, index) => {
+											const findUser = userList.find(
+												(us) => us._id === el,
+											)
+											if (!findUser) return null
+											return (
+												<Tr key={index}>
+													<Td padding="1">
+														<div className="flex items-center justify-between pl-2 pr-1 py-1">
+															{findUser?.name}
+															<IconButton
+																aria-label="remove-participant"
+																icon={
+																	<CloseIcon />
+																}
+																size="xs"
+																backgroundColor="gray.100"
+																color="gray.700"
+																className="shadow"
+																onClick={() =>
+																	removeParticipantFromDiscussion(
+																		findUser._id,
+																	)
+																}
+															/>
+														</div>
+													</Td>
+												</Tr>
+											)
+										},
+									)}
+								</Table>
 							</div>
 						</Box>
 					</div>
@@ -188,15 +246,37 @@ export default function DiscussionAddDrawer({
 										</option>
 									))}
 							</Select>
-							<div>
-								{form.fields.viewerIds?.map((el, index) => {
-									const findUser = userList.find(
-										(us) => us._id === el,
-									)
-									return (
-										<div key={index}>{findUser?.name}</div>
-									)
-								})}
+							<div className="rounded-b-lg bg-gray-50 overflow-hidden">
+								<Table variant="striped" size="sm">
+									{form.fields.viewerIds?.map((el, index) => {
+										const findUser = userList.find(
+											(us) => us._id === el,
+										)
+										if (!findUser) return null
+										return (
+											<Tr key={index}>
+												<Td padding="1">
+													<div className="flex items-center justify-between pl-2 pr-1 py-1">
+														{findUser?.name}
+														<IconButton
+															aria-label="remove-participant"
+															icon={<CloseIcon />}
+															size="xs"
+															backgroundColor="gray.100"
+															color="gray.700"
+															className="shadow"
+															onClick={() =>
+																removeViewerFromDiscussion(
+																	findUser._id,
+																)
+															}
+														/>
+													</div>
+												</Td>
+											</Tr>
+										)
+									})}
+								</Table>
 							</div>
 						</Box>
 					</div>
