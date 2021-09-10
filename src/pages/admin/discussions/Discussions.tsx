@@ -1,5 +1,11 @@
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
+	AlertDialog,
+	AlertDialogBody,
+	AlertDialogContent,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogOverlay,
 	Button,
 	IconButton,
 	Table,
@@ -11,14 +17,13 @@ import {
 	Tr,
 	useDisclosure,
 } from '@chakra-ui/react'
+import DeleteItemDialog from 'components/DeleteItem.dialog'
 import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useRef, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Form } from 'services/form'
-import { RootState } from 'store'
 import {
 	Discussion,
 	fetchDiscussions,
@@ -90,6 +95,9 @@ const DiscussionsPage = () => {
 		useState<Partial<DeleteDiscussionBody>>(
 			deleteDiscussionFormFieldsInitial,
 		)
+	const [isDeleteUserDialogOpen, setIsDeleteUserDialogOpen] = useState(false)
+	const onDeleteUserDialogClose = () => setIsDeleteUserDialogOpen(false)
+	const deleteUserDialogCancelRef = useRef(null)
 
 	const [discussionList, setDiscussionList] = useState<Discussion[]>([])
 	const fetchDiscussionList = async () => {
@@ -175,8 +183,7 @@ const DiscussionsPage = () => {
 					...deleteDiscussionFormFields,
 					...props,
 				}),
-			async onSubmit(discussionId: string) {
-				discussionController.delete.form.fields._id = discussionId
+			async onSubmit() {
 				await discussionController.delete.form.submit('discussion', {
 					method: 'DELETE',
 				})
@@ -316,11 +323,14 @@ const DiscussionsPage = () => {
 											}}
 											color="red.600"
 											className="shadow"
-											onClick={() =>
-												discussionController.delete.onSubmit(
-													discussion._id,
+											onClick={() => {
+												discussionController.delete.updateFields(
+													{
+														_id: discussion._id,
+													},
 												)
-											}
+												setIsDeleteUserDialogOpen(true)
+											}}
 										/>
 									</div>
 								</Td>
@@ -335,6 +345,16 @@ const DiscussionsPage = () => {
 			<DiscussionUpdateDrawer
 				controller={discussionController.update}
 			></DiscussionUpdateDrawer>
+			<DeleteItemDialog
+				title="Delete Discussion"
+				isOpen={isDeleteUserDialogOpen}
+				cancelRef={deleteUserDialogCancelRef}
+				onCancel={onDeleteUserDialogClose}
+				onDelete={() => {
+					onDeleteUserDialogClose()
+					discussionController.delete.onSubmit()
+				}}
+			/>
 		</div>
 	)
 }

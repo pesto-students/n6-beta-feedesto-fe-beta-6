@@ -1,4 +1,4 @@
-import { CloseIcon, EditIcon } from '@chakra-ui/icons'
+import { CloseIcon } from '@chakra-ui/icons'
 import {
 	Box,
 	FormLabel,
@@ -6,16 +6,15 @@ import {
 	Input,
 	Select,
 	Stack,
-	Textarea,
 	Table,
-	Tr,
+	Tbody,
 	Td,
+	Textarea,
+	Tr,
 } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { copyObject } from 'services/form'
-import { RootState } from 'store'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
 import { AddDiscussionBody } from './Discussions'
@@ -25,14 +24,10 @@ export default function DiscussionAddDrawer({
 }: {
 	controller: FormDrawerController<AddDiscussionBody>
 }) {
-	const { user } = useSelector((state: RootState) => state)
-
 	const [userList, setUserList] = useState<User[]>([])
-
 	const fetchUserList = async () => {
 		setUserList(await fetchUsers())
 	}
-
 	useEffect(() => {
 		fetchUserList()
 	}, [])
@@ -188,38 +183,40 @@ export default function DiscussionAddDrawer({
 							</Select>
 							<div className="rounded-b-lg bg-gray-50 overflow-hidden">
 								<Table variant="striped" size="sm">
-									{form.fields.participantIds?.map(
-										(el, index) => {
-											const findUser = userList.find(
-												(us) => us._id === el,
-											)
-											if (!findUser) return null
-											return (
-												<Tr key={index}>
-													<Td padding="1">
-														<div className="flex items-center justify-between pl-2 pr-1 py-1">
-															{findUser?.name}
-															<IconButton
-																aria-label="remove-participant"
-																icon={
-																	<CloseIcon />
-																}
-																size="xs"
-																backgroundColor="gray.100"
-																color="gray.700"
-																className="shadow"
-																onClick={() =>
-																	removeParticipantFromDiscussion(
-																		findUser._id,
-																	)
-																}
-															/>
-														</div>
-													</Td>
-												</Tr>
-											)
-										},
-									)}
+									<Tbody>
+										{form.fields.participantIds?.map(
+											(el, index) => {
+												const findUser = userList.find(
+													(us) => us._id === el,
+												)
+												if (!findUser) return null
+												return (
+													<Tr key={index}>
+														<Td padding="1">
+															<div className="flex items-center justify-between pl-2 pr-1 py-1">
+																{findUser?.name}
+																<IconButton
+																	aria-label="remove-participant"
+																	icon={
+																		<CloseIcon />
+																	}
+																	size="xs"
+																	backgroundColor="gray.100"
+																	color="gray.700"
+																	className="shadow"
+																	onClick={() =>
+																		removeParticipantFromDiscussion(
+																			findUser._id,
+																		)
+																	}
+																/>
+															</div>
+														</Td>
+													</Tr>
+												)
+											},
+										)}
+									</Tbody>
 								</Table>
 							</div>
 						</Box>
@@ -254,34 +251,40 @@ export default function DiscussionAddDrawer({
 							</Select>
 							<div className="rounded-b-lg bg-gray-50 overflow-hidden">
 								<Table variant="striped" size="sm">
-									{form.fields.viewerIds?.map((el, index) => {
-										const findUser = userList.find(
-											(us) => us._id === el,
-										)
-										if (!findUser) return null
-										return (
-											<Tr key={index}>
-												<Td padding="1">
-													<div className="flex items-center justify-between pl-2 pr-1 py-1">
-														{findUser?.name}
-														<IconButton
-															aria-label="remove-participant"
-															icon={<CloseIcon />}
-															size="xs"
-															backgroundColor="gray.100"
-															color="gray.700"
-															className="shadow"
-															onClick={() =>
-																removeViewerFromDiscussion(
-																	findUser._id,
-																)
-															}
-														/>
-													</div>
-												</Td>
-											</Tr>
-										)
-									})}
+									<Tbody>
+										{form.fields.viewerIds?.map(
+											(el, index) => {
+												const findUser = userList.find(
+													(us) => us._id === el,
+												)
+												if (!findUser) return null
+												return (
+													<Tr key={index}>
+														<Td padding="1">
+															<div className="flex items-center justify-between pl-2 pr-1 py-1">
+																{findUser?.name}
+																<IconButton
+																	aria-label="remove-participant"
+																	icon={
+																		<CloseIcon />
+																	}
+																	size="xs"
+																	backgroundColor="gray.100"
+																	color="gray.700"
+																	className="shadow"
+																	onClick={() =>
+																		removeViewerFromDiscussion(
+																			findUser._id,
+																		)
+																	}
+																/>
+															</div>
+														</Td>
+													</Tr>
+												)
+											},
+										)}
+									</Tbody>
 								</Table>
 							</div>
 						</Box>
