@@ -1,9 +1,15 @@
-import Bugsnag from '@bugsnag/js'
+import Bugsnag, { Client } from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
+import { sendRequest } from 'services/networkService'
 
-import { BUGSNAG_KEY } from './env.json'
+export let bugSnagClient: Client
 
-export const bugsnagClient = Bugsnag.createClient({
-	apiKey: BUGSNAG_KEY,
-	plugins: [new BugsnagPluginReact()],
-})
+const initiateBugsnag = async () => {
+	const { BUGSNAG_KEY } = await sendRequest.get('misc/bugsnagKey')
+	bugSnagClient = Bugsnag.createClient({
+		apiKey: BUGSNAG_KEY,
+		plugins: [new BugsnagPluginReact()],
+	})
+}
+
+initiateBugsnag()

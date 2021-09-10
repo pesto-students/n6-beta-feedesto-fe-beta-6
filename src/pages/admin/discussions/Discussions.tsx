@@ -58,8 +58,8 @@ const DiscussionsPage = () => {
 	const addDiscussionFormFieldsInitial = {
 		title: '',
 		description: '',
-		startDate: '',
-		endDate: '',
+		startDate: dayjs().format('YYYY-MM-DDTHH:mm').toString(),
+		endDate: dayjs().format('YYYY-MM-DDTHH:mm').toString(),
 		participantIds: [],
 		viewerIds: [],
 	}
