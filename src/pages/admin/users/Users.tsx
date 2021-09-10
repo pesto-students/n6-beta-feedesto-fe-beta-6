@@ -10,8 +10,9 @@ import {
 	Thead,
 	Tr,
 } from '@chakra-ui/react'
+import DeleteItemDialog from 'components/DeleteItem.dialog'
 import TimeAgo from 'javascript-time-ago'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Form } from 'services/form'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
@@ -57,6 +58,9 @@ const UsersPage = () => {
 	const [deleteUserFormFields, setDeleteUserFormFields] = useState<
 		Partial<DeleteUserBody>
 	>(deleteUserFormFieldsInitial)
+	const [isDeleteUserDialogOpen, setIsDeleteUserDialogOpen] = useState(false)
+	const onDeleteUserDialogClose = () => setIsDeleteUserDialogOpen(false)
+	const deleteUserDialogCancelRef = useRef(null)
 
 	const userController: {
 		delete: FormDrawerController<DeleteUserBody>
@@ -69,8 +73,7 @@ const UsersPage = () => {
 					...deleteUserFormFields,
 					...props,
 				}),
-			async onSubmit(userId: string) {
-				userController.delete.form.fields._id = userId
+			async onSubmit() {
 				await userController.delete.form.submit('user', {
 					method: 'DELETE',
 				})
@@ -224,11 +227,12 @@ const UsersPage = () => {
 										}}
 										color="red.600"
 										className="shadow"
-										onClick={() =>
-											userController.delete.onSubmit(
-												user._id,
-											)
-										}
+										onClick={() => {
+											userController.delete.updateFields({
+												_id: user._id,
+											})
+											setIsDeleteUserDialogOpen(true)
+										}}
 									/>
 								</Td>
 							</Tr>
@@ -236,6 +240,16 @@ const UsersPage = () => {
 					</Tbody>
 				</Table>
 			</div>
+			<DeleteItemDialog
+				title="Delete User"
+				isOpen={isDeleteUserDialogOpen}
+				cancelRef={deleteUserDialogCancelRef}
+				onCancel={onDeleteUserDialogClose}
+				onDelete={() => {
+					onDeleteUserDialogClose()
+					userController.delete.onSubmit()
+				}}
+			/>
 		</div>
 	)
 }

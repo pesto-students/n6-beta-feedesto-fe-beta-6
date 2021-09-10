@@ -95,9 +95,11 @@ const DiscussionsPage = () => {
 		useState<Partial<DeleteDiscussionBody>>(
 			deleteDiscussionFormFieldsInitial,
 		)
-	const [isDeleteUserDialogOpen, setIsDeleteUserDialogOpen] = useState(false)
-	const onDeleteUserDialogClose = () => setIsDeleteUserDialogOpen(false)
-	const deleteUserDialogCancelRef = useRef(null)
+	const [isDeleteDiscussionDialogOpen, setIsDeleteDiscussionDialogOpen] =
+		useState(false)
+	const onDeleteDiscussionDialogClose = () =>
+		setIsDeleteDiscussionDialogOpen(false)
+	const deleteDiscussionDialogCancelRef = useRef(null)
 
 	const [discussionList, setDiscussionList] = useState<Discussion[]>([])
 	const fetchDiscussionList = async () => {
@@ -329,7 +331,9 @@ const DiscussionsPage = () => {
 														_id: discussion._id,
 													},
 												)
-												setIsDeleteUserDialogOpen(true)
+												setIsDeleteDiscussionDialogOpen(
+													true,
+												)
 											}}
 										/>
 									</div>
@@ -347,11 +351,11 @@ const DiscussionsPage = () => {
 			></DiscussionUpdateDrawer>
 			<DeleteItemDialog
 				title="Delete Discussion"
-				isOpen={isDeleteUserDialogOpen}
-				cancelRef={deleteUserDialogCancelRef}
-				onCancel={onDeleteUserDialogClose}
+				isOpen={isDeleteDiscussionDialogOpen}
+				cancelRef={deleteDiscussionDialogCancelRef}
+				onCancel={onDeleteDiscussionDialogClose}
 				onDelete={() => {
-					onDeleteUserDialogClose()
+					onDeleteDiscussionDialogClose()
 					discussionController.delete.onSubmit()
 				}}
 			/>
