@@ -194,8 +194,15 @@ const DiscussionsPage = () => {
 		},
 	}
 
-	const routeToDiscussionView = (discussionId: string) => {
-		history.push(Routes.DASHBOARD_DISCUSSION + '/' + discussionId)
+	const routeToDiscussionView = (discussion: Discussion) => {
+		const isLive =
+			dayjs(discussion.startDate).isBefore(new Date()) &&
+			dayjs(discussion.endDate).isAfter(new Date())
+		if (isLive) {
+			history.push(Routes.DASHBOARD_DISCUSSION + '/' + discussion._id)
+		} else {
+			history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)
+		}
 	}
 
 	useEffect(() => {
@@ -252,14 +259,14 @@ const DiscussionsPage = () => {
 									textOverflow="ellipsis"
 									whiteSpace="nowrap"
 									onClick={() =>
-										routeToDiscussionView(discussion._id)
+										routeToDiscussionView(discussion)
 									}
 								>
 									{discussion.title}
 								</Td>
 								<Td
 									onClick={() =>
-										routeToDiscussionView(discussion._id)
+										routeToDiscussionView(discussion)
 									}
 								>
 									<div>
@@ -275,7 +282,7 @@ const DiscussionsPage = () => {
 								</Td>
 								<Td
 									onClick={() =>
-										routeToDiscussionView(discussion._id)
+										routeToDiscussionView(discussion)
 									}
 								>
 									<div>
@@ -291,7 +298,7 @@ const DiscussionsPage = () => {
 								</Td>
 								<Td
 									onClick={() =>
-										routeToDiscussionView(discussion._id)
+										routeToDiscussionView(discussion)
 									}
 									textAlign="center"
 								>

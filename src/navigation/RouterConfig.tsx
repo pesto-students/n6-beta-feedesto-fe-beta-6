@@ -25,6 +25,12 @@ const RouterConfig = () => {
 			<OrganizationPrivateRoute exact path={Routes.ADMIN_DISCUSSIONS}>
 				<Discussions />
 			</OrganizationPrivateRoute>
+			<OrganizationPrivateRoute
+				exact
+				path={Routes.ADMIN_DISCUSSION_RESULTS + '/:id'}
+			>
+				<Discussions />
+			</OrganizationPrivateRoute>
 		</Switch>
 	)
 }

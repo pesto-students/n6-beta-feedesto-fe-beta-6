@@ -296,12 +296,14 @@ const DiscussionPage = () => {
 										className={classNames({
 											'cursor-pointer':
 												!answer.hasUpvoted &&
-												!answer.hasDownvoted,
+												!answer.hasDownvoted &&
+												!userStore.currentUser.isAdmin,
 										})}
 										onClick={() => {
 											if (
 												answer.hasUpvoted ||
-												answer.hasDownvoted
+												answer.hasDownvoted ||
+												userStore.currentUser.isAdmin
 											)
 												return
 											answerController.addUpvote.onSubmit(
@@ -327,12 +329,14 @@ const DiscussionPage = () => {
 										className={classNames({
 											'cursor-pointer':
 												!answer.hasUpvoted &&
-												!answer.hasDownvoted,
+												!answer.hasDownvoted &&
+												!userStore.currentUser.isAdmin,
 										})}
 										onClick={() => {
 											if (
 												answer.hasUpvoted ||
-												answer.hasDownvoted
+												answer.hasDownvoted ||
+												userStore.currentUser.isAdmin
 											)
 												return
 											answerController.addDownvote.onSubmit(
@@ -394,13 +398,19 @@ const DiscussionPage = () => {
 																{
 																	'cursor-pointer':
 																		!comment.hasUpvoted &&
-																		!comment.hasDownvoted,
+																		!comment.hasDownvoted &&
+																		!userStore
+																			.currentUser
+																			.isAdmin,
 																},
 															)}
 															onClick={() => {
 																if (
 																	comment.hasUpvoted ||
-																	comment.hasDownvoted
+																	comment.hasDownvoted ||
+																	userStore
+																		.currentUser
+																		.isAdmin
 																)
 																	return
 																commentController.addUpvote.onSubmit(
@@ -428,13 +438,19 @@ const DiscussionPage = () => {
 																{
 																	'cursor-pointer':
 																		!comment.hasUpvoted &&
-																		!comment.hasDownvoted,
+																		!comment.hasDownvoted &&
+																		!userStore
+																			.currentUser
+																			.isAdmin,
 																},
 															)}
 															onClick={() => {
 																if (
 																	comment.hasUpvoted ||
-																	comment.hasDownvoted
+																	comment.hasDownvoted ||
+																	userStore
+																		.currentUser
+																		.isAdmin
 																)
 																	return
 																commentController.addDownvote.onSubmit(

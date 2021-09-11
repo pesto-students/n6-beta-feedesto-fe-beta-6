@@ -1,8 +1,8 @@
 import env from './env.json'
 export default {
-	ENVIRONMENT: env.ENVIRONMENT,
+	ENVIRONMENT: process.env.NODE_ENV,
 	BASE_URL:
-		env.ENVIRONMENT == 'production'
+		process.env.NODE_ENV == 'production'
 			? env.PRODUCTION_GATEWAY_URL
 			: env.DEVELOPMENT_GATEWAY_URL,
 }
