@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import { ViewIcon } from '@chakra-ui/icons'
 import {
 	Avatar,
 	Button,
@@ -183,29 +183,18 @@ const DiscussionResults = () => {
 									<Td textAlign="right">
 										<div className="flex items-center justify-end">
 											<IconButton
-												aria-label="edit"
-												icon={<EditIcon />}
+												aria-label="view-dicussion"
+												icon={<ViewIcon />}
 												size="sm"
-												backgroundColor="yellow.100"
+												backgroundColor="blue.100"
 												_hover={{
-													backgroundColor:
-														'yellow.200',
+													backgroundColor: 'blue.200',
 												}}
-												color="yellow.600"
+												color="blue.600"
 												className="shadow mr-2"
-												onClick={() => {}}
-											/>
-											<IconButton
-												aria-label="delete"
-												icon={<DeleteIcon />}
-												size="sm"
-												backgroundColor="red.100"
-												_hover={{
-													backgroundColor: 'red.200',
-												}}
-												color="red.600"
-												className="shadow"
-												onClick={() => {}}
+												onClick={() =>
+													viewResultAnswers(result)
+												}
 											/>
 										</div>
 									</Td>
