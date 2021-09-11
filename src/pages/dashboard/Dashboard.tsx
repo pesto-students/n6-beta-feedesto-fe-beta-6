@@ -1,4 +1,16 @@
-import { Table, TableCaption, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { AddIcon } from '@chakra-ui/icons'
+import {
+	Button,
+	ButtonGroup,
+	IconButton,
+	Table,
+	TableCaption,
+	Tbody,
+	Td,
+	Th,
+	Thead,
+	Tr,
+} from '@chakra-ui/react'
 import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
@@ -12,18 +24,32 @@ import {
 	fetchDiscussions,
 } from 'store/modules/discussion/discussionSlice'
 
+export enum DiscussionListType {
+	PARTICIPANT,
+	VIEWER,
+}
+
 const DiscussionsPage = () => {
 	const dispatch = useDispatch()
 	const timeAgo = new TimeAgo('en-US')
 	const history = useHistory()
 
 	const [discussionList, setDiscussionList] = useState<Discussion[]>([])
-	const fetchDiscussionList = async () => {
+	const [discussionListType, setDiscussionListType] =
+		useState<DiscussionListType>(DiscussionListType.PARTICIPANT)
+
+	const fetchDiscussionListAsParticipant = async () => {
+		setDiscussionListType(DiscussionListType.PARTICIPANT)
 		setDiscussionList(await fetchDiscussions({ asParticipant: true }))
 	}
 
+	const fetchDiscussionListAsViewer = async () => {
+		setDiscussionListType(DiscussionListType.VIEWER)
+		setDiscussionList(await fetchDiscussions())
+	}
+
 	useEffect(() => {
-		fetchDiscussionList()
+		fetchDiscussionListAsParticipant()
 	}, [])
 
 	return (
@@ -39,7 +65,45 @@ const DiscussionsPage = () => {
 				</div>
 			</div>
 			<div className="border-b-2"></div>
-			<div className="mt-3">
+			<div className="my-3 text-center">
+				<ButtonGroup size="sm" isAttached variant="outline">
+					<Button
+						onClick={() => fetchDiscussionListAsParticipant()}
+						bgColor={
+							discussionListType === DiscussionListType.VIEWER
+								? 'gray.200'
+								: ''
+						}
+						_hover={{
+							bgColor:
+								discussionListType ===
+								DiscussionListType.PARTICIPANT
+									? ''
+									: 'gray.100',
+						}}
+					>
+						Participant
+					</Button>
+					<Button
+						onClick={() => fetchDiscussionListAsViewer()}
+						bgColor={
+							discussionListType ===
+							DiscussionListType.PARTICIPANT
+								? 'gray.200'
+								: ''
+						}
+						_hover={{
+							bgColor:
+								discussionListType === DiscussionListType.VIEWER
+									? ''
+									: 'gray.100',
+						}}
+					>
+						Viewer
+					</Button>
+				</ButtonGroup>
+			</div>
+			<div>
 				<Table variant="simple">
 					{!discussionList.length && (
 						<TableCaption>
