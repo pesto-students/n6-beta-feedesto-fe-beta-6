@@ -1,11 +1,5 @@
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
-	AlertDialog,
-	AlertDialogBody,
-	AlertDialogContent,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogOverlay,
 	Button,
 	IconButton,
 	Table,
@@ -21,7 +15,7 @@ import DeleteItemDialog from 'components/DeleteItem.dialog'
 import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Form } from 'services/form'
 import {
@@ -198,7 +192,7 @@ const DiscussionsPage = () => {
 		const isLive =
 			dayjs(discussion.startDate).isBefore(new Date()) &&
 			dayjs(discussion.endDate).isAfter(new Date())
-		if (isLive) {
+		if (isLive && false) {
 			history.push(Routes.DASHBOARD_DISCUSSION + '/' + discussion._id)
 		} else {
 			history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)

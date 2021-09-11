@@ -1,6 +1,4 @@
 import { Tag, TagLabel } from '@chakra-ui/react'
-import dayjs from 'dayjs'
-import React from 'react'
 import { User } from 'store/modules/user/userSlice'
 
 const VerificationStatus = ({ user }: { user: User }) => {

@@ -1,5 +1,8 @@
+import withErrorHandler from 'errorBoundary'
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
 import RouterConfig from 'navigation/RouterConfig'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
@@ -10,9 +13,6 @@ import {
 	setIsGoogleLoggedIn,
 } from 'store/modules/auth/authSlice'
 import { LoginType } from 'types/enums'
-import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en'
-import withErrorHandler from 'errorBoundary'
 
 TimeAgo.addDefaultLocale(en)
 

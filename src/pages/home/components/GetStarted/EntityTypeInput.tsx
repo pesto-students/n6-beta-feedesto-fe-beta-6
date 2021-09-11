@@ -1,13 +1,13 @@
 import { Image, Radio, RadioGroup } from '@chakra-ui/react'
-import React from 'react'
 import GoogleLogin, {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
 } from 'react-google-login'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../../store'
-import { setAuthLoginType } from '../../../store/modules/auth/authSlice'
-import { LoginType } from '../../../types/enums'
+import { setAuthLoginType } from 'store/modules/auth/authSlice'
+import { RootState } from '../../../../store'
+
+import { LoginType } from '../../../../types/enums'
 
 interface EntityTypeInputComponentProps {
 	onLoginSuccess: (

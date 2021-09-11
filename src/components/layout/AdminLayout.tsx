@@ -1,5 +1,4 @@
 import { Routes } from 'navigation/routes'
-import React from 'react'
 import * as Icon from 'react-bootstrap-icons'
 import Sidebar from './Sidebar'
 import { SidebarItemProps } from './SidebarItem'

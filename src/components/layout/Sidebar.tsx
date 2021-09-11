@@ -1,14 +1,11 @@
 import { Box, Image } from '@chakra-ui/react'
-import React from 'react'
 import * as Icons from 'react-bootstrap-icons'
 import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import { logOutUser } from 'store/modules/auth/authSlice'
 import SidebarItem, { SidebarItemProps } from './SidebarItem'
 
 const Sidebar = ({ items }: { items: SidebarItemProps[] }) => {
 	const dispatch = useDispatch()
-	const history = useHistory()
 
 	const handleLogOut = () => {
 		dispatch(logOutUser())

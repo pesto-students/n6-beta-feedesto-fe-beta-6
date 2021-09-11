@@ -1,8 +1,6 @@
-import { AddIcon } from '@chakra-ui/icons'
 import {
 	Button,
 	ButtonGroup,
-	IconButton,
 	Table,
 	TableCaption,
 	Tbody,
@@ -15,10 +13,8 @@ import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
 import DiscussionStatus from 'pages/admin/discussions/components/DiscussionStatus'
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { RootState } from 'store'
 import {
 	Discussion,
 	fetchDiscussions,
@@ -30,7 +26,6 @@ export enum DiscussionListType {
 }
 
 const DiscussionsPage = () => {
-	const dispatch = useDispatch()
 	const timeAgo = new TimeAgo('en-US')
 	const history = useHistory()
 

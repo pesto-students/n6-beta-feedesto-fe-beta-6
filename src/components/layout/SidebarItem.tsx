@@ -1,7 +1,6 @@
-import React from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import { ReactElement } from 'react'
 import classNames from 'classnames'
+import { ReactElement } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 
 export interface SidebarItemProps {
 	label: string

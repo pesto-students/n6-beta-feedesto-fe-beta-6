@@ -1,4 +1,3 @@
-import React from 'react'
 import { Tag, TagLabel } from '@chakra-ui/react'
 import { Discussion } from 'store/modules/discussion/discussionSlice'
 import dayjs from 'dayjs'
@@ -12,21 +11,29 @@ const DiscussionStatus = ({ discussion }: { discussion: Discussion }) => {
 
 	if (isPending)
 		return (
-			<Tag appearance="radio" backgroundColor="yellow.100">
+			<Tag
+				appearance="radio"
+				backgroundColor="yellow.100"
+				title="Pending"
+			>
 				<div className="h-2 w-2 rounded-full bg-yellow-700 mr-1"></div>
 				<TagLabel className="text-yellow-700">Pending</TagLabel>
 			</Tag>
 		)
 	if (isCompleted)
 		return (
-			<Tag appearance="radio" backgroundColor="blue.100">
+			<Tag
+				appearance="radio"
+				backgroundColor="blue.100"
+				title="Completed"
+			>
 				<div className="h-2 w-2 rounded-full bg-blue-700 mr-1"></div>
 				<TagLabel className="text-blue-700">Completed</TagLabel>
 			</Tag>
 		)
 	if (isLive)
 		return (
-			<Tag appearance="radio" backgroundColor="green.100">
+			<Tag appearance="radio" backgroundColor="green.100" title="Live">
 				<div className="h-2 w-2 rounded-full bg-green-700 mr-1"></div>
 				<TagLabel className="text-green-700">Live</TagLabel>
 			</Tag>
