@@ -2,14 +2,36 @@ import { Tag, TagLabel } from '@chakra-ui/react'
 import { Discussion } from 'store/modules/discussion/discussionSlice'
 import dayjs from 'dayjs'
 
-const DiscussionStatus = ({ discussion }: { discussion: Discussion }) => {
-	const isCompleted = dayjs(discussion.endDate).isBefore(new Date())
-	const isPending = dayjs(discussion.startDate).isAfter(new Date())
-	const isLive =
-		dayjs(discussion.startDate).isBefore(new Date()) &&
-		dayjs(discussion.endDate).isAfter(new Date())
+export enum DiscussionStatuses {
+	PENDING,
+	LIVE,
+	COMPLETED,
+}
 
-	if (isPending)
+export const getDiscussionStatus = (
+	discussion: Discussion,
+): DiscussionStatuses => {
+	const now = new Date()
+	if (dayjs(discussion.endDate).isBefore(now)) {
+		return DiscussionStatuses.COMPLETED
+	}
+	if (dayjs(discussion.startDate).isAfter(now)) {
+		return DiscussionStatuses.PENDING
+	}
+	if (
+		dayjs(discussion.startDate).isBefore(now) &&
+		dayjs(discussion.endDate).isAfter(now)
+	) {
+		return DiscussionStatuses.LIVE
+	}
+
+	return DiscussionStatuses.PENDING
+}
+
+const DiscussionStatus = ({ discussion }: { discussion: Discussion }) => {
+	const status = getDiscussionStatus(discussion)
+
+	if (status === DiscussionStatuses.PENDING)
 		return (
 			<Tag
 				appearance="radio"
@@ -20,7 +42,7 @@ const DiscussionStatus = ({ discussion }: { discussion: Discussion }) => {
 				<TagLabel className="text-yellow-700">Pending</TagLabel>
 			</Tag>
 		)
-	if (isCompleted)
+	if (status === DiscussionStatuses.COMPLETED)
 		return (
 			<Tag
 				appearance="radio"
@@ -31,7 +53,7 @@ const DiscussionStatus = ({ discussion }: { discussion: Discussion }) => {
 				<TagLabel className="text-blue-700">Completed</TagLabel>
 			</Tag>
 		)
-	if (isLive)
+	if (status === DiscussionStatuses.LIVE)
 		return (
 			<Tag appearance="radio" backgroundColor="green.100" title="Live">
 				<div className="h-2 w-2 rounded-full bg-green-700 mr-1"></div>
