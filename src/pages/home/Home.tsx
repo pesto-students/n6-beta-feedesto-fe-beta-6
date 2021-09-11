@@ -1,6 +1,6 @@
 import { Image } from '@chakra-ui/react'
 import { Routes } from 'navigation/routes'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
@@ -8,12 +8,10 @@ import {
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { sendRequest } from 'services/networkService'
 import { RootState } from 'store'
 import { loginUser } from 'store/modules/auth/services'
 import {
 	fetchUserDetails,
-	fetchUsers,
 	setCurrentUser,
 	User,
 } from 'store/modules/user/userSlice'
@@ -23,7 +21,7 @@ import {
 	fillAuthRegisterUserFields,
 	setIsGoogleLoggedIn,
 } from '../../store/modules/auth/authSlice'
-import GetStarted from './GetStarted'
+import GetStarted from './components/GetStarted'
 
 const Home = () => {
 	const dispatch = useDispatch()

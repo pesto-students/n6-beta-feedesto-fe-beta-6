@@ -1,22 +1,20 @@
 import {
+	Avatar,
 	Button,
 	IconButton,
 	Input,
 	InputGroup,
 	InputRightElement,
 	Textarea,
-	Avatar,
 } from '@chakra-ui/react'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
-import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as Icons from 'react-bootstrap-icons'
 import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { VariableSizeList } from 'react-window'
-
 import { Form } from 'services/form'
 import { RootState } from 'store'
 import { Answer, fetchAnswers } from 'store/modules/answer/answerSlice'
@@ -58,7 +56,6 @@ const DiscussionPage = () => {
 	const params = useParams<{ id: string }>()
 	const discussionId = params.id
 	const { user: userStore } = useSelector((state: RootState) => state)
-	const timeAgo = new TimeAgo('en-US')
 	const history = useHistory()
 
 	const [answerList, setAnswerList] = useState<

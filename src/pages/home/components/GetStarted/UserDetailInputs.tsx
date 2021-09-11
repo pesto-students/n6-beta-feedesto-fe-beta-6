@@ -1,18 +1,18 @@
 import { ChevronLeftIcon } from '@chakra-ui/icons'
 import { Button, Input, Link, Select } from '@chakra-ui/react'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { registerUser } from 'store/modules/auth/services'
-import { RootState } from '../../../store'
+import { RootState } from '../../../../store'
 import {
 	fillAuthRegisterUserFields,
 	setAuthSelectedTab,
-} from '../../../store/modules/auth/authSlice'
+} from '../../../../store/modules/auth/authSlice'
 import {
 	fetchOrganizations,
 	Organization,
-} from '../../../store/modules/organization/organizationSlice'
-import { SelectedTab } from '../../../types/enums'
+} from '../../../../store/modules/organization/organizationSlice'
+import { SelectedTab } from '../../../../types/enums'
 
 const UserDetailInputs: React.FC = () => {
 	const dispatch = useDispatch()

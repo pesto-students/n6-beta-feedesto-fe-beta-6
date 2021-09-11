@@ -16,7 +16,8 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
+		"noUnusedLocals": true,
 		"jsx": "react-jsx"
 	},
-	"include": ["src", "**/*.ts","**/*.js", "**/*.tsx", "jest.config.js"]
+	"include": ["src", "**/*.ts", "**/*.js", "**/*.tsx", "jest.config.js"]
 }

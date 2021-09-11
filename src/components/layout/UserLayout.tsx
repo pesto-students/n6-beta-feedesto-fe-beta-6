@@ -1,20 +1,11 @@
 import {
-	AddIcon,
-	EditIcon,
-	ExternalLinkIcon,
-	HamburgerIcon,
-	RepeatIcon,
-} from '@chakra-ui/icons'
-import {
 	Avatar,
-	IconButton,
 	Image,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
 } from '@chakra-ui/react'
-import React, { useEffect } from 'react'
 import * as Icon from 'react-bootstrap-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'

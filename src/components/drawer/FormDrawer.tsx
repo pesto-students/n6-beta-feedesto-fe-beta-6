@@ -8,7 +8,7 @@ import {
 	DrawerHeader,
 	DrawerOverlay,
 } from '@chakra-ui/react'
-import React, { FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 import { Form } from 'services/form'
 
 export interface DrawerDisclosureProps {

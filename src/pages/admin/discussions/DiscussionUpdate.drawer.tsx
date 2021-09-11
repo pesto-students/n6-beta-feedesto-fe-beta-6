@@ -1,6 +1,5 @@
 import { Box, FormLabel, Input, Stack, Textarea } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
-import React from 'react'
 import { FormDrawerController } from 'types/types'
 import { UpdateDiscussionBody } from './Discussions'
 

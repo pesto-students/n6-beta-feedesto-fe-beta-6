@@ -13,7 +13,7 @@ import {
 	Tr,
 } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { copyObject } from 'services/form'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'

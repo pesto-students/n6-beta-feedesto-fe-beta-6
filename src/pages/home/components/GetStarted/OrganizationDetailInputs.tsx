@@ -3,12 +3,12 @@ import { Button, Input, Link } from '@chakra-ui/react'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { registerOrganization } from 'store/modules/auth/services'
-import { RootState } from '../../../store'
+import { RootState } from '../../../../store'
 import {
 	fillAuthRegisterOrganizationFields,
 	setAuthSelectedTab,
-} from '../../../store/modules/auth/authSlice'
-import { SelectedTab } from '../../../types/enums'
+} from '../../../../store/modules/auth/authSlice'
+import { SelectedTab } from '../../../../types/enums'
 
 const OrganizationDetailInputs: React.FC = () => {
 	const dispatch = useDispatch()

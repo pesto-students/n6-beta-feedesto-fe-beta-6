@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import _ from 'lodash'
+import { createSlice } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
 
 export interface Discussion {

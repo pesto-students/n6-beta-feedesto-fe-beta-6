@@ -2,6 +2,9 @@ import { CheckIcon, CloseIcon, DeleteIcon, SearchIcon } from '@chakra-ui/icons'
 import {
 	Avatar,
 	IconButton,
+	Input,
+	InputGroup,
+	InputRightElement,
 	Table,
 	TableCaption,
 	Tbody,
@@ -9,13 +12,10 @@ import {
 	Th,
 	Thead,
 	Tr,
-	Input,
-	InputGroup,
-	InputRightElement,
 } from '@chakra-ui/react'
 import DeleteItemDialog from 'components/DeleteItem.dialog'
 import TimeAgo from 'javascript-time-ago'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Form } from 'services/form'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
