@@ -1,4 +1,4 @@
-import { CheckIcon, CloseIcon, DeleteIcon } from '@chakra-ui/icons'
+import { CheckIcon, CloseIcon, DeleteIcon, SearchIcon } from '@chakra-ui/icons'
 import {
 	Avatar,
 	IconButton,
@@ -9,6 +9,9 @@ import {
 	Th,
 	Thead,
 	Tr,
+	Input,
+	InputGroup,
+	InputRightElement,
 } from '@chakra-ui/react'
 import DeleteItemDialog from 'components/DeleteItem.dialog'
 import TimeAgo from 'javascript-time-ago'
@@ -16,6 +19,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Form } from 'services/form'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
+import { checkSearchText } from 'utils/basic'
 import VerificationStatus from './components/VerificationStatus'
 
 export interface UpdateUserApprovalStatusBody {
@@ -31,9 +35,18 @@ const UsersPage = () => {
 	const timeAgo = new TimeAgo('en-US')
 
 	const [userList, setUserList] = useState<User[]>([])
+	const [userSearchTerm, setUserSearchTerm] = useState<string>('')
 
 	const fetchUserList = async () => {
-		setUserList(await fetchUsers())
+		const users = await fetchUsers()
+		setUserList(users)
+	}
+
+	const filteredUserList = () => {
+		const filteredUsers = userList.filter((el) => {
+			return checkSearchText([el.name, el.email], userSearchTerm)
+		})
+		return filteredUsers
 	}
 
 	useEffect(() => {
@@ -109,7 +122,7 @@ const UsersPage = () => {
 
 	return (
 		<div>
-			<div className="px-6 py-3">
+			<div className="px-6 py-3 flex justify-between items-center">
 				<div>
 					<div className="text-3xl text-gray-700 font-semibold">
 						Users
@@ -118,11 +131,24 @@ const UsersPage = () => {
 						Here you will see all the available users
 					</div>
 				</div>
+				<div>
+					<InputGroup>
+						<Input
+							variant="outline"
+							placeholder="Search"
+							value={userSearchTerm}
+							onChange={(e) => setUserSearchTerm(e.target.value)}
+						/>
+						<InputRightElement>
+							<SearchIcon color="gray.500" />
+						</InputRightElement>
+					</InputGroup>
+				</div>
 			</div>
 			<div className="border-b-2"></div>
 			<div className="mt-3">
 				<Table variant="simple">
-					{!userList.length && (
+					{!filteredUserList().length && (
 						<TableCaption>These were all the Users</TableCaption>
 					)}
 					<Thead>
@@ -135,7 +161,7 @@ const UsersPage = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{userList.map((user) => (
+						{filteredUserList().map((user) => (
 							<Tr key={user._id}>
 								<Td>
 									<div className="flex items-center">
