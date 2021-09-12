@@ -30,11 +30,13 @@ import {
 } from '@chakra-ui/react'
 import DeleteItemDialog from 'components/DeleteItem.dialog'
 import TimeAgo from 'javascript-time-ago'
-import _ from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as Icon from 'react-bootstrap-icons'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { Form } from 'services/form'
+import { RootState } from 'store'
+import { logOutUser } from 'store/modules/auth/authSlice'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
 import { checkSearchText } from 'utils/basic'
@@ -59,22 +61,23 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 	const timeAgo = new TimeAgo('en-US')
 
 	const history = useHistory()
+	const { user } = useSelector((state: RootState) => state)
+	const dispatch = useDispatch()
 
 	const [userList, setUserList] = useState<User[]>([])
 	const [userSearchTerm, setUserSearchTerm] = useState<string>('')
 
 	const fetchUserList = async () => {
 		const users = await fetchUsers({ isSuperAdmin })
-		console.log(users)
 		setUserList(users)
 	}
 
-	const filteredUserList = useCallback(() => {
+	const filteredUserList = () => {
 		const filteredUsers = userList.filter((el) => {
 			return checkSearchText([el.name, el.email], userSearchTerm)
 		})
 		return filteredUsers
-	}, [userList])
+	}
 
 	useEffect(() => {
 		fetchUserList()
@@ -175,10 +178,17 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 				updateUserGoogleIdModal.onOpen()
 			},
 			async onSubmit() {
+				const updatedId =
+					userController.updateGoogleId.form.fields.update
+						?.googleUserId
 				await userController.updateGoogleId.form.submit('user', {
 					method: 'PUT',
 				})
 				await fetchUserList()
+				updateUserGoogleIdModal.onClose()
+				if (updatedId === user.currentUser.googleUserId) {
+					dispatch(logOutUser())
+				}
 			},
 		},
 	}
@@ -443,14 +453,16 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 								>
 									{userList
 										.filter(
-											(el) => !isNaN(+el.googleUserId),
+											(el) =>
+												el.googleUserId &&
+												!isNaN(+el.googleUserId),
 										)
 										.map((el) => (
 											<option
 												value={el.googleUserId}
 												key={el._id}
 											>
-												{el.name}
+												{el.name} - {el.email}
 											</option>
 										))}
 								</Select>
