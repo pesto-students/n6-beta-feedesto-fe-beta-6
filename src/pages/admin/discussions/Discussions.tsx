@@ -189,14 +189,7 @@ const DiscussionsPage = () => {
 	}
 
 	const routeToDiscussionView = (discussion: Discussion) => {
-		const isLive =
-			dayjs(discussion.startDate).isBefore(new Date()) &&
-			dayjs(discussion.endDate).isAfter(new Date())
-		if (isLive && false) {
-			history.push(Routes.DASHBOARD_DISCUSSION + '/' + discussion._id)
-		} else {
-			history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)
-		}
+		history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)
 	}
 
 	useEffect(() => {
