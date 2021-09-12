@@ -1,6 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
+import { logOutUser } from 'store/modules/auth/authSlice'
 import env from '../configs/env'
+import { store } from '../store'
 
 export interface NetworkHelperRequestArguments<R> {
 	url: string
@@ -63,7 +65,7 @@ class NetworkHelper {
 
 			// If server sends unauthorized user then logOut
 			if (axiosResponse?.status == 401) {
-				// Logout from here
+				store.dispatch(logOutUser())
 			}
 
 			if (showToast) {

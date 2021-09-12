@@ -3,10 +3,21 @@ import {
 	Alert,
 	AlertIcon,
 	Avatar,
+	Button,
+	FormControl,
+	FormLabel,
 	IconButton,
 	Input,
 	InputGroup,
 	InputRightElement,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	ModalOverlay,
+	Select,
 	Table,
 	TableCaption,
 	Tag,
@@ -15,21 +26,29 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useDisclosure,
 } from '@chakra-ui/react'
 import DeleteItemDialog from 'components/DeleteItem.dialog'
 import TimeAgo from 'javascript-time-ago'
-import { useEffect, useRef, useState } from 'react'
+import _ from 'lodash'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import * as Icon from 'react-bootstrap-icons'
 import { useHistory } from 'react-router'
 import { Form } from 'services/form'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
 import { checkSearchText } from 'utils/basic'
 import VerificationStatus from './components/VerificationStatus'
-import * as Icon from 'react-bootstrap-icons'
 
 export interface UpdateUserApprovalStatusBody {
 	userId: string
 	status: boolean
+}
+export interface UpdateUserGoogleIdBody {
+	_id: string
+	update: {
+		googleUserId: string
+	}
 }
 
 export interface DeleteUserBody {
@@ -46,15 +65,16 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 
 	const fetchUserList = async () => {
 		const users = await fetchUsers({ isSuperAdmin })
+		console.log(users)
 		setUserList(users)
 	}
 
-	const filteredUserList = () => {
+	const filteredUserList = useCallback(() => {
 		const filteredUsers = userList.filter((el) => {
 			return checkSearchText([el.name, el.email], userSearchTerm)
 		})
 		return filteredUsers
-	}
+	}, [userList])
 
 	useEffect(() => {
 		fetchUserList()
@@ -72,6 +92,18 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 		updateUserApprovalStatusFormFieldsInitial,
 	)
 
+	const updateUserGoogleIdFormFieldsInitial: UpdateUserGoogleIdBody = {
+		_id: '',
+		update: {
+			googleUserId: '',
+		},
+	}
+	const [updateUserGoogleIdFormFields, setUpdateUserGoogleIdFormFields] =
+		useState<Partial<UpdateUserGoogleIdBody>>(
+			updateUserGoogleIdFormFieldsInitial,
+		)
+	const updateUserGoogleIdModal = useDisclosure()
+
 	const deleteUserFormFieldsInitial = {
 		_id: '',
 	}
@@ -85,6 +117,7 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 	const userController: {
 		delete: FormDrawerController<DeleteUserBody>
 		updateApprovalStatus: FormDrawerController<UpdateUserApprovalStatusBody>
+		updateGoogleId: FormDrawerController<UpdateUserGoogleIdBody>
 	} = {
 		delete: {
 			form: new Form(deleteUserFormFields),
@@ -122,6 +155,29 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 						method: 'PUT',
 					},
 				)
+				await fetchUserList()
+			},
+		},
+		updateGoogleId: {
+			form: new Form(updateUserGoogleIdFormFields),
+			updateFields: (props: Partial<UpdateUserGoogleIdBody>) =>
+				setUpdateUserGoogleIdFormFields({
+					...updateUserGoogleIdFormFields,
+					...props,
+				}),
+			load(user: User) {
+				userController.updateGoogleId.updateFields({
+					_id: user._id,
+					update: {
+						googleUserId: user.googleUserId,
+					},
+				})
+				updateUserGoogleIdModal.onOpen()
+			},
+			async onSubmit() {
+				await userController.updateGoogleId.form.submit('user', {
+					method: 'PUT',
+				})
 				await fetchUserList()
 			},
 		},
@@ -227,7 +283,7 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 								<Td textAlign="right">
 									{isSuperAdmin ? (
 										<IconButton
-											aria-label="approve"
+											aria-label="link"
 											icon={<Icon.Link size={24} />}
 											size="sm"
 											backgroundColor={
@@ -247,7 +303,11 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 													: 'green.600'
 											}
 											className="shadow"
-											onClick={() => {}}
+											onClick={() =>
+												userController.updateGoogleId.load?.(
+													user,
+												)
+											}
 										/>
 									) : (
 										<>
@@ -356,6 +416,64 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 					userController.delete.onSubmit()
 				}}
 			/>
+			{isSuperAdmin ? (
+				<Modal
+					isOpen={updateUserGoogleIdModal.isOpen}
+					onClose={updateUserGoogleIdModal.onClose}
+				>
+					<ModalOverlay />
+					<ModalContent>
+						<ModalHeader>Update User Google Account</ModalHeader>
+						<ModalCloseButton />
+						<ModalBody pb={6}>
+							<FormControl>
+								<FormLabel>Google Account</FormLabel>
+								<Select
+									placeholder="Select Google Account"
+									onChange={(evt) => {
+										userController.updateGoogleId.updateFields(
+											{
+												update: {
+													googleUserId:
+														evt.target.value,
+												},
+											},
+										)
+									}}
+								>
+									{userList
+										.filter(
+											(el) => !isNaN(+el.googleUserId),
+										)
+										.map((el) => (
+											<option
+												value={el.googleUserId}
+												key={el._id}
+											>
+												{el.name}
+											</option>
+										))}
+								</Select>
+							</FormControl>
+						</ModalBody>
+
+						<ModalFooter>
+							<Button
+								colorScheme="blue"
+								mr={3}
+								onClick={() =>
+									userController.updateGoogleId.onSubmit()
+								}
+							>
+								Save
+							</Button>
+							<Button onClick={updateUserGoogleIdModal.onClose}>
+								Cancel
+							</Button>
+						</ModalFooter>
+					</ModalContent>
+				</Modal>
+			) : null}
 		</div>
 	)
 }
