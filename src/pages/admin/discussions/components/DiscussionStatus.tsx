@@ -36,10 +36,10 @@ const DiscussionStatus = ({ discussion }: { discussion: Discussion }) => {
 			<Tag
 				appearance="radio"
 				backgroundColor="yellow.100"
-				title="Pending"
+				title="Upcoming"
 			>
 				<div className="h-2 w-2 rounded-full bg-yellow-700 mr-1"></div>
-				<TagLabel className="text-yellow-700">Pending</TagLabel>
+				<TagLabel className="text-yellow-700">Upcoming</TagLabel>
 			</Tag>
 		)
 	if (status === DiscussionStatuses.COMPLETED)

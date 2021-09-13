@@ -20,7 +20,10 @@ const RouterConfig = () => {
 				<DiscussionPage />
 			</UserPrivateRoute>
 			<OrganizationPrivateRoute exact path={Routes.ADMIN_USERS}>
-				<Users />
+				<Users isSuperAdmin={false} />
+			</OrganizationPrivateRoute>
+			<OrganizationPrivateRoute exact path={Routes.SUPER_ADMIN_USERS}>
+				<Users isSuperAdmin={true} />
 			</OrganizationPrivateRoute>
 			<OrganizationPrivateRoute exact path={Routes.ADMIN_DISCUSSIONS}>
 				<Discussions />
