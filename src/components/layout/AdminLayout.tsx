@@ -1,5 +1,4 @@
 import { Routes } from 'navigation/routes'
-import React from 'react'
 import * as Icon from 'react-bootstrap-icons'
 import Sidebar from './Sidebar'
 import { SidebarItemProps } from './SidebarItem'
@@ -15,6 +14,12 @@ const AdminLayout = ({ children, ...args }: any) => {
 			label: 'Discussions',
 			icon: <Icon.ChatText size={24} />,
 			link: Routes.ADMIN_DISCUSSIONS,
+		},
+		{
+			label: 'Super Admin',
+			icon: <Icon.Bank size={24} />,
+			link: Routes.SUPER_ADMIN_USERS,
+			tooltipText: 'For demo purposes only',
 		},
 	]
 	return (

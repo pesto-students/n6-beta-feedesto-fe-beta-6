@@ -1,11 +1,5 @@
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
-	AlertDialog,
-	AlertDialogBody,
-	AlertDialogContent,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogOverlay,
 	Button,
 	IconButton,
 	Table,
@@ -21,7 +15,7 @@ import DeleteItemDialog from 'components/DeleteItem.dialog'
 import dayjs from 'dayjs'
 import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Form } from 'services/form'
 import {
@@ -30,27 +24,10 @@ import {
 } from 'store/modules/discussion/discussionSlice'
 import { FormDrawerController } from 'types/types'
 import DiscussionStatus from './components/DiscussionStatus'
-import DiscussionAddDrawer from './DiscussionAdd.drawer'
-import DiscussionUpdateDrawer from './DiscussionUpdate.drawer'
-
-export interface AddDiscussionBody {
-	title: string
-	description: string
-	startDate: string
-	endDate: string
-	participantIds: string[]
-	viewerIds: string[]
-}
-
-export interface UpdateDiscussionBody {
-	_id: string
-	update: {
-		title?: string
-		description?: string
-		startDate?: string
-		endDate?: string
-	}
-}
+import DiscussionAddDrawer, { AddDiscussionBody } from './DiscussionAdd.drawer'
+import DiscussionUpdateDrawer, {
+	UpdateDiscussionBody,
+} from './DiscussionUpdate.drawer'
 
 export interface DeleteDiscussionBody {
 	_id: string
@@ -195,14 +172,7 @@ const DiscussionsPage = () => {
 	}
 
 	const routeToDiscussionView = (discussion: Discussion) => {
-		const isLive =
-			dayjs(discussion.startDate).isBefore(new Date()) &&
-			dayjs(discussion.endDate).isAfter(new Date())
-		if (isLive) {
-			history.push(Routes.DASHBOARD_DISCUSSION + '/' + discussion._id)
-		} else {
-			history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)
-		}
+		history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)
 	}
 
 	useEffect(() => {

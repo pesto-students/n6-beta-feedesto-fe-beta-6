@@ -1,9 +1,9 @@
 import Discussions from 'pages/admin/discussions/Discussions'
+import DiscussionResults from 'pages/admin/discussions/results/DiscussionResults'
 import Users from 'pages/admin/users/Users'
 import AppPage from 'pages/dashboard/Dashboard'
 import DiscussionPage from 'pages/dashboard/discussion/Discussion'
 import Home from 'pages/home/Home'
-import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import OrganizationPrivateRoute from './OrganizationPrivateRoute'
 import { Routes } from './routes'
@@ -20,7 +20,10 @@ const RouterConfig = () => {
 				<DiscussionPage />
 			</UserPrivateRoute>
 			<OrganizationPrivateRoute exact path={Routes.ADMIN_USERS}>
-				<Users />
+				<Users isSuperAdmin={false} />
+			</OrganizationPrivateRoute>
+			<OrganizationPrivateRoute exact path={Routes.SUPER_ADMIN_USERS}>
+				<Users isSuperAdmin={true} />
 			</OrganizationPrivateRoute>
 			<OrganizationPrivateRoute exact path={Routes.ADMIN_DISCUSSIONS}>
 				<Discussions />
@@ -29,7 +32,7 @@ const RouterConfig = () => {
 				exact
 				path={Routes.ADMIN_DISCUSSION_RESULTS + '/:id'}
 			>
-				<Discussions />
+				<DiscussionResults />
 			</OrganizationPrivateRoute>
 		</Switch>
 	)

@@ -1,4 +1,3 @@
-import React from 'react'
 import GetStarted from '..'
 
 import { render } from 'utils/testUtils'

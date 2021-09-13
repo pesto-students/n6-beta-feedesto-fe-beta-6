@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import _ from 'lodash'
+import { createSlice } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
+import { User } from '../user/userSlice'
 
 export interface Discussion {
 	_id: string
@@ -23,6 +23,25 @@ export const fetchDiscussions = async (
 	} = {},
 ) => {
 	return await sendRequest.get<Discussion[]>(`discussion`, {
+		params,
+	})
+}
+export interface DiscussionResult {
+	_id: string
+	content: string
+	discussionId: string
+	userId: User
+	upvoteIds: string[]
+	downvoteIds: string[]
+	commentIds: string[]
+	createdAt: string
+	modifiedAt: string
+	numberOfUpvotes: number
+	numberOfDownvotes: number
+	score: number
+}
+export const fetchDiscussionResultList = async (params: { _id: string }) => {
+	return await sendRequest.get<DiscussionResult[]>(`discussion/score`, {
 		params,
 	})
 }

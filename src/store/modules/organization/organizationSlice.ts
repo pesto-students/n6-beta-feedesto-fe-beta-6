@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
 
 export interface Organization {

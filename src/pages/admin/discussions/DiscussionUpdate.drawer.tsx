@@ -1,8 +1,16 @@
 import { Box, FormLabel, Input, Stack, Textarea } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
-import React from 'react'
 import { FormDrawerController } from 'types/types'
-import { UpdateDiscussionBody } from './Discussions'
+
+export interface UpdateDiscussionBody {
+	_id: string
+	update: {
+		title?: string
+		description?: string
+		startDate?: string
+		endDate?: string
+	}
+}
 
 export default function DiscussionUpdateDrawer({
 	controller: { drawer, form, updateFields, onSubmit },

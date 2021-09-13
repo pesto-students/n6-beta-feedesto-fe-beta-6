@@ -1,7 +1,5 @@
-import { useToast } from '@chakra-ui/react'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
-import authSlice from 'store/modules/auth/authSlice'
 import env from '../configs/env'
 
 export interface NetworkHelperRequestArguments<R> {
@@ -65,7 +63,8 @@ class NetworkHelper {
 
 			// If server sends unauthorized user then logOut
 			if (axiosResponse?.status == 401) {
-				// Logout from here
+				localStorage.clear()
+				location.href = '/'
 			}
 
 			if (showToast) {
@@ -73,8 +72,7 @@ class NetworkHelper {
 			}
 
 			return axiosResponse?.data?.data as T
-		} catch (err:AxiosError|any) {
-			const axiosError = err
+		} catch (err: AxiosError | any) {
 			const axiosResponse: AxiosResponse = err.response
 			if (axiosResponse) {
 				if (axiosResponse.status > 300) {

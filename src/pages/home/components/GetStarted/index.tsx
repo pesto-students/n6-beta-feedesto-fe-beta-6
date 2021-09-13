@@ -1,11 +1,10 @@
-import React from 'react'
 import {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
 } from 'react-google-login'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../../store'
-import { LoginType, SelectedTab } from '../../../types/enums'
+import { RootState } from 'store'
+import { LoginType, SelectedTab } from '../../../../types/enums'
 import EntityTypeInput from './EntityTypeInput'
 import OrganizationDetailInputs from './OrganizationDetailInputs'
 import UserDetailInputs from './UserDetailInputs'
