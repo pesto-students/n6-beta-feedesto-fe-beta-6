@@ -1,6 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
+import { logOutUser } from 'store/modules/auth/authSlice'
 import env from '../configs/env'
+import { store } from '../store'
 
 export interface NetworkHelperRequestArguments<R> {
 	url: string

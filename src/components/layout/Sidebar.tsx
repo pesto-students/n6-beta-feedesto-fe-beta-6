@@ -14,7 +14,7 @@ const Sidebar = ({ items }: { items: SidebarItemProps[] }) => {
 		<Box alignSelf="center">
 			<div className="w-full text-center p-4">
 				<Image alt="Feedesto Logo" src="/feedesto-logo.png"></Image>
-				<div className="font-semibold p-2 text-sm text-gray-100">
+				<div className="font-semibold p-2 text-sm text-gray-700">
 					Admin
 				</div>
 				<div className="my-2">

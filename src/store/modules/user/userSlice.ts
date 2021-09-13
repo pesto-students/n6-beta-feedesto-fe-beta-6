@@ -15,8 +15,13 @@ export interface User {
 	verifiedAt?: string
 }
 
-export const fetchUsers = async () => {
-	const users = await sendRequest.get<User[]>(`user`)
+export const fetchUsers = async (
+	params: { isSuperAdmin: boolean } = { isSuperAdmin: false },
+) => {
+	const users = await sendRequest.get<User[]>(`user`, { params })
+	if (params.isSuperAdmin) {
+		return users
+	}
 	return users.filter((el) => !el.isAdmin)
 }
 export const fetchUserDetails = async () => {
