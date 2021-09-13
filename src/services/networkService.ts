@@ -63,7 +63,8 @@ class NetworkHelper {
 
 			// If server sends unauthorized user then logOut
 			if (axiosResponse?.status == 401) {
-				// Logout from here
+				localStorage.clear()
+				location.href = '/'
 			}
 
 			if (showToast) {

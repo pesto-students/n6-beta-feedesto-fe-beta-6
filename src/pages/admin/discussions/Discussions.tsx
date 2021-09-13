@@ -24,27 +24,10 @@ import {
 } from 'store/modules/discussion/discussionSlice'
 import { FormDrawerController } from 'types/types'
 import DiscussionStatus from './components/DiscussionStatus'
-import DiscussionAddDrawer from './DiscussionAdd.drawer'
-import DiscussionUpdateDrawer from './DiscussionUpdate.drawer'
-
-export interface AddDiscussionBody {
-	title: string
-	description: string
-	startDate: string
-	endDate: string
-	participantIds: string[]
-	viewerIds: string[]
-}
-
-export interface UpdateDiscussionBody {
-	_id: string
-	update: {
-		title?: string
-		description?: string
-		startDate?: string
-		endDate?: string
-	}
-}
+import DiscussionAddDrawer, { AddDiscussionBody } from './DiscussionAdd.drawer'
+import DiscussionUpdateDrawer, {
+	UpdateDiscussionBody,
+} from './DiscussionUpdate.drawer'
 
 export interface DeleteDiscussionBody {
 	_id: string

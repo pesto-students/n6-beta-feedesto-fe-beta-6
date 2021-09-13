@@ -17,7 +17,15 @@ import { useEffect, useState } from 'react'
 import { copyObject } from 'services/form'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
-import { AddDiscussionBody } from './Discussions'
+
+export interface AddDiscussionBody {
+	title: string
+	description: string
+	startDate: string
+	endDate: string
+	participantIds: string[]
+	viewerIds: string[]
+}
 
 export default function DiscussionAddDrawer({
 	controller: { drawer, form, updateFields, onSubmit },
