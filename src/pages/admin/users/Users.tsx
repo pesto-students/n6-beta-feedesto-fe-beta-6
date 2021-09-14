@@ -40,7 +40,10 @@ import { logOutUser } from 'store/modules/auth/authSlice'
 import { fetchUsers, User } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
 import { checkSearchText } from 'utils/basic'
-import VerificationStatus from './components/VerificationStatus'
+import VerificationStatus, {
+	getVerificationStatus,
+	VerificationStatuses,
+} from './components/VerificationStatus'
 
 export interface UpdateUserApprovalStatusBody {
 	userId: string
@@ -66,6 +69,8 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 
 	const [userList, setUserList] = useState<User[]>([])
 	const [userSearchTerm, setUserSearchTerm] = useState<string>('')
+	const [userStatusFilter, setUserStatusFilter] =
+		useState<VerificationStatuses | null>(null)
 
 	const fetchUserList = async () => {
 		const users = await fetchUsers({ isSuperAdmin })
@@ -74,7 +79,12 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 
 	const filteredUserList = () => {
 		const filteredUsers = userList.filter((el) => {
-			return checkSearchText([el.name, el.email], userSearchTerm)
+			return (
+				(userStatusFilter
+					? userStatusFilter === getVerificationStatus(el)
+					: true) &&
+				checkSearchText([el.name, el.email], userSearchTerm)
+			)
 		})
 		return filteredUsers
 	}
@@ -196,7 +206,7 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 	return (
 		<div>
 			<div className="px-6 py-3 flex justify-between items-center">
-				<div>
+				<div className="flex-none">
 					<div className="text-3xl text-gray-700 font-semibold">
 						Users {isSuperAdmin ? '(Super Admin)' : null}
 					</div>
@@ -204,18 +214,37 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 						Here you will see all the available users
 					</div>
 				</div>
-				<div>
-					<InputGroup>
-						<Input
-							variant="outline"
-							placeholder="Search"
-							value={userSearchTerm}
-							onChange={(e) => setUserSearchTerm(e.target.value)}
-						/>
-						<InputRightElement>
-							<SearchIcon color="gray.500" />
-						</InputRightElement>
-					</InputGroup>
+				<div className="flex-none">
+					<div className="flex items-center">
+						<Select
+							placeholder="All Users"
+							onChange={(evt) => {
+								setUserStatusFilter(
+									evt.target.value as VerificationStatuses,
+								)
+							}}
+							value={userStatusFilter ?? undefined}
+						>
+							{Object.values(VerificationStatuses).map((el) => (
+								<option value={el} key={el}>
+									{el}
+								</option>
+							))}
+						</Select>
+						<InputGroup className="ml-2">
+							<Input
+								variant="outline"
+								placeholder="Search"
+								value={userSearchTerm}
+								onChange={(e) =>
+									setUserSearchTerm(e.target.value)
+								}
+							/>
+							<InputRightElement>
+								<SearchIcon color="gray.500" />
+							</InputRightElement>
+						</InputGroup>
+					</div>
 				</div>
 			</div>
 			<div className="border-b-2"></div>
@@ -272,7 +301,7 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 											<div className="text-xs text-gray-600">
 												Google ID:{' '}
 												{user.googleUserId || 'N/A'}
-												{/* TODO: Add Organization Name here instead of ID */}
+												{/* TODO: [FEEDESTO-52] Add Organization Name here instead of ID */}
 											</div>
 										</div>
 									</div>

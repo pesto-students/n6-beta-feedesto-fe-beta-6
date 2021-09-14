@@ -9,16 +9,17 @@ describe('<DiscussionStatus />', () => {
 	let findLabel: HTMLElement
 
 	for (let i = 0; i < discussions.length; i++) {
+		const discussion = discussions[i]
 		it('should show Appropriate label', async () => {
 			const { findByTestId } = render(
-				<DiscussionStatus discussion={discussions[i]} />,
+				<DiscussionStatus discussion={discussion} />,
 			)
 
 			findLabel = await findByTestId('label')
 
-			if (dayjs(discussions[i].endDate).isBefore(now)) {
+			if (dayjs(discussion.endDate).isBefore(now)) {
 				expect(findLabel.textContent).toBe('Completed')
-			} else if (dayjs(discussions[i].startDate).isAfter(now)) {
+			} else if (dayjs(discussion.startDate).isAfter(now)) {
 				expect(findLabel.textContent).toBe('Upcoming')
 			} else {
 				expect(findLabel.textContent).toBe('Live')

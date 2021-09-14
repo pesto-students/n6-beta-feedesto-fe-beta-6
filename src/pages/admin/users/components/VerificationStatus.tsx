@@ -1,9 +1,26 @@
 import { Tag, TagLabel } from '@chakra-ui/react'
 import { User } from 'store/modules/user/userSlice'
+export enum VerificationStatuses {
+	PENDING = 'Pending',
+	VERIFIED = 'Verified',
+	REJECTED = 'Rejected',
+}
+
+export function getVerificationStatus(user: User): VerificationStatuses {
+	if (user.isVerified && user.verifiedAt) {
+		return VerificationStatuses.VERIFIED
+	}
+	if (!user.isVerified && user.verifiedAt) {
+		return VerificationStatuses.REJECTED
+	}
+	return VerificationStatuses.PENDING
+}
 
 const VerificationStatus = ({ user }: { user: User }) => {
-	const isVerified = user.isVerified && user.verifiedAt
-	const isRejected = !user.isVerified && user.verifiedAt
+	const isVerified =
+		getVerificationStatus(user) === VerificationStatuses.VERIFIED
+	const isRejected =
+		getVerificationStatus(user) === VerificationStatuses.REJECTED
 
 	if (isVerified)
 		return (
