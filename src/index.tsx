@@ -9,12 +9,15 @@ import { store } from './store'
 import theme from './theme'
 
 import './index.css'
+import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.render(
 	<React.StrictMode>
 		<ChakraProvider theme={theme}>
 			<Provider store={store}>
-				<App />
+				<BrowserRouter>
+					<App />
+				</BrowserRouter>
 			</Provider>
 		</ChakraProvider>
 	</React.StrictMode>,

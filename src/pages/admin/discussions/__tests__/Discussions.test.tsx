@@ -11,4 +11,6 @@ describe('<DiscussionsPage />', () => {
 			'Here you will see all the available discussions',
 		)
 	})
+
+	it.todo('should open drawer on click "Add Discussion"')
 })

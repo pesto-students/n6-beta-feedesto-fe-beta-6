@@ -1,46 +1,65 @@
-# Getting Started with Create React App
+# Feedesto - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This system will help in taking the biggest decisions for corporates. i.e. determining the correct workforce to have in leading positions. The accurate analytics of anonymous responses is the key.
 
-## Available Scripts
+## Feedesto Overview
 
-In the project directory, you can run:
+Considering the fact that there are many such industries (Textile, Diamond, Mining, Labour, etc.) in which analytical metrics may not be available through direct sources and that makes deciding of appraisals and promotions tough.
 
-### `yarn start`
+The corporates who have got better thinkers in their management structure are performing far better than their competitors.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Feedesto provides a Complete and Concrete solution to help executives in the decision making process for promotions or appraisals of the employees through anonymous discussions and feedback.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Getting Started
 
-### `yarn test`
+[Try it out](https://feedesto.com)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Dependencies
 
-### `yarn build`
+-   Node.JS
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. Installing
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+-   Clone this repo by executing
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    ```
+    git clone https://github.com/pesto-students/n6-beta-feedesto-fe-beta-6.git feedesto-fe
+    ```
 
-### `yarn eject`
+-   Switch to the cloned repo by executing
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+    ```
+    cd feedesto-fe
+    ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 2. Installing dependencies
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```jsx
+yarn // if you are using yarn
+npm install
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 3. Executing program
 
-## Learn More
+```jsx
+yarn dev // if you are using yarn
+npm run dev
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Authors
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+[harshitsangani - Overview](https://github.com/harshitsangani)
+
+[Harshpinder-singh - Overview](https://github.com/Harshpinder-singh)
+
+## Version History
+
+-   0.2
+    -   Various bug fixes and optimizations
+    -   See commit change or See release history
+-   0.1
+    -   Initial Release
+
+## License
+
+This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details

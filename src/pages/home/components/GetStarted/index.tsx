@@ -1,32 +1,26 @@
-import {
-	GoogleLoginResponse,
-	GoogleLoginResponseOffline,
-} from 'react-google-login'
-import { useSelector } from 'react-redux'
-import { RootState } from 'store'
-import { LoginType, SelectedTab } from '../../../../types/enums'
-import EntityTypeInput from './EntityTypeInput'
+import { useState } from 'react'
+import { GoogleLoginResponse } from 'react-google-login'
+import { LoginStep, LoginType } from '../../../../types/enums'
+import LoginUserWithGoogle from './LoginUserWithGoogle'
 import OrganizationDetailInputs from './OrganizationDetailInputs'
 import UserDetailInputs from './UserDetailInputs'
 
-interface GetStartedComponentProps {
-	onLoginSuccess: (
-		response: GoogleLoginResponse | GoogleLoginResponseOffline,
-	) => void
-	onLoginFailure: (response: GoogleLoginResponse) => void
-}
+const GetStarted: React.FC = () => {
+	const [loginStep, setLoginStep] = useState<LoginStep>(LoginStep.LOGIN)
+	const [loginType, setLoginType] = useState<LoginType>(LoginType.USER)
+	const [googleResponse, setGoogleResponse] = useState<GoogleLoginResponse>()
 
-const GetStarted = ({
-	onLoginSuccess,
-	onLoginFailure,
-}: GetStartedComponentProps) => {
-	let auth = useSelector((state: RootState) => state.auth)
-
-	const activeEntityView =
-		auth.loginType === LoginType.USER ? (
-			<UserDetailInputs />
+	const registrationInputView =
+		loginType === LoginType.USER ? (
+			<UserDetailInputs
+				handleLoginStepChange={(step) => setLoginStep(step)}
+				googleResponse={googleResponse}
+			/>
 		) : (
-			<OrganizationDetailInputs />
+			<OrganizationDetailInputs
+				handleLoginStepChange={(step) => setLoginStep(step)}
+				googleResponse={googleResponse}
+			/>
 		)
 
 	return (
@@ -35,13 +29,17 @@ const GetStarted = ({
 				<div className="border-b border-gray-200 p-4 text-2xl font-semibold text-gray-600 text-center">
 					Get Started
 				</div>
-				{auth.selectedTab === SelectedTab.GET_STARTED ? (
-					<EntityTypeInput
-						onLoginSuccess={onLoginSuccess}
-						onLoginFailure={onLoginFailure}
+				{loginStep === LoginStep.LOGIN ? (
+					<LoginUserWithGoogle
+						loginType={loginType}
+						handleLoginTypeChange={(type) => setLoginType(type)}
+						handleLoginStepChange={(step, googleResponse) => {
+							setGoogleResponse(googleResponse)
+							setLoginStep(step)
+						}}
 					/>
 				) : (
-					activeEntityView
+					registrationInputView
 				)}
 			</div>
 		</div>
@@ -49,4 +47,4 @@ const GetStarted = ({
 }
 export default GetStarted
 
-export { EntityTypeInput, OrganizationDetailInputs, UserDetailInputs }
+export { LoginUserWithGoogle, OrganizationDetailInputs, UserDetailInputs }
