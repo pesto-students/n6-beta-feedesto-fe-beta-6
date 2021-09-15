@@ -80,7 +80,8 @@ const DiscussionsPage = () => {
 
 	const [discussionList, setDiscussionList] = useState<Discussion[]>([])
 	const fetchDiscussionList = async () => {
-		setDiscussionList(await fetchDiscussions())
+		const discussions = await fetchDiscussions()
+		setDiscussionList(discussions)
 	}
 
 	const discussionController: {

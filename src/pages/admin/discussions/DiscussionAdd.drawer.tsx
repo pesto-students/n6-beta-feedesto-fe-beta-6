@@ -11,6 +11,7 @@ import {
 	Td,
 	Textarea,
 	Tr,
+	useDisclosure,
 } from '@chakra-ui/react'
 import FormDrawer from 'components/drawer/FormDrawer'
 import { useEffect, useState } from 'react'
@@ -94,7 +95,7 @@ export default function DiscussionAddDrawer({
 		<FormDrawer
 			formId="discussion-add-drawer"
 			title="Add Discussion"
-			drawer={drawer!}
+			drawer={drawer ?? useDisclosure()}
 			form={form}
 			onSubmit={() => onSubmit()}
 		>
@@ -103,6 +104,7 @@ export default function DiscussionAddDrawer({
 					<FormLabel htmlFor="title">Title</FormLabel>
 					<Input
 						id="title"
+						data-testid="title-input"
 						placeholder="Please enter discussion title"
 						value={form.fields.title}
 						onChange={(e) => {
