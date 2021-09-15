@@ -2,6 +2,10 @@
 	"name": "n6-beta-feedesto-fe-beta-6",
 	"version": "0.1.0",
 	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/pesto-students/n6-beta-feedesto-fe-beta-6.git"
+	},
 	"dependencies": {
 		"@bugsnag/js": "^7.11.0",
 		"@bugsnag/plugin-react": "^7.11.0",

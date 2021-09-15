@@ -6,23 +6,20 @@ import DiscussionStatus from '../DiscussionStatus'
 describe('<DiscussionStatus />', () => {
 	const discussions = generateDiscussions(10)
 	const now = new Date()
-	let findLabel: HTMLElement
 
 	for (let i = 0; i < discussions.length; i++) {
 		const discussion = discussions[i]
 		it('should show Appropriate label', async () => {
-			const { findByTestId } = render(
+			const { getByText } = render(
 				<DiscussionStatus discussion={discussion} />,
 			)
 
-			findLabel = await findByTestId('label')
-
 			if (dayjs(discussion.endDate).isBefore(now)) {
-				expect(findLabel.textContent).toBe('Completed')
+				getByText('Completed')
 			} else if (dayjs(discussion.startDate).isAfter(now)) {
-				expect(findLabel.textContent).toBe('Upcoming')
+				getByText('Upcoming')
 			} else {
-				expect(findLabel.textContent).toBe('Live')
+				getByText('Live')
 			}
 		})
 	}

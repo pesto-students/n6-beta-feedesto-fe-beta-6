@@ -3,7 +3,7 @@ import { render } from 'utils/testUtils'
 
 describe('<DeleteItemDialog />', () => {
 	const title = 'Delete Item'
-	const { findByTestId } = render(
+	const { getByText } = render(
 		<DeleteItemDialog
 			title={title}
 			isOpen={true}
@@ -13,8 +13,7 @@ describe('<DeleteItemDialog />', () => {
 	)
 
 	it('should show given title', async () => {
-		const findTitle = await findByTestId('title')
-		expect(findTitle.textContent).toBe(title)
+		getByText(title)
 	})
 
 	it.todo('should show cancel button')

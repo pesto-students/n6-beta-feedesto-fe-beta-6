@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
+import { Organization } from '../organization/organizationSlice'
 
 export interface User {
 	_id: string
@@ -8,6 +9,7 @@ export interface User {
 	googleUserId: string
 	googleAvatarUrl?: string
 	organizationId: string
+	organization?: Organization
 	isAdmin: boolean
 	isVerified: boolean
 	createdAt: string

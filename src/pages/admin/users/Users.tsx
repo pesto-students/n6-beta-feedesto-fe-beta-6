@@ -301,7 +301,6 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 											<div className="text-xs text-gray-600">
 												Google ID:{' '}
 												{user.googleUserId || 'N/A'}
-												{/* TODO: [FEEDESTO-52] Add Organization Name here instead of ID */}
 											</div>
 										</div>
 									</div>
@@ -309,8 +308,7 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 								<Td>
 									<div>{user.email}</div>
 									<div className="text-xs text-gray-600">
-										Organization: {user.organizationId}
-										{/* TODO: Add Organization Name here instead of ID */}
+										Organization: {user.organization?.name}
 									</div>
 								</Td>
 								<Td>
