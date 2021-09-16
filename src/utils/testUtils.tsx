@@ -12,7 +12,9 @@ TimeAgo.addDefaultLocale(en)
 const AllTheProviders: FC = ({ children }) => {
 	return (
 		<ChakraProvider theme={theme}>
-			<Provider store={store}>{children}</Provider>
+			<Provider store={store}>
+				<BrowserRouter>{children}</BrowserRouter>
+			</Provider>
 		</ChakraProvider>
 	)
 }
