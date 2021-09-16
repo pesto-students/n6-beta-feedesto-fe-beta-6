@@ -24,7 +24,7 @@ const GetStarted: React.FC = () => {
 		)
 
 	return (
-		<div className="bg-gray-100 rounded-2xl ">
+		<div className="bg-gray-100 rounded-2xl border shadow-xl">
 			<div>
 				<div className="border-b border-gray-200 p-4 text-2xl font-semibold text-gray-600 text-center">
 					Get Started
