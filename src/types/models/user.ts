@@ -1,6 +1,6 @@
 import faker from 'faker'
 import { fakeGoogleId, fakeId } from '__mocks__/utils'
-import { Organization } from 'store/modules/organization/organizationSlice'
+import { Organization } from './organization'
 
 export interface User {
 	_id: string

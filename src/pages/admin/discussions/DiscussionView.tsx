@@ -16,10 +16,11 @@ import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { Form } from 'services/form'
 import { RootState } from 'store'
-import { Answer, fetchAnswers } from 'store/modules/answer/answerSlice'
+import { fetchAnswers } from 'store/modules/answer/answerSlice'
 import { fetchDiscussions } from 'store/modules/discussion/discussionSlice'
-import { FormDrawerController } from 'types/types'
+import { Answer } from 'types/models/answer'
 import { Discussion } from 'types/models/discussion'
+import { FormDrawerController } from 'types/types'
 
 export interface AddAnswerBody {
 	discussionId: string

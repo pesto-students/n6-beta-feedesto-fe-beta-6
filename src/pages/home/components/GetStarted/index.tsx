@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { GoogleLoginResponse } from 'react-google-login'
-import { LoginStep, LoginType } from '../../../../types/enums'
+import { LoginStep, LoginType } from 'types/enums'
 import LoginUserWithGoogle from './LoginUserWithGoogle'
 import OrganizationDetailInputs from './OrganizationDetailInputs'
 import UserDetailInputs from './UserDetailInputs'

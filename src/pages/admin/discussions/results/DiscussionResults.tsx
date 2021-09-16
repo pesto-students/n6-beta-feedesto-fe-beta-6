@@ -15,11 +15,10 @@ import { Routes } from 'navigation/routes'
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import {
-	Discussion,
-	DiscussionResult,
 	fetchDiscussionResultList,
 	fetchDiscussions,
 } from 'store/modules/discussion/discussionSlice'
+import { Discussion, DiscussionResult } from 'types/models/discussion'
 import DiscussionStatus, {
 	DiscussionStatuses,
 	getDiscussionStatus,

@@ -11,7 +11,7 @@ import { setAuthLoginType, setAuthToken } from 'store/modules/auth/authSlice'
 import { fetchUserDetails, setCurrentUser } from 'store/modules/user/userSlice'
 import { FormController } from 'types/types'
 import { User } from 'types/models/user'
-import { LoginStep, LoginType } from '../../../../types/enums'
+import { LoginStep, LoginType } from 'types/enums'
 
 export interface RegisterOrganizationBody {
 	name: string

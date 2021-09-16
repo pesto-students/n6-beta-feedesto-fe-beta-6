@@ -1,5 +1,6 @@
 import { Tag, TagLabel } from '@chakra-ui/react'
-import { User } from 'store/modules/user/userSlice'
+import { User } from 'types/models/user'
+
 export enum VerificationStatuses {
 	PENDING = 'Pending',
 	VERIFIED = 'Verified',

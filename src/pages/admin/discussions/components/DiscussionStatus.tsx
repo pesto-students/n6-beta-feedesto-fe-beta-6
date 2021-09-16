@@ -1,6 +1,7 @@
 import { Tag, TagLabel } from '@chakra-ui/react'
-import { Discussion } from 'store/modules/discussion/discussionSlice'
+
 import dayjs from 'dayjs'
+import { Discussion } from 'types/models/discussion'
 
 export enum DiscussionStatuses {
 	PENDING,
