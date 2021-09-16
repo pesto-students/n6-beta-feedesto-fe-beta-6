@@ -1,6 +1,7 @@
 import { Tag, TagLabel } from '@chakra-ui/react'
-import { Discussion } from 'store/modules/discussion/discussionSlice'
+
 import dayjs from 'dayjs'
+import { Discussion } from 'types/models/discussion'
 
 export enum DiscussionStatuses {
 	PENDING,
@@ -39,7 +40,9 @@ const DiscussionStatus = ({ discussion }: { discussion: Discussion }) => {
 				title="Upcoming"
 			>
 				<div className="h-2 w-2 rounded-full bg-yellow-700 mr-1"></div>
-				<TagLabel className="text-yellow-700">Upcoming</TagLabel>
+				<TagLabel data-testid="label" className="text-yellow-700">
+					Upcoming
+				</TagLabel>
 			</Tag>
 		)
 	if (status === DiscussionStatuses.COMPLETED)
@@ -50,14 +53,18 @@ const DiscussionStatus = ({ discussion }: { discussion: Discussion }) => {
 				title="Completed"
 			>
 				<div className="h-2 w-2 rounded-full bg-blue-700 mr-1"></div>
-				<TagLabel className="text-blue-700">Completed</TagLabel>
+				<TagLabel data-testid="label" className="text-blue-700">
+					Completed
+				</TagLabel>
 			</Tag>
 		)
 	if (status === DiscussionStatuses.LIVE)
 		return (
 			<Tag appearance="radio" backgroundColor="green.100" title="Live">
 				<div className="h-2 w-2 rounded-full bg-green-700 mr-1"></div>
-				<TagLabel className="text-green-700">Live</TagLabel>
+				<TagLabel data-testid="label" className="text-green-700">
+					Live
+				</TagLabel>
 			</Tag>
 		)
 	return null

@@ -1,23 +1,34 @@
 import { ChevronLeftIcon } from '@chakra-ui/icons'
 import { Button, Input, Link, Select } from '@chakra-ui/react'
+import { Routes } from 'navigation/routes'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { registerUser } from 'store/modules/auth/services'
-import { RootState } from '../../../../store'
-import {
-	fillAuthRegisterUserFields,
-	setAuthSelectedTab,
-} from '../../../../store/modules/auth/authSlice'
-import {
-	fetchOrganizations,
-	Organization,
-} from '../../../../store/modules/organization/organizationSlice'
-import { SelectedTab } from '../../../../types/enums'
+import { GoogleLoginResponse } from 'react-google-login'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { Form } from 'services/form'
+import { setAuthLoginType, setAuthToken } from 'store/modules/auth/authSlice'
+import { fetchUserDetails, setCurrentUser } from 'store/modules/user/userSlice'
+import { FormController } from 'types/types'
+import { User } from 'types/models/user'
+import { fetchOrganizations } from 'store/modules/organization/organizationSlice'
+import { LoginStep, LoginType } from 'types/enums'
+import { Organization } from 'types/models/organization'
 
-const UserDetailInputs: React.FC = () => {
+export interface RegisterUserBody {
+	name: string
+	email: string
+	googleUserId: string
+	googleAvatarUrl?: string
+	organizationId: string
+}
+
+const UserDetailInputs: React.FC<{
+	handleLoginStepChange: (step: LoginStep) => void
+	googleResponse?: GoogleLoginResponse
+}> = ({ handleLoginStepChange, googleResponse }) => {
 	const dispatch = useDispatch()
-	const { auth } = useSelector((state: RootState) => state)
-
+	const history = useHistory()
 	const [organizationList, setOrganizationList] = useState<Organization[]>([])
 
 	const fetchOrganizationList = async () => {
@@ -28,6 +39,73 @@ const UserDetailInputs: React.FC = () => {
 		fetchOrganizationList()
 	}, [])
 
+	const fillRegistrationPrefillDetails = (response: GoogleLoginResponse) => {
+		const name = response.getBasicProfile().getName()
+		const email = response.getBasicProfile().getEmail()
+		const googleAvatarUrl = response.getBasicProfile().getImageUrl()
+		const googleUserId = response.getBasicProfile().getId()
+
+		registerUserController.updateFields({
+			name,
+			email,
+			googleUserId,
+			googleAvatarUrl,
+		})
+	}
+
+	useEffect(() => {
+		if (googleResponse) {
+			fillRegistrationPrefillDetails(googleResponse)
+		}
+	}, [googleResponse])
+
+	// Register User in step 2 if account does not exist
+	const registerUserFormFieldsInitial: RegisterUserBody = {
+		googleUserId: '',
+		name: '',
+		email: '',
+		organizationId: '',
+	}
+	const [registerUserFormFields, setRegisterUserFormFields] = useState<
+		Partial<RegisterUserBody>
+	>(registerUserFormFieldsInitial)
+
+	const registerUserController: FormController<RegisterUserBody> = {
+		form: new Form(registerUserFormFields),
+		updateFields: (props) =>
+			setRegisterUserFormFields({
+				...registerUserFormFields,
+				...props,
+			}),
+		async onSubmit() {
+			try {
+				const response = await registerUserController.form.submit(
+					'auth/register/user',
+					{
+						method: 'POST',
+					},
+				)
+
+				dispatch(setAuthToken(response.token))
+				dispatch(setAuthLoginType(LoginType.USER))
+
+				const [user]: User[] | undefined = await fetchUserDetails()
+				if (user) {
+					toast.success('Authentication Successful', {
+						position: 'bottom-right',
+					})
+
+					dispatch(setCurrentUser(user))
+					history.push(Routes.ADMIN_USERS)
+				} else {
+					toast.error('Some error occured while finding user')
+				}
+			} catch (err) {
+				console.log(err)
+			}
+		},
+	}
+
 	return (
 		<div className="px-6 pt-3 pb-6">
 			<div>
@@ -36,13 +114,11 @@ const UserDetailInputs: React.FC = () => {
 					<Input
 						placeholder="Saurabh Singh"
 						background="white"
-						value={auth.registerUserForm.name}
+						value={registerUserController.form.fields.name}
 						onChange={(e) =>
-							dispatch(
-								fillAuthRegisterUserFields({
-									name: e.target.value,
-								}),
-							)
+							registerUserController.updateFields({
+								name: e.target.value,
+							})
 						}
 					/>
 				</div>
@@ -53,13 +129,13 @@ const UserDetailInputs: React.FC = () => {
 					<Select
 						placeholder="Select option"
 						background="white"
-						value={auth.registerUserForm.organizationId}
+						value={
+							registerUserController.form.fields.organizationId
+						}
 						onChange={(val) => {
-							dispatch(
-								fillAuthRegisterUserFields({
-									organizationId: val.target.value,
-								}),
-							)
+							registerUserController.updateFields({
+								organizationId: val.target.value,
+							})
 						}}
 					>
 						{organizationList.map((org) => (
@@ -77,9 +153,7 @@ const UserDetailInputs: React.FC = () => {
 					_hover={{ bg: 'gray.800' }}
 					_active={{ bg: 'gray.700' }}
 					isFullWidth={true}
-					onClick={() =>
-						dispatch(registerUser(auth.registerUserForm))
-					}
+					onClick={() => registerUserController.onSubmit()}
 				>
 					Finish
 				</Button>
@@ -88,7 +162,7 @@ const UserDetailInputs: React.FC = () => {
 				<Link
 					color="gray.600"
 					onClick={() => {
-						dispatch(setAuthSelectedTab(SelectedTab.GET_STARTED))
+						handleLoginStepChange(LoginStep.LOGIN)
 					}}
 				>
 					<div className="flex items-center justify-center">

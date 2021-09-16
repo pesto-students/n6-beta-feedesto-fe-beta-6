@@ -1,11 +1,13 @@
 import { Box, Image } from '@chakra-ui/react'
 import * as Icons from 'react-bootstrap-icons'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'store'
 import { logOutUser } from 'store/modules/auth/authSlice'
 import SidebarItem, { SidebarItemProps } from './SidebarItem'
 
 const Sidebar = ({ items }: { items: SidebarItemProps[] }) => {
 	const dispatch = useDispatch()
+	const { user } = useSelector((state: RootState) => state)
 
 	const handleLogOut = () => {
 		dispatch(logOutUser())
@@ -14,8 +16,11 @@ const Sidebar = ({ items }: { items: SidebarItemProps[] }) => {
 		<Box alignSelf="center">
 			<div className="w-full text-center p-4">
 				<Image alt="Feedesto Logo" src="/feedesto-logo.png"></Image>
-				<div className="font-semibold p-2 text-sm text-gray-700">
-					Admin
+				<div className="font-semibold p-2">
+					<div>{user.currentUser.name}</div>
+					<div className="font-normal text-sm text-gray-700">
+						{user.currentUser.organization?.name}
+					</div>
 				</div>
 				<div className="my-2">
 					{items.map((item, index) => (

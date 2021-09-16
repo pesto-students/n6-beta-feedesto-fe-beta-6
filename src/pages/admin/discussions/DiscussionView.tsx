@@ -9,19 +9,18 @@ import {
 } from '@chakra-ui/react'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
+import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
 import { useEffect, useState } from 'react'
 import * as Icons from 'react-bootstrap-icons'
 import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import { VariableSizeList } from 'react-window'
 import { Form } from 'services/form'
 import { RootState } from 'store'
-import { Answer, fetchAnswers } from 'store/modules/answer/answerSlice'
-import {
-	Discussion,
-	fetchDiscussions,
-} from 'store/modules/discussion/discussionSlice'
+import { fetchAnswers } from 'store/modules/answer/answerSlice'
+import { fetchDiscussions } from 'store/modules/discussion/discussionSlice'
+import { Answer } from 'types/models/answer'
+import { Discussion } from 'types/models/discussion'
 import { FormDrawerController } from 'types/types'
 
 export interface AddAnswerBody {
@@ -52,11 +51,12 @@ export interface AddCommentDownvoteBody {
 	commentId: string
 }
 
-const DiscussionPage = () => {
+const DiscussionViewPage = () => {
 	const params = useParams<{ id: string }>()
 	const discussionId = params.id
 	const { user: userStore } = useSelector((state: RootState) => state)
 	const history = useHistory()
+	const timeAgo = new TimeAgo('en-US')
 
 	const [answerList, setAnswerList] = useState<
 		(Answer & { addCommentForm: Form<AddCommentBody> })[]
@@ -273,9 +273,11 @@ const DiscussionPage = () => {
 
 	const isAdmin = userStore.currentUser.isAdmin
 
-	const Row = ({ index }: any) => {
-		const answer = (answerList || [])[index]
-
+	const Answer = ({
+		answer,
+	}: {
+		answer: Answer & { addCommentForm: Form<AddCommentBody> }
+	}) => {
 		return (
 			<div key={answer._id} className="my-4">
 				<div className="flex">
@@ -350,29 +352,38 @@ const DiscussionPage = () => {
 							<div className="flex items-center ml-2 my-1">
 								<Avatar
 									size="2xs"
-									src={answer.userId?.googleAvatarUrl}
+									src={answer.user?.googleAvatarUrl}
 								/>
 								<div className="text-xs pl-1">
-									{answer.userId?.name}
+									{answer.user?.name}
 								</div>
 							</div>
 						)}
 						<div className="relative">
 							<div
 								className={classNames(
-									'ml-2 px-5 py-3 rounded-2xl rounded-tl-md bg-gray-200',
+									'ml-2 px-5 py-4 rounded-2xl rounded-tl-md bg-gray-200',
 									{
 										'bg-gray-700 text-white':
-											answer.userId?._id ===
+											answer.user?._id ===
 											userStore.currentUser._id,
 									},
 								)}
 							>
 								{answer.content}
 							</div>
-							<div className="absolute bottom-1 right-3 text-xs text-gray-500">
-								{dayjs(new Date(answer.createdAt)).format(
-									'D MMM, h:mm A',
+							<div
+								className={classNames(
+									'absolute bottom-1 right-3 text-xs ',
+									answer.user &&
+										answer.user._id ==
+											userStore.currentUser._id
+										? 'text-gray-300'
+										: 'text-gray-500',
+								)}
+							>
+								{timeAgo.format(
+									dayjs(new Date(answer.createdAt)).toDate(),
 								)}
 							</div>
 						</div>
@@ -466,26 +477,22 @@ const DiscussionPage = () => {
 														<Avatar
 															size="2xs"
 															src={
-																comment.userId
+																comment.user
 																	?.googleAvatarUrl
 															}
 														/>
 														<div className="text-xs pl-1">
-															{
-																comment.userId
-																	?.name
-															}
+															{comment.user?.name}
 														</div>
 													</div>
 												)}
 												<div className="relative">
 													<div
 														className={classNames(
-															'ml-2 px-4 py-2 rounded-xl rounded-tl-md bg-gray-100',
+															'ml-2 px-4 py-3 rounded-xl rounded-tl-md bg-gray-100',
 															{
 																'bg-gray-600 text-white':
-																	comment
-																		.userId
+																	comment.user
 																		?._id ===
 																	userStore
 																		.currentUser
@@ -496,13 +503,25 @@ const DiscussionPage = () => {
 														{comment.content}
 													</div>
 
-													<div className="absolute bottom-1 right-3 text-xs text-gray-400">
-														{dayjs(
-															new Date(
-																comment.createdAt,
-															),
-														).format(
-															'D MMM, h:mm A',
+													<div
+														className={classNames(
+															'absolute bottom-1 right-3 text-xs ',
+															comment.user &&
+																comment.user
+																	._id ==
+																	userStore
+																		.currentUser
+																		._id
+																? 'text-gray-300'
+																: 'text-gray-400',
+														)}
+													>
+														{timeAgo.format(
+															dayjs(
+																new Date(
+																	comment.createdAt,
+																),
+															).toDate(),
 														)}
 													</div>
 												</div>
@@ -556,7 +575,7 @@ const DiscussionPage = () => {
 	return (
 		<div className="h-full">
 			<div className="grid grid-cols-2 h-full">
-				<div className="col-span-1 bg-gray-200 h-full overflow-hidden">
+				<div className="col-span-1 bg-gray-200 h-screen overflow-hidden">
 					<div className="p-4">
 						<div className="text-2xl font-semibold">
 							{discussionDetails.title}
@@ -577,8 +596,8 @@ const DiscussionPage = () => {
 						</div>
 					</div>
 				</div>
-				<div className="col-span-1 overflow-y-scroll">
-					<div className="p-3">
+				<div className="col-span-1 h-screen overflow-x-hidden">
+					<div className="p-3 overflow-y-scroll">
 						<div className="flex flex-col">
 							{!isAdmin && (
 								<div className="flex-none">
@@ -633,17 +652,10 @@ const DiscussionPage = () => {
 									</div>
 								</div>
 							)}
-							<div className="flex-1">
-								<VariableSizeList
-									height={
-										screen.height / (isAdmin ? 1.1 : 1.6)
-									}
-									width={screen.width / 2.1}
-									itemCount={answerList.length}
-									itemSize={(i: number) => 50}
-								>
-									{Row}
-								</VariableSizeList>
+							<div className="flex-1 pb-20">
+								{answerList.map((answer, index) => (
+									<Answer answer={answer} key={answer._id} />
+								))}
 							</div>
 						</div>
 					</div>
@@ -653,4 +665,4 @@ const DiscussionPage = () => {
 	)
 }
 
-export default DiscussionPage
+export default DiscussionViewPage

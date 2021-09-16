@@ -1,5 +1,5 @@
 export const checkSearchText = (
-	origin: string | string[],
+	origin: string | (string | undefined)[],
 	searchTerm: string,
 ) => {
 	let searchFlag = false
@@ -8,8 +8,9 @@ export const checkSearchText = (
 	}
 	origin.forEach((el) => {
 		if (
+			el &&
 			el.trim().toUpperCase().indexOf(searchTerm.trim().toUpperCase()) >
-			-1
+				-1
 		) {
 			searchFlag = true
 		}

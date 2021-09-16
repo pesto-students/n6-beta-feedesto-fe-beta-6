@@ -20,7 +20,7 @@ const DeleteItemDialog = ({
 	title: string
 	subtitle?: string
 	isOpen: boolean
-	cancelRef: React.MutableRefObject<null>
+	cancelRef?: React.MutableRefObject<null>
 	onCancel: () => void
 	onDelete: () => void
 }) => {
@@ -32,7 +32,11 @@ const DeleteItemDialog = ({
 		>
 			<AlertDialogOverlay>
 				<AlertDialogContent>
-					<AlertDialogHeader fontSize="lg" fontWeight="bold">
+					<AlertDialogHeader
+						fontSize="lg"
+						fontWeight="bold"
+						data-testid="title"
+					>
 						{title}
 					</AlertDialogHeader>
 
@@ -42,10 +46,19 @@ const DeleteItemDialog = ({
 					</AlertDialogBody>
 
 					<AlertDialogFooter>
-						<Button ref={cancelRef} onClick={onCancel}>
+						<Button
+							ref={cancelRef}
+							onClick={onCancel}
+							data-testid="cancel-btn"
+						>
 							Cancel
 						</Button>
-						<Button colorScheme="red" onClick={onDelete} ml={3}>
+						<Button
+							colorScheme="red"
+							onClick={onDelete}
+							ml={3}
+							data-testid="delete-btn"
+						>
 							Delete
 						</Button>
 					</AlertDialogFooter>

@@ -8,3 +8,9 @@ export type FormDrawerController<T> = {
 	load?: (payload?: any) => void
 	onSubmit: (payload?: any) => void
 }
+
+export type FormController<T> = {
+	form: Form<Partial<T>>
+	updateFields: (props: Partial<T>) => void
+	onSubmit: (payload?: any) => void
+}

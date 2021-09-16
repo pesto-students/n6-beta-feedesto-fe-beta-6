@@ -6,12 +6,12 @@ import { Routes } from './routes'
 
 const UserPrivateRoute = ({ children, ...args }: any) => {
 	const { auth } = useSelector((state: RootState) => state)
-
+	const isAuthenticated = auth.authToken
 	return (
 		<Route
 			{...args}
 			render={({ location }) =>
-				auth.isAuthenticated ? (
+				isAuthenticated ? (
 					<UserLayout>{children}</UserLayout>
 				) : (
 					<Redirect

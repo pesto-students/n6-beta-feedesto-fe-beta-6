@@ -7,11 +7,12 @@ import { Routes } from './routes'
 
 const OrganizationPrivateRoute = ({ children, ...args }: any) => {
 	const { auth } = useSelector((state: RootState) => state)
+	const isAuthenticated = auth.authToken
 	return (
 		<Route
 			{...args}
 			render={({ location }) =>
-				auth.isAuthenticated ? (
+				isAuthenticated ? (
 					auth.loginType === LoginType.ORGANIZATION ? (
 						<AdminLayout>
 							<>{children}</>

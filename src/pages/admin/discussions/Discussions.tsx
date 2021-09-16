@@ -1,6 +1,9 @@
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
+	Avatar,
+	AvatarGroup,
 	Button,
+	ButtonGroup,
 	IconButton,
 	Table,
 	TableCaption,
@@ -18,11 +21,10 @@ import { Routes } from 'navigation/routes'
 import { useEffect, useRef, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Form } from 'services/form'
-import {
-	Discussion,
-	fetchDiscussions,
-} from 'store/modules/discussion/discussionSlice'
+import { fetchDiscussions } from 'store/modules/discussion/discussionSlice'
+import { DiscussionListType } from 'types/enums'
 import { FormDrawerController } from 'types/types'
+import { Discussion } from 'types/models/discussion'
 import DiscussionStatus from './components/DiscussionStatus'
 import DiscussionAddDrawer, { AddDiscussionBody } from './DiscussionAdd.drawer'
 import DiscussionUpdateDrawer, {
@@ -33,7 +35,7 @@ export interface DeleteDiscussionBody {
 	_id: string
 }
 
-const DiscussionsPage = () => {
+const DiscussionsPage: React.FC<{ isAdmin: boolean }> = ({ isAdmin }) => {
 	const timeAgo = new TimeAgo('en-US')
 	const history = useHistory()
 
@@ -80,6 +82,20 @@ const DiscussionsPage = () => {
 
 	const [discussionList, setDiscussionList] = useState<Discussion[]>([])
 	const fetchDiscussionList = async () => {
+		const discussions = await fetchDiscussions()
+		setDiscussionList(discussions)
+	}
+
+	const [discussionListType, setDiscussionListType] =
+		useState<DiscussionListType>(DiscussionListType.PARTICIPANT)
+
+	const fetchDiscussionListAsParticipant = async () => {
+		setDiscussionListType(DiscussionListType.PARTICIPANT)
+		setDiscussionList(await fetchDiscussions({ asParticipant: true }))
+	}
+
+	const fetchDiscussionListAsViewer = async () => {
+		setDiscussionListType(DiscussionListType.VIEWER)
 		setDiscussionList(await fetchDiscussions())
 	}
 
@@ -91,11 +107,16 @@ const DiscussionsPage = () => {
 		add: {
 			drawer: discussionAddDrawer,
 			form: new Form(addDiscussionFormFields),
-			updateFields: (props) =>
+			updateFields: (props) => {
 				setAddDiscussionFormFields({
 					...addDiscussionFormFields,
 					...props,
-				}),
+				})
+				discussionController.add.form.fields = {
+					...addDiscussionFormFields,
+					...props,
+				}
+			},
 			async onSubmit() {
 				try {
 					await discussionController.add.form.submit('discussion', {
@@ -112,7 +133,7 @@ const DiscussionsPage = () => {
 		update: {
 			drawer: discussionUpdateDrawer,
 			form: new Form(updateDiscussionFormFields),
-			updateFields: (props) =>
+			updateFields: (props) => {
 				setUpdateDiscussionFormFields({
 					...updateDiscussionFormFields,
 					...props,
@@ -120,7 +141,16 @@ const DiscussionsPage = () => {
 						...updateDiscussionFormFields.update,
 						...props.update,
 					},
-				}),
+				})
+				discussionController.update.form.fields = {
+					...updateDiscussionFormFields,
+					...props,
+					update: {
+						...updateDiscussionFormFields.update,
+						...props.update,
+					},
+				}
+			},
 			load: (discussion: Discussion) => {
 				discussionController.update.updateFields({
 					_id: discussion._id,
@@ -157,11 +187,16 @@ const DiscussionsPage = () => {
 		},
 		delete: {
 			form: new Form(deleteDiscussionFormFields),
-			updateFields: (props) =>
+			updateFields: (props) => {
 				setDeleteDiscussionFormFields({
 					...deleteDiscussionFormFields,
 					...props,
-				}),
+				})
+				discussionController.delete.form.fields = {
+					...deleteDiscussionFormFields,
+					...props,
+				}
+			},
 			async onSubmit() {
 				await discussionController.delete.form.submit('discussion', {
 					method: 'DELETE',
@@ -172,12 +207,96 @@ const DiscussionsPage = () => {
 	}
 
 	const routeToDiscussionView = (discussion: Discussion) => {
-		history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)
+		if (isAdmin) {
+			history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)
+		} else {
+			history.push(Routes.DISCUSSION_VIEW + '/' + discussion._id)
+		}
+	}
+	if (isAdmin) {
+		useEffect(() => {
+			fetchDiscussionList()
+		}, [])
+	} else {
+		useEffect(() => {
+			fetchDiscussionListAsParticipant()
+		}, [])
 	}
 
+	const [didMount, setDidMount] = useState(false)
+
 	useEffect(() => {
-		fetchDiscussionList()
+		setDidMount(true)
+		return () => setDidMount(false)
 	}, [])
+
+	if (!didMount) {
+		return null
+	}
+
+	const ViewerParticipantSwitch: React.FC = () => {
+		return (
+			<div className="my-3 text-center">
+				<ButtonGroup size="sm" isAttached variant="outline">
+					<Button
+						onClick={() => fetchDiscussionListAsParticipant()}
+						bgColor={
+							discussionListType === DiscussionListType.VIEWER
+								? 'gray.200'
+								: ''
+						}
+						_hover={{
+							bgColor:
+								discussionListType ===
+								DiscussionListType.PARTICIPANT
+									? ''
+									: 'gray.100',
+						}}
+					>
+						Participant
+					</Button>
+					<Button
+						onClick={() => fetchDiscussionListAsViewer()}
+						bgColor={
+							discussionListType ===
+							DiscussionListType.PARTICIPANT
+								? 'gray.200'
+								: ''
+						}
+						_hover={{
+							bgColor:
+								discussionListType === DiscussionListType.VIEWER
+									? ''
+									: 'gray.100',
+						}}
+					>
+						Viewer
+					</Button>
+				</ButtonGroup>
+			</div>
+		)
+	}
+
+	const administrativeDialogs = (
+		<>
+			<DiscussionAddDrawer
+				controller={discussionController.add}
+			></DiscussionAddDrawer>
+			<DiscussionUpdateDrawer
+				controller={discussionController.update}
+			></DiscussionUpdateDrawer>
+			<DeleteItemDialog
+				title="Delete Discussion"
+				isOpen={isDeleteDiscussionDialogOpen}
+				cancelRef={deleteDiscussionDialogCancelRef}
+				onCancel={onDeleteDiscussionDialogClose}
+				onDelete={() => {
+					onDeleteDiscussionDialogClose()
+					discussionController.delete.onSubmit()
+				}}
+			/>
+		</>
+	)
 
 	return (
 		<div>
@@ -190,17 +309,20 @@ const DiscussionsPage = () => {
 						Here you will see all the available discussions
 					</div>
 				</div>
-				<div>
-					<Button
-						leftIcon={<AddIcon />}
-						colorScheme="teal"
-						onClick={discussionController.add.drawer?.onOpen}
-					>
-						Add Discussion
-					</Button>
-				</div>
+				{isAdmin && (
+					<div>
+						<Button
+							leftIcon={<AddIcon />}
+							colorScheme="teal"
+							onClick={discussionController.add.drawer?.onOpen}
+						>
+							Add Discussion
+						</Button>
+					</div>
+				)}
 			</div>
 			<div className="border-b-2"></div>
+			{!isAdmin ? <ViewerParticipantSwitch /> : null}
 			<div className="mt-3">
 				<Table variant="simple">
 					{!discussionList.length && (
@@ -213,8 +335,13 @@ const DiscussionsPage = () => {
 							<Th>Title</Th>
 							<Th>Start From</Th>
 							<Th>End At</Th>
-							<Th textAlign="center">Status</Th>
-							<Th textAlign="right">Actions</Th>
+							<Th>Status</Th>
+							{isAdmin && (
+								<>
+									<Th>Participants</Th>
+									<Th textAlign="right">Actions</Th>
+								</>
+							)}
 						</Tr>
 					</Thead>
 					<Tbody>
@@ -270,72 +397,86 @@ const DiscussionsPage = () => {
 									onClick={() =>
 										routeToDiscussionView(discussion)
 									}
-									textAlign="center"
+									textAlign="start"
 								>
 									<DiscussionStatus discussion={discussion} />
 								</Td>
-								<Td textAlign="right">
-									<div className="flex items-center justify-end">
-										<IconButton
-											aria-label="edit"
-											icon={<EditIcon />}
-											size="sm"
-											backgroundColor="yellow.100"
-											_hover={{
-												backgroundColor: 'yellow.200',
-											}}
-											color="yellow.600"
-											className="shadow mr-2"
-											onClick={() => {
-												discussionController.update.load?.(
-													discussion,
-												)
-											}}
-										/>
-										<IconButton
-											aria-label="delete"
-											icon={<DeleteIcon />}
-											size="sm"
-											backgroundColor="red.100"
-											_hover={{
-												backgroundColor: 'red.200',
-											}}
-											color="red.600"
-											className="shadow"
-											onClick={() => {
-												discussionController.delete.updateFields(
-													{
-														_id: discussion._id,
-													},
-												)
-												setIsDeleteDiscussionDialogOpen(
-													true,
-												)
-											}}
-										/>
-									</div>
-								</Td>
+
+								{isAdmin && (
+									<>
+										<Td>
+											<AvatarGroup
+												size="sm"
+												max={2}
+												fontSize="sm"
+												spacing="-2"
+											>
+												{discussion.participants?.map(
+													(participant, index) => (
+														<Avatar
+															name={
+																participant.name
+															}
+															src={
+																participant.googleAvatarUrl
+															}
+															key={index}
+														></Avatar>
+													),
+												)}
+											</AvatarGroup>
+										</Td>
+										<Td textAlign="right">
+											<div className="flex items-center justify-end">
+												<IconButton
+													aria-label="edit"
+													icon={<EditIcon />}
+													size="sm"
+													backgroundColor="yellow.100"
+													_hover={{
+														backgroundColor:
+															'yellow.200',
+													}}
+													color="yellow.600"
+													className="shadow mr-2"
+													onClick={() => {
+														discussionController.update.load?.(
+															discussion,
+														)
+													}}
+												/>
+												<IconButton
+													aria-label="delete"
+													icon={<DeleteIcon />}
+													size="sm"
+													backgroundColor="red.100"
+													_hover={{
+														backgroundColor:
+															'red.200',
+													}}
+													color="red.600"
+													className="shadow"
+													onClick={() => {
+														discussionController.delete.updateFields(
+															{
+																_id: discussion._id,
+															},
+														)
+														setIsDeleteDiscussionDialogOpen(
+															true,
+														)
+													}}
+												/>
+											</div>
+										</Td>
+									</>
+								)}
 							</Tr>
 						))}
 					</Tbody>
 				</Table>
 			</div>
-			<DiscussionAddDrawer
-				controller={discussionController.add}
-			></DiscussionAddDrawer>
-			<DiscussionUpdateDrawer
-				controller={discussionController.update}
-			></DiscussionUpdateDrawer>
-			<DeleteItemDialog
-				title="Delete Discussion"
-				isOpen={isDeleteDiscussionDialogOpen}
-				cancelRef={deleteDiscussionDialogCancelRef}
-				onCancel={onDeleteDiscussionDialogClose}
-				onDelete={() => {
-					onDeleteDiscussionDialogClose()
-					discussionController.delete.onSubmit()
-				}}
-			/>
+			{isAdmin ? administrativeDialogs : null}
 		</div>
 	)
 }

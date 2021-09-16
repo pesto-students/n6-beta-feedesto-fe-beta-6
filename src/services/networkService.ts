@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
+import { generateDiscussions } from 'types/models/discussion'
 import env from '../configs/env'
 
 export interface NetworkHelperRequestArguments<R> {
@@ -42,7 +43,16 @@ class NetworkHelper {
 		params,
 		showToast,
 	}: NetworkHelperRequestArguments<R>): Promise<T> {
-		axios.defaults.baseURL = env.BASE_URL
+		if (process.env.NODE_ENV === 'test') {
+			return mockResponse<R>({
+				url,
+				body,
+				method,
+				params,
+				showToast,
+			}) as T
+		}
+		axios.defaults.baseURL = env.BASE_URL || 'http://localhost:3500'
 		const headers: any = {}
 
 		const loginType = localStorage.getItem('loginType')
@@ -131,3 +141,13 @@ class NetworkHelper {
 }
 
 export const sendRequest = new NetworkHelper()
+
+function mockResponse<R>(req: NetworkHelperRequestArguments<R>): any {
+	// let response: any
+
+	if (req.url == 'discussion') {
+		if (req.method === 'GET') {
+			return generateDiscussions(10)
+		}
+	}
+}

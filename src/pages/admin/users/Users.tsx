@@ -37,10 +37,14 @@ import { useHistory } from 'react-router'
 import { Form } from 'services/form'
 import { RootState } from 'store'
 import { logOutUser } from 'store/modules/auth/authSlice'
-import { fetchUsers, User } from 'store/modules/user/userSlice'
+import { fetchUsers } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
 import { checkSearchText } from 'utils/basic'
-import VerificationStatus from './components/VerificationStatus'
+import { User } from 'types/models/user'
+import VerificationStatus, {
+	getVerificationStatus,
+	VerificationStatuses,
+} from './components/VerificationStatus'
 
 export interface UpdateUserApprovalStatusBody {
 	userId: string
@@ -66,6 +70,8 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 
 	const [userList, setUserList] = useState<User[]>([])
 	const [userSearchTerm, setUserSearchTerm] = useState<string>('')
+	const [userStatusFilter, setUserStatusFilter] =
+		useState<VerificationStatuses | null>(null)
 
 	const fetchUserList = async () => {
 		const users = await fetchUsers({ isSuperAdmin })
@@ -74,7 +80,15 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 
 	const filteredUserList = () => {
 		const filteredUsers = userList.filter((el) => {
-			return checkSearchText([el.name, el.email], userSearchTerm)
+			return (
+				(userStatusFilter
+					? userStatusFilter === getVerificationStatus(el)
+					: true) &&
+				checkSearchText(
+					[el.name, el.email, el.organization?.name],
+					userSearchTerm,
+				)
+			)
 		})
 		return filteredUsers
 	}
@@ -94,6 +108,12 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 	] = useState<Partial<UpdateUserApprovalStatusBody>>(
 		updateUserApprovalStatusFormFieldsInitial,
 	)
+	const [isUserApprovalLoading, setUserApprovalLoading] =
+		useState<boolean>(false)
+	const [isUserRejectionLoading, setUserRejectionLoading] =
+		useState<boolean>(false)
+	const [isUserDeletionLoading, setUserDeletionLoading] =
+		useState<boolean>(false)
 
 	const updateUserGoogleIdFormFieldsInitial: UpdateUserGoogleIdBody = {
 		_id: '',
@@ -130,19 +150,26 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 					...props,
 				}),
 			async onSubmit() {
+				setUserDeletionLoading(true)
 				await userController.delete.form.submit('user', {
 					method: 'DELETE',
 				})
+				setUserDeletionLoading(false)
 				await fetchUserList()
 			},
 		},
 		updateApprovalStatus: {
 			form: new Form(updateUserApprovalStatusFormFields),
-			updateFields: (props: Partial<UpdateUserApprovalStatusBody>) =>
+			updateFields: (props: Partial<UpdateUserApprovalStatusBody>) => {
 				setUpdateUserApprovalStatusFormFields({
 					...updateUserApprovalStatusFormFields,
 					...props,
-				}),
+				})
+				userController.updateApprovalStatus.form.fields = {
+					...updateUserApprovalStatusFormFields,
+					...props,
+				}
+			},
 			async onSubmit({
 				userId,
 				status,
@@ -150,30 +177,41 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 				userId: string
 				status: boolean
 			}) {
-				userController.updateApprovalStatus.form.fields.userId = userId
-				userController.updateApprovalStatus.form.fields.status = status
+				userController.updateApprovalStatus.updateFields({
+					status,
+					userId,
+				})
+				if (status == true) {
+					setUserApprovalLoading(true)
+				} else {
+					setUserRejectionLoading(true)
+				}
 				await userController.updateApprovalStatus.form.submit(
 					'user/verify',
 					{
 						method: 'PUT',
 					},
 				)
+				setUserApprovalLoading(false)
+				setUserRejectionLoading(false)
 				await fetchUserList()
 			},
 		},
 		updateGoogleId: {
 			form: new Form(updateUserGoogleIdFormFields),
-			updateFields: (props: Partial<UpdateUserGoogleIdBody>) =>
+			updateFields: (props: Partial<UpdateUserGoogleIdBody>) => {
 				setUpdateUserGoogleIdFormFields({
 					...updateUserGoogleIdFormFields,
 					...props,
-				}),
+				})
+				userController.updateGoogleId.form.fields = {
+					...updateUserGoogleIdFormFields,
+					...props,
+				}
+			},
 			load(user: User) {
 				userController.updateGoogleId.updateFields({
 					_id: user._id,
-					update: {
-						googleUserId: user.googleUserId,
-					},
 				})
 				updateUserGoogleIdModal.onOpen()
 			},
@@ -196,7 +234,7 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 	return (
 		<div>
 			<div className="px-6 py-3 flex justify-between items-center">
-				<div>
+				<div className="flex-none">
 					<div className="text-3xl text-gray-700 font-semibold">
 						Users {isSuperAdmin ? '(Super Admin)' : null}
 					</div>
@@ -204,18 +242,37 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 						Here you will see all the available users
 					</div>
 				</div>
-				<div>
-					<InputGroup>
-						<Input
-							variant="outline"
-							placeholder="Search"
-							value={userSearchTerm}
-							onChange={(e) => setUserSearchTerm(e.target.value)}
-						/>
-						<InputRightElement>
-							<SearchIcon color="gray.500" />
-						</InputRightElement>
-					</InputGroup>
+				<div className="flex-none">
+					<div className="flex items-center">
+						<Select
+							placeholder="All Users"
+							onChange={(evt) => {
+								setUserStatusFilter(
+									evt.target.value as VerificationStatuses,
+								)
+							}}
+							value={userStatusFilter ?? undefined}
+						>
+							{Object.values(VerificationStatuses).map((el) => (
+								<option value={el} key={el}>
+									{el}
+								</option>
+							))}
+						</Select>
+						<InputGroup className="ml-2">
+							<Input
+								variant="outline"
+								placeholder="Search"
+								value={userSearchTerm}
+								onChange={(e) =>
+									setUserSearchTerm(e.target.value)
+								}
+							/>
+							<InputRightElement>
+								<SearchIcon color="gray.500" />
+							</InputRightElement>
+						</InputGroup>
+					</div>
 				</div>
 			</div>
 			<div className="border-b-2"></div>
@@ -270,9 +327,14 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 												) : null}
 											</div>
 											<div className="text-xs text-gray-600">
-												Google ID:{' '}
-												{user.googleUserId || 'N/A'}
-												{/* TODO: Add Organization Name here instead of ID */}
+												Google ID:
+												{user.googleUserId ? (
+													<span className="text-blue-700">
+														{user.googleUserId}
+													</span>
+												) : (
+													'N/A'
+												)}
 											</div>
 										</div>
 									</div>
@@ -280,8 +342,7 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 								<Td>
 									<div>{user.email}</div>
 									<div className="text-xs text-gray-600">
-										Organization: {user.organizationId}
-										{/* TODO: Add Organization Name here instead of ID */}
+										Organization: {user.organization?.name}
 									</div>
 								</Td>
 								<Td>
@@ -325,6 +386,11 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 												aria-label="approve"
 												icon={<CheckIcon />}
 												size="sm"
+												isLoading={
+													updateUserApprovalStatusFormFields.userId ==
+														user._id &&
+													isUserApprovalLoading
+												}
 												backgroundColor={
 													user.isVerified &&
 													user.verifiedAt
@@ -358,6 +424,11 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 												aria-label="reject"
 												icon={<CloseIcon />}
 												size="sm"
+												isLoading={
+													updateUserApprovalStatusFormFields.userId ==
+														user._id &&
+													isUserRejectionLoading
+												}
 												backgroundColor={
 													!user.isVerified &&
 													user.verifiedAt
@@ -476,6 +547,7 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 								onClick={() =>
 									userController.updateGoogleId.onSubmit()
 								}
+								isLoading={isUserDeletionLoading}
 							>
 								Save
 							</Button>

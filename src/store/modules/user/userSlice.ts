@@ -1,19 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
-
-export interface User {
-	_id: string
-	name: string
-	email: string
-	googleUserId: string
-	googleAvatarUrl?: string
-	organizationId: string
-	isAdmin: boolean
-	isVerified: boolean
-	createdAt: string
-	modifiedAt: string
-	verifiedAt?: string
-}
+import { User } from 'types/models/user'
 
 export const fetchUsers = async (
 	params: { isSuperAdmin: boolean } = { isSuperAdmin: false },
