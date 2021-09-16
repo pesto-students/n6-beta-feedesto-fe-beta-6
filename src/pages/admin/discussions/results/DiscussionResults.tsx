@@ -57,7 +57,7 @@ const DiscussionResults = () => {
 	}
 
 	const routeToLiveDiscussionView = (discussion: Discussion) => {
-		history.push(Routes.DASHBOARD_DISCUSSION + '/' + discussion._id)
+		history.push(Routes.DISCUSSION_VIEW + '/' + discussion._id)
 	}
 
 	if (!discussionDetails)
@@ -101,7 +101,10 @@ const DiscussionResults = () => {
 			<div className="mt-3 px-6">
 				<div className="font-semibold text-gray-800">Description</div>
 				<div>{discussionDetails?.description}</div>
-				<div>
+				<div className="font-semibold text-gray-800 text-xl mt-6">
+					Results
+				</div>
+				<div className="mt-2">
 					<Table variant="simple">
 						{!discussionResults.length && (
 							<TableCaption>

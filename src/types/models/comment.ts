@@ -3,9 +3,12 @@ import { User } from './user'
 export interface Comment {
 	_id: string
 	answerId: string
-	userId?: User
+	userId: string
+	user?: User
 	upvoteCount: number
+	upvoters?: User[]
 	downvoteCount: number
+	downvoters?: User[]
 	hasUpvoted: boolean
 	hasDownvoted: boolean
 	content: string

@@ -1,17 +1,21 @@
 import dayjs from 'dayjs'
 import faker from 'faker'
 import { fakeId } from '__mocks__/utils'
+import { Organization } from './organization'
 import { User } from './user'
 
 export interface Discussion {
 	_id: string
 	organizationId: string
+	organization?: Organization
 	title: string
 	description: string
 	startDate: string
 	endDate: string
 	participantIds: string[]
+	participants?: User[]
 	viewerIds: string[]
+	viewers?: User[]
 	createdAt: string
 	modifiedAt: string
 }

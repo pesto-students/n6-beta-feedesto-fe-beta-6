@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
+import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
 import { useEffect, useState } from 'react'
 import * as Icons from 'react-bootstrap-icons'
@@ -55,6 +56,7 @@ const DiscussionViewPage = () => {
 	const discussionId = params.id
 	const { user: userStore } = useSelector((state: RootState) => state)
 	const history = useHistory()
+	const timeAgo = new TimeAgo('en-US')
 
 	const [answerList, setAnswerList] = useState<
 		(Answer & { addCommentForm: Form<AddCommentBody> })[]
@@ -350,29 +352,38 @@ const DiscussionViewPage = () => {
 							<div className="flex items-center ml-2 my-1">
 								<Avatar
 									size="2xs"
-									src={answer.userId?.googleAvatarUrl}
+									src={answer.user?.googleAvatarUrl}
 								/>
 								<div className="text-xs pl-1">
-									{answer.userId?.name}
+									{answer.user?.name}
 								</div>
 							</div>
 						)}
 						<div className="relative">
 							<div
 								className={classNames(
-									'ml-2 px-5 py-3 rounded-2xl rounded-tl-md bg-gray-200',
+									'ml-2 px-5 py-4 rounded-2xl rounded-tl-md bg-gray-200',
 									{
 										'bg-gray-700 text-white':
-											answer.userId?._id ===
+											answer.user?._id ===
 											userStore.currentUser._id,
 									},
 								)}
 							>
 								{answer.content}
 							</div>
-							<div className="absolute bottom-1 right-3 text-xs text-gray-500">
-								{dayjs(new Date(answer.createdAt)).format(
-									'D MMM, h:mm A',
+							<div
+								className={classNames(
+									'absolute bottom-1 right-3 text-xs ',
+									answer.user &&
+										answer.user._id ==
+											userStore.currentUser._id
+										? 'text-gray-300'
+										: 'text-gray-500',
+								)}
+							>
+								{timeAgo.format(
+									dayjs(new Date(answer.createdAt)).toDate(),
 								)}
 							</div>
 						</div>
@@ -466,26 +477,22 @@ const DiscussionViewPage = () => {
 														<Avatar
 															size="2xs"
 															src={
-																comment.userId
+																comment.user
 																	?.googleAvatarUrl
 															}
 														/>
 														<div className="text-xs pl-1">
-															{
-																comment.userId
-																	?.name
-															}
+															{comment.user?.name}
 														</div>
 													</div>
 												)}
 												<div className="relative">
 													<div
 														className={classNames(
-															'ml-2 px-4 py-2 rounded-xl rounded-tl-md bg-gray-100',
+															'ml-2 px-4 py-3 rounded-xl rounded-tl-md bg-gray-100',
 															{
 																'bg-gray-600 text-white':
-																	comment
-																		.userId
+																	comment.user
 																		?._id ===
 																	userStore
 																		.currentUser
@@ -496,13 +503,25 @@ const DiscussionViewPage = () => {
 														{comment.content}
 													</div>
 
-													<div className="absolute bottom-1 right-3 text-xs text-gray-400">
-														{dayjs(
-															new Date(
-																comment.createdAt,
-															),
-														).format(
-															'D MMM, h:mm A',
+													<div
+														className={classNames(
+															'absolute bottom-1 right-3 text-xs ',
+															comment.user &&
+																comment.user
+																	._id ==
+																	userStore
+																		.currentUser
+																		._id
+																? 'text-gray-300'
+																: 'text-gray-400',
+														)}
+													>
+														{timeAgo.format(
+															dayjs(
+																new Date(
+																	comment.createdAt,
+																),
+															).toDate(),
 														)}
 													</div>
 												</div>
@@ -633,7 +652,7 @@ const DiscussionViewPage = () => {
 									</div>
 								</div>
 							)}
-							<div className="flex-1">
+							<div className="flex-1 pb-20">
 								{answerList.map((answer, index) => (
 									<Answer answer={answer} key={answer._id} />
 								))}

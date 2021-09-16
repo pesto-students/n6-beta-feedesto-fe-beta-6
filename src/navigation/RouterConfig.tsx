@@ -15,7 +15,7 @@ const RouterConfig = () => {
 			<UserPrivateRoute exact path={Routes.DASHBOARD}>
 				<Discussions isAdmin={false} />
 			</UserPrivateRoute>
-			<UserPrivateRoute path={Routes.DASHBOARD_DISCUSSION + '/:id'}>
+			<UserPrivateRoute path={Routes.DISCUSSION_VIEW + '/:id'}>
 				<DiscussionView />
 			</UserPrivateRoute>
 			<OrganizationPrivateRoute exact path={Routes.ADMIN_USERS}>

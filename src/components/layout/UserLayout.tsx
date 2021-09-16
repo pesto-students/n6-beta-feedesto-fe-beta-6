@@ -25,37 +25,40 @@ const UserLayout = ({ children, ...args }: any) => {
 						alt="Feedesto Logo"
 					/>
 					<Menu closeOnBlur closeOnSelect>
-						<MenuButton aria-label="Options">
-							<div className="bg-gray-200 hover:bg-gray-300 transition-all duration-300 cursor-pointer px-3 py-2 rounded-lg">
-								<div className="flex items-center gap-x-2">
-									<div className="text-gray-800 font-semibold mx-2">
-										{user.currentUser.name}
-									</div>
-									<Avatar
-										backgroundColor="gray.300"
-										size="sm"
-										src={user.currentUser.googleAvatarUrl}
-										icon={
-											!user.currentUser
-												.googleAvatarUrl ? (
-												<Icon.PersonFill
-													size={16}
-													className="text-gray-500"
-												/>
-											) : undefined
-										}
-									></Avatar>
+						<MenuButton
+							className="bg-gray-200 hover:bg-gray-300 transition-all duration-300 cursor-pointer px-3 py-2 rounded-lg shadow-md"
+							aria-label="Options"
+						>
+							<div className="flex items-center gap-x-2">
+								<div className="text-gray-800 font-semibold mx-2">
+									{user.currentUser.name}
 								</div>
+								<Avatar
+									backgroundColor="gray.300"
+									size="sm"
+									className="shadow"
+									src={user.currentUser.googleAvatarUrl}
+									icon={
+										!user.currentUser.googleAvatarUrl ? (
+											<Icon.PersonFill
+												size={16}
+												className="text-gray-500"
+											/>
+										) : undefined
+									}
+								></Avatar>
 							</div>
 						</MenuButton>
-						<MenuList>
-							<MenuItem
-								icon={<Icon.ArrowBarRight />}
-								color="red"
-								onClick={() => dispatch(logOutUser())}
-							>
-								Logout
-							</MenuItem>
+						<MenuList className="bg-gray-500">
+							<div>
+								<MenuItem
+									icon={<Icon.ArrowBarRight />}
+									color="red"
+									onClick={() => dispatch(logOutUser())}
+								>
+									Logout
+								</MenuItem>
+							</div>
 						</MenuList>
 					</Menu>
 				</div>

@@ -327,8 +327,14 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 												) : null}
 											</div>
 											<div className="text-xs text-gray-600">
-												Google ID:{' '}
-												{user.googleUserId || 'N/A'}
+												Google ID:
+												{user.googleUserId ? (
+													<span className="text-blue-700">
+														{user.googleUserId}
+													</span>
+												) : (
+													'N/A'
+												)}
 											</div>
 										</div>
 									</div>

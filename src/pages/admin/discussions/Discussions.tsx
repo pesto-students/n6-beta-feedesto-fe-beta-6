@@ -1,5 +1,7 @@
 import { AddIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
+	Avatar,
+	AvatarGroup,
 	Button,
 	ButtonGroup,
 	IconButton,
@@ -205,7 +207,11 @@ const DiscussionsPage: React.FC<{ isAdmin: boolean }> = ({ isAdmin }) => {
 	}
 
 	const routeToDiscussionView = (discussion: Discussion) => {
-		history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)
+		if (isAdmin) {
+			history.push(Routes.ADMIN_DISCUSSION_RESULTS + '/' + discussion._id)
+		} else {
+			history.push(Routes.DISCUSSION_VIEW + '/' + discussion._id)
+		}
 	}
 	if (isAdmin) {
 		useEffect(() => {
@@ -329,8 +335,13 @@ const DiscussionsPage: React.FC<{ isAdmin: boolean }> = ({ isAdmin }) => {
 							<Th>Title</Th>
 							<Th>Start From</Th>
 							<Th>End At</Th>
-							<Th textAlign="center">Status</Th>
-							{isAdmin && <Th textAlign="right">Actions</Th>}
+							<Th>Status</Th>
+							{isAdmin && (
+								<>
+									<Th>Participants</Th>
+									<Th textAlign="right">Actions</Th>
+								</>
+							)}
 						</Tr>
 					</Thead>
 					<Tbody>
@@ -386,53 +397,79 @@ const DiscussionsPage: React.FC<{ isAdmin: boolean }> = ({ isAdmin }) => {
 									onClick={() =>
 										routeToDiscussionView(discussion)
 									}
-									textAlign="center"
+									textAlign="start"
 								>
 									<DiscussionStatus discussion={discussion} />
 								</Td>
+
 								{isAdmin && (
-									<Td textAlign="right">
-										<div className="flex items-center justify-end">
-											<IconButton
-												aria-label="edit"
-												icon={<EditIcon />}
+									<>
+										<Td>
+											<AvatarGroup
 												size="sm"
-												backgroundColor="yellow.100"
-												_hover={{
-													backgroundColor:
-														'yellow.200',
-												}}
-												color="yellow.600"
-												className="shadow mr-2"
-												onClick={() => {
-													discussionController.update.load?.(
-														discussion,
-													)
-												}}
-											/>
-											<IconButton
-												aria-label="delete"
-												icon={<DeleteIcon />}
-												size="sm"
-												backgroundColor="red.100"
-												_hover={{
-													backgroundColor: 'red.200',
-												}}
-												color="red.600"
-												className="shadow"
-												onClick={() => {
-													discussionController.delete.updateFields(
-														{
-															_id: discussion._id,
-														},
-													)
-													setIsDeleteDiscussionDialogOpen(
-														true,
-													)
-												}}
-											/>
-										</div>
-									</Td>
+												max={2}
+												fontSize="sm"
+												spacing="-2"
+											>
+												{discussion.participants?.map(
+													(participant, index) => (
+														<Avatar
+															name={
+																participant.name
+															}
+															src={
+																participant.googleAvatarUrl
+															}
+															key={index}
+														></Avatar>
+													),
+												)}
+											</AvatarGroup>
+										</Td>
+										<Td textAlign="right">
+											<div className="flex items-center justify-end">
+												<IconButton
+													aria-label="edit"
+													icon={<EditIcon />}
+													size="sm"
+													backgroundColor="yellow.100"
+													_hover={{
+														backgroundColor:
+															'yellow.200',
+													}}
+													color="yellow.600"
+													className="shadow mr-2"
+													onClick={() => {
+														discussionController.update.load?.(
+															discussion,
+														)
+													}}
+												/>
+												<IconButton
+													aria-label="delete"
+													icon={<DeleteIcon />}
+													size="sm"
+													backgroundColor="red.100"
+													_hover={{
+														backgroundColor:
+															'red.200',
+													}}
+													color="red.600"
+													className="shadow"
+													onClick={() => {
+														discussionController.delete.updateFields(
+															{
+																_id: discussion._id,
+															},
+														)
+														setIsDeleteDiscussionDialogOpen(
+															true,
+														)
+													}}
+												/>
+											</div>
+										</Td>
+									</>
 								)}
 							</Tr>
 						))}
