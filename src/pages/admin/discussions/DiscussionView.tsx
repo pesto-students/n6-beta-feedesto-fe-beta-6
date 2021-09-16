@@ -14,15 +14,12 @@ import { useEffect, useState } from 'react'
 import * as Icons from 'react-bootstrap-icons'
 import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import { VariableSizeList } from 'react-window'
 import { Form } from 'services/form'
 import { RootState } from 'store'
 import { Answer, fetchAnswers } from 'store/modules/answer/answerSlice'
-import {
-	Discussion,
-	fetchDiscussions,
-} from 'store/modules/discussion/discussionSlice'
+import { fetchDiscussions } from 'store/modules/discussion/discussionSlice'
 import { FormDrawerController } from 'types/types'
+import { Discussion } from 'types/models/discussion'
 
 export interface AddAnswerBody {
 	discussionId: string
@@ -52,7 +49,7 @@ export interface AddCommentDownvoteBody {
 	commentId: string
 }
 
-const DiscussionPage = () => {
+const DiscussionViewPage = () => {
 	const params = useParams<{ id: string }>()
 	const discussionId = params.id
 	const { user: userStore } = useSelector((state: RootState) => state)
@@ -273,9 +270,11 @@ const DiscussionPage = () => {
 
 	const isAdmin = userStore.currentUser.isAdmin
 
-	const Row = ({ index }: any) => {
-		const answer = (answerList || [])[index]
-
+	const Answer = ({
+		answer,
+	}: {
+		answer: Answer & { addCommentForm: Form<AddCommentBody> }
+	}) => {
 		return (
 			<div key={answer._id} className="my-4">
 				<div className="flex">
@@ -556,7 +555,7 @@ const DiscussionPage = () => {
 	return (
 		<div className="h-full">
 			<div className="grid grid-cols-2 h-full">
-				<div className="col-span-1 bg-gray-200 h-full overflow-hidden">
+				<div className="col-span-1 bg-gray-200 h-screen overflow-hidden">
 					<div className="p-4">
 						<div className="text-2xl font-semibold">
 							{discussionDetails.title}
@@ -577,8 +576,8 @@ const DiscussionPage = () => {
 						</div>
 					</div>
 				</div>
-				<div className="col-span-1 overflow-y-scroll">
-					<div className="p-3">
+				<div className="col-span-1 h-screen overflow-x-hidden">
+					<div className="p-3 overflow-y-scroll">
 						<div className="flex flex-col">
 							{!isAdmin && (
 								<div className="flex-none">
@@ -634,16 +633,9 @@ const DiscussionPage = () => {
 								</div>
 							)}
 							<div className="flex-1">
-								<VariableSizeList
-									height={
-										screen.height / (isAdmin ? 1.1 : 1.6)
-									}
-									width={screen.width / 2.1}
-									itemCount={answerList.length}
-									itemSize={(i: number) => 50}
-								>
-									{Row}
-								</VariableSizeList>
+								{answerList.map((answer, index) => (
+									<Answer answer={answer} key={answer._id} />
+								))}
 							</div>
 						</div>
 					</div>
@@ -653,4 +645,4 @@ const DiscussionPage = () => {
 	)
 }
 
-export default DiscussionPage
+export default DiscussionViewPage

@@ -10,14 +10,15 @@ import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router'
 import { Form } from 'services/form'
 import { setAuthLoginType, setAuthToken } from 'store/modules/auth/authSlice'
-import { LoginUserBody } from 'store/modules/auth/services'
-import {
-	User,
-	fetchUserDetails,
-	setCurrentUser,
-} from 'store/modules/user/userSlice'
+import { fetchUserDetails, setCurrentUser } from 'store/modules/user/userSlice'
 import { FormController } from 'types/types'
+import { User } from 'types/models/user'
 import { LoginStep, LoginType } from '../../../../types/enums'
+
+export interface LoginUserBody {
+	loginType: LoginType
+	googleUserId: string
+}
 
 interface LoginUserWithGoogleComponentProps {
 	loginType: LoginType
@@ -36,7 +37,6 @@ const LoginUserWithGoogle = ({
 	const dispatch = useDispatch()
 	const history = useHistory()
 
-	let googleUserId = ''
 	// Login User with Google
 	const loginUserFormFieldsInitial: LoginUserBody = {
 		googleUserId: '',
@@ -49,17 +49,17 @@ const LoginUserWithGoogle = ({
 	const loginUserController: FormController<LoginUserBody> = {
 		form: new Form(loginUserFormFields),
 		updateFields: (props) => {
-			setLoginUserFormFields((old) => {
-				return {
-					...old,
-					...props,
-				}
+			setLoginUserFormFields({
+				...loginUserFormFields,
+				...props,
 			})
+			loginUserController.form.fields = {
+				...loginUserFormFields,
+				...props,
+			}
 		},
 		async onSubmit(googleResponse: GoogleLoginResponse) {
 			try {
-				loginUserController.form.fields.loginType = loginType
-				loginUserController.form.fields.googleUserId = googleUserId
 				const response = await loginUserController.form.submit(
 					'auth/login',
 					{
@@ -67,7 +67,7 @@ const LoginUserWithGoogle = ({
 					},
 				)
 				dispatch(setAuthToken(response.token))
-				dispatch(setAuthLoginType(LoginType.ORGANIZATION))
+				dispatch(setAuthLoginType(loginType))
 
 				const [user]: User[] | undefined = await fetchUserDetails()
 				if (user) {
@@ -75,7 +75,11 @@ const LoginUserWithGoogle = ({
 						position: 'bottom-right',
 					})
 					dispatch(setCurrentUser(user))
-					history.push(Routes.ADMIN_USERS)
+					if (loginType === LoginType.ORGANIZATION) {
+						history.push(Routes.ADMIN_USERS)
+					} else {
+						history.push(Routes.DASHBOARD)
+					}
 				} else {
 					toast.error('Some error occured while finding user')
 				}
@@ -92,10 +96,9 @@ const LoginUserWithGoogle = ({
 		response = response as GoogleLoginResponse
 
 		if (response) {
-			googleUserId = response.getBasicProfile().getId()
 			loginUserController.updateFields({
 				loginType,
-				googleUserId,
+				googleUserId: response.getBasicProfile().getId(),
 			})
 			loginUserController.onSubmit(response)
 		}

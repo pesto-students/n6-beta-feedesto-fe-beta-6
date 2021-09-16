@@ -3,12 +3,12 @@ export enum LoginType {
 	ORGANIZATION = 'organization',
 }
 
-export enum SelectedTab {
-	GET_STARTED = 'get_started',
-	DETAILS_INPUT = 'details_input',
-}
-
 export enum LoginStep {
 	LOGIN = 'login',
 	REGISTER = 'register',
+}
+
+export enum DiscussionListType {
+	PARTICIPANT,
+	VIEWER,
 }

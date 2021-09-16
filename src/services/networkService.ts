@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
-import { generateDiscussions } from '__mocks__/resources/discussion'
+import { generateDiscussions } from 'types/models/discussion'
 import env from '../configs/env'
 
 export interface NetworkHelperRequestArguments<R> {

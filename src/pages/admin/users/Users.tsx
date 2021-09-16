@@ -37,9 +37,10 @@ import { useHistory } from 'react-router'
 import { Form } from 'services/form'
 import { RootState } from 'store'
 import { logOutUser } from 'store/modules/auth/authSlice'
-import { fetchUsers, User } from 'store/modules/user/userSlice'
+import { fetchUsers } from 'store/modules/user/userSlice'
 import { FormDrawerController } from 'types/types'
 import { checkSearchText } from 'utils/basic'
+import { User } from 'types/models/user'
 import VerificationStatus, {
 	getVerificationStatus,
 	VerificationStatuses,
@@ -83,7 +84,10 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 				(userStatusFilter
 					? userStatusFilter === getVerificationStatus(el)
 					: true) &&
-				checkSearchText([el.name, el.email], userSearchTerm)
+				checkSearchText(
+					[el.name, el.email, el.organization?.name],
+					userSearchTerm,
+				)
 			)
 		})
 		return filteredUsers
@@ -104,6 +108,12 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 	] = useState<Partial<UpdateUserApprovalStatusBody>>(
 		updateUserApprovalStatusFormFieldsInitial,
 	)
+	const [isUserApprovalLoading, setUserApprovalLoading] =
+		useState<boolean>(false)
+	const [isUserRejectionLoading, setUserRejectionLoading] =
+		useState<boolean>(false)
+	const [isUserDeletionLoading, setUserDeletionLoading] =
+		useState<boolean>(false)
 
 	const updateUserGoogleIdFormFieldsInitial: UpdateUserGoogleIdBody = {
 		_id: '',
@@ -140,19 +150,26 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 					...props,
 				}),
 			async onSubmit() {
+				setUserDeletionLoading(true)
 				await userController.delete.form.submit('user', {
 					method: 'DELETE',
 				})
+				setUserDeletionLoading(false)
 				await fetchUserList()
 			},
 		},
 		updateApprovalStatus: {
 			form: new Form(updateUserApprovalStatusFormFields),
-			updateFields: (props: Partial<UpdateUserApprovalStatusBody>) =>
+			updateFields: (props: Partial<UpdateUserApprovalStatusBody>) => {
 				setUpdateUserApprovalStatusFormFields({
 					...updateUserApprovalStatusFormFields,
 					...props,
-				}),
+				})
+				userController.updateApprovalStatus.form.fields = {
+					...updateUserApprovalStatusFormFields,
+					...props,
+				}
+			},
 			async onSubmit({
 				userId,
 				status,
@@ -160,30 +177,41 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 				userId: string
 				status: boolean
 			}) {
-				userController.updateApprovalStatus.form.fields.userId = userId
-				userController.updateApprovalStatus.form.fields.status = status
+				userController.updateApprovalStatus.updateFields({
+					status,
+					userId,
+				})
+				if (status == true) {
+					setUserApprovalLoading(true)
+				} else {
+					setUserRejectionLoading(true)
+				}
 				await userController.updateApprovalStatus.form.submit(
 					'user/verify',
 					{
 						method: 'PUT',
 					},
 				)
+				setUserApprovalLoading(false)
+				setUserRejectionLoading(false)
 				await fetchUserList()
 			},
 		},
 		updateGoogleId: {
 			form: new Form(updateUserGoogleIdFormFields),
-			updateFields: (props: Partial<UpdateUserGoogleIdBody>) =>
+			updateFields: (props: Partial<UpdateUserGoogleIdBody>) => {
 				setUpdateUserGoogleIdFormFields({
 					...updateUserGoogleIdFormFields,
 					...props,
-				}),
+				})
+				userController.updateGoogleId.form.fields = {
+					...updateUserGoogleIdFormFields,
+					...props,
+				}
+			},
 			load(user: User) {
 				userController.updateGoogleId.updateFields({
 					_id: user._id,
-					update: {
-						googleUserId: user.googleUserId,
-					},
 				})
 				updateUserGoogleIdModal.onOpen()
 			},
@@ -352,6 +380,11 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 												aria-label="approve"
 												icon={<CheckIcon />}
 												size="sm"
+												isLoading={
+													updateUserApprovalStatusFormFields.userId ==
+														user._id &&
+													isUserApprovalLoading
+												}
 												backgroundColor={
 													user.isVerified &&
 													user.verifiedAt
@@ -385,6 +418,11 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 												aria-label="reject"
 												icon={<CloseIcon />}
 												size="sm"
+												isLoading={
+													updateUserApprovalStatusFormFields.userId ==
+														user._id &&
+													isUserRejectionLoading
+												}
 												backgroundColor={
 													!user.isVerified &&
 													user.verifiedAt
@@ -503,6 +541,7 @@ const UsersPage = ({ isSuperAdmin }: { isSuperAdmin: boolean }) => {
 								onClick={() =>
 									userController.updateGoogleId.onSubmit()
 								}
+								isLoading={isUserDeletionLoading}
 							>
 								Save
 							</Button>

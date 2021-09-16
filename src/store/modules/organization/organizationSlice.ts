@@ -1,13 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
-
-export interface Organization {
-	_id: number
-	name: string
-	userId: string
-	createdAt: Date
-	updatedAt: Date
-}
+import { Organization } from 'types/models/organization'
 
 export const fetchOrganizations = async () => {
 	return await sendRequest.get<Organization[]>(`organization`)

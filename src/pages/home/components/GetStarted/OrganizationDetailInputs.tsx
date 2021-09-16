@@ -8,14 +8,18 @@ import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router'
 import { Form } from 'services/form'
 import { setAuthLoginType, setAuthToken } from 'store/modules/auth/authSlice'
-import { RegisterOrganizationBody } from 'store/modules/auth/services'
-import {
-	fetchUserDetails,
-	setCurrentUser,
-	User,
-} from 'store/modules/user/userSlice'
+import { fetchUserDetails, setCurrentUser } from 'store/modules/user/userSlice'
 import { FormController } from 'types/types'
+import { User } from 'types/models/user'
 import { LoginStep, LoginType } from '../../../../types/enums'
+
+export interface RegisterOrganizationBody {
+	name: string
+	organizationName: string
+	email: string
+	googleAvatarUrl?: string
+	googleUserId: string
+}
 
 const OrganizationDetailInputs: React.FC<{
 	handleLoginStepChange: (step: LoginStep) => void

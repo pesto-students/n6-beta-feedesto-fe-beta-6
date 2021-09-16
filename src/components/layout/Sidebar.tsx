@@ -16,9 +16,11 @@ const Sidebar = ({ items }: { items: SidebarItemProps[] }) => {
 		<Box alignSelf="center">
 			<div className="w-full text-center p-4">
 				<Image alt="Feedesto Logo" src="/feedesto-logo.png"></Image>
-				<div className="font-semibold p-2 text-sm text-gray-700">
+				<div className="font-semibold p-2">
 					<div>{user.currentUser.name}</div>
-					<div>{user.currentUser.organization?.name}</div>
+					<div className="font-normal text-sm text-gray-700">
+						{user.currentUser.organization?.name}
+					</div>
 				</div>
 				<div className="my-2">
 					{items.map((item, index) => (

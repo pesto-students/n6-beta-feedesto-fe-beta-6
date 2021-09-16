@@ -1,18 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { User } from '../user/userSlice'
 
-export interface Comment {
-	_id: string
-	answerId: string
-	userId?: User
-	upvoteCount: number
-	downvoteCount: number
-	hasUpvoted: boolean
-	hasDownvoted: boolean
-	content: string
-	createdAt: string
-	modifiedAt: string
-}
 export interface CommentState {}
 
 const initialState: CommentState = {}

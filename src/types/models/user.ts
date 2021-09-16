@@ -1,6 +1,21 @@
-import { User } from 'store/modules/user/userSlice'
 import faker from 'faker'
 import { fakeGoogleId, fakeId } from '__mocks__/utils'
+import { Organization } from 'store/modules/organization/organizationSlice'
+
+export interface User {
+	_id: string
+	name: string
+	email: string
+	googleUserId: string
+	googleAvatarUrl?: string
+	organizationId: string
+	organization?: Organization
+	isAdmin: boolean
+	isVerified: boolean
+	createdAt: string
+	modifiedAt: string
+	verifiedAt?: string
+}
 
 export function generateUser(): User {
 	return {

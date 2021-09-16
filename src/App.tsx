@@ -9,12 +9,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { RootState } from 'store'
 import { setAuthLoginType, setAuthToken } from 'store/modules/auth/authSlice'
-import {
-	fetchUserDetails,
-	setCurrentUser,
-	User,
-} from 'store/modules/user/userSlice'
+import { fetchUserDetails, setCurrentUser } from 'store/modules/user/userSlice'
 import { LoginType } from 'types/enums'
+import { User } from 'types/models/user'
 
 TimeAgo.addDefaultLocale(en)
 

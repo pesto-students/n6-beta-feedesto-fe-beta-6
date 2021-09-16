@@ -2,7 +2,7 @@ import { render } from 'utils/testUtils'
 import DiscussionsPage from '../Discussions'
 
 describe('<DiscussionsPage />', () => {
-	const { getByText } = render(<DiscussionsPage />)
+	const { getByText } = render(<DiscussionsPage isAdmin={true} />)
 	it('should show discussions label', () => {
 		const title = getByText('available discussions', {
 			exact: false,

@@ -7,19 +7,23 @@ import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { Form } from 'services/form'
-import { setAuthToken, setAuthLoginType } from 'store/modules/auth/authSlice'
-import { RegisterUserBody } from 'store/modules/auth/services'
-import {
-	fetchUserDetails,
-	setCurrentUser,
-	User,
-} from 'store/modules/user/userSlice'
+import { setAuthLoginType, setAuthToken } from 'store/modules/auth/authSlice'
+import { fetchUserDetails, setCurrentUser } from 'store/modules/user/userSlice'
 import { FormController } from 'types/types'
+import { User } from 'types/models/user'
 import {
 	fetchOrganizations,
 	Organization,
 } from '../../../../store/modules/organization/organizationSlice'
 import { LoginStep, LoginType } from '../../../../types/enums'
+
+export interface RegisterUserBody {
+	name: string
+	email: string
+	googleUserId: string
+	googleAvatarUrl?: string
+	organizationId: string
+}
 
 const UserDetailInputs: React.FC<{
 	handleLoginStepChange: (step: LoginStep) => void
@@ -85,7 +89,7 @@ const UserDetailInputs: React.FC<{
 				)
 
 				dispatch(setAuthToken(response.token))
-				dispatch(setAuthLoginType(LoginType.ORGANIZATION))
+				dispatch(setAuthLoginType(LoginType.USER))
 
 				const [user]: User[] | undefined = await fetchUserDetails()
 				if (user) {

@@ -1,21 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { sendRequest } from 'services/networkService'
-import { Comment } from '../comment/commentSlice'
-import { User } from '../user/userSlice'
-
-export interface Answer {
-	_id: string
-	discussionId: string
-	userId?: User
-	comments: Comment[]
-	upvoteCount: number
-	downvoteCount: number
-	hasUpvoted: boolean
-	hasDownvoted: boolean
-	content: string
-	createdAt: string
-	modifiedAt: string
-}
+import { Answer } from 'types/models/answer'
 
 export const fetchAnswers = async (
 	params: {

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { cleanup, render } from 'utils/testUtils'
-import { generateDiscussions } from '__mocks__/resources/discussion'
+import { generateDiscussions } from 'types/models/discussion'
 import DiscussionStatus from '../DiscussionStatus'
 
 describe('<DiscussionStatus />', () => {

@@ -1,7 +1,35 @@
 import dayjs from 'dayjs'
 import faker from 'faker'
-import { Discussion } from 'store/modules/discussion/discussionSlice'
 import { fakeId } from '__mocks__/utils'
+import { User } from './user'
+
+export interface Discussion {
+	_id: string
+	organizationId: string
+	title: string
+	description: string
+	startDate: string
+	endDate: string
+	participantIds: string[]
+	viewerIds: string[]
+	createdAt: string
+	modifiedAt: string
+}
+
+export interface DiscussionResult {
+	_id: string
+	content: string
+	discussionId: string
+	userId: User
+	upvoteIds: string[]
+	downvoteIds: string[]
+	commentIds: string[]
+	createdAt: string
+	modifiedAt: string
+	numberOfUpvotes: number
+	numberOfDownvotes: number
+	score: number
+}
 
 export function generateDiscussion(): Discussion {
 	const title = faker.random.words()
