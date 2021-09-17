@@ -1,6 +1,8 @@
 import dayjs from 'dayjs'
 import faker from 'faker'
 import { fakeId } from '__mocks__/utils'
+import { Answer } from './answer'
+import { Comment } from './comment'
 import { Organization } from './organization'
 import { User } from './user'
 
@@ -16,20 +18,17 @@ export interface Discussion {
 	participants?: User[]
 	viewerIds: string[]
 	viewers?: User[]
+	isViewer: boolean
+	isParticipant: boolean
+	isInputAllowed: boolean
+	isActionAllowed: boolean
 	createdAt: string
 	modifiedAt: string
 }
 
-export interface DiscussionResult {
-	_id: string
-	content: string
-	discussionId: string
-	userId: User
-	upvoteIds: string[]
-	downvoteIds: string[]
-	commentIds: string[]
-	createdAt: string
-	modifiedAt: string
+export type DiscussionResult = User & {
+	answers: Answer[]
+	comments: Comment[]
 	numberOfUpvotes: number
 	numberOfDownvotes: number
 	score: number
@@ -50,6 +49,7 @@ export function generateDiscussion(): Discussion {
 			dayjs().add(15, 'days').toDate(),
 		)
 		.toString()
+
 	return {
 		_id: fakeId(),
 		title,
@@ -61,6 +61,10 @@ export function generateDiscussion(): Discussion {
 		createdAt: faker.date.past().toString(),
 		modifiedAt: faker.date.past().toString(),
 		organizationId: fakeId(),
+		isInputAllowed: true,
+		isActionAllowed: true,
+		isParticipant: true,
+		isViewer: false,
 	}
 }
 
