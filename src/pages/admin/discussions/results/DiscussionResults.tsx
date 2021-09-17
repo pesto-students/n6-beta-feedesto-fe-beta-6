@@ -2,6 +2,13 @@ import { ViewIcon } from '@chakra-ui/icons'
 import {
 	Avatar,
 	Button,
+	Drawer,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerOverlay,
 	IconButton,
 	Table,
 	TableCaption,
@@ -10,7 +17,12 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useDisclosure,
 } from '@chakra-ui/react'
+import * as Icons from 'react-bootstrap-icons'
+import classNames from 'classnames'
+import dayjs from 'dayjs'
+import TimeAgo from 'javascript-time-ago'
 import { Routes } from 'navigation/routes'
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
@@ -28,6 +40,7 @@ const DiscussionResults = () => {
 	const params = useParams<{ id: string }>()
 	const history = useHistory<{ id: string }>()
 	const discussionId = params.id
+	const timeAgo = new TimeAgo('en-US')
 
 	const [discussionDetails, setDiscussionDetails] = useState<Discussion>()
 	const [discussionResults, setDiscussionResults] = useState<
@@ -52,8 +65,12 @@ const DiscussionResults = () => {
 		fetchDiscussionResults()
 	}, [])
 
+	const resultAnswerDrawer = useDisclosure()
+	const [selectedResult, setSelectedResult] = useState<DiscussionResult>()
+
 	const viewResultAnswers = (result: DiscussionResult) => {
-		// Open model here
+		setSelectedResult(result)
+		resultAnswerDrawer.onOpen()
 	}
 
 	const routeToLiveDiscussionView = (discussion: Discussion) => {
@@ -107,9 +124,7 @@ const DiscussionResults = () => {
 				<div className="mt-2">
 					<Table variant="simple">
 						{!discussionResults.length && (
-							<TableCaption>
-								These were all the Discussions
-							</TableCaption>
+							<TableCaption>No Results found !</TableCaption>
 						)}
 						<Thead>
 							<Tr>
@@ -122,9 +137,9 @@ const DiscussionResults = () => {
 							</Tr>
 						</Thead>
 						<Tbody>
-							{discussionResults.map((result, index) => (
+							{discussionResults.map((resultUser, index) => (
 								<Tr
-									key={result._id}
+									key={resultUser._id}
 									className="hover:bg-gray-100 transition-all duration-200 cursor-pointer"
 								>
 									<Td
@@ -133,7 +148,7 @@ const DiscussionResults = () => {
 										textOverflow="ellipsis"
 										whiteSpace="nowrap"
 										onClick={() =>
-											viewResultAnswers(result)
+											viewResultAnswers(resultUser)
 										}
 									>
 										<div className="text-lg font-semibold text-center">
@@ -142,45 +157,44 @@ const DiscussionResults = () => {
 									</Td>
 									<Td
 										onClick={() =>
-											viewResultAnswers(result)
+											viewResultAnswers(resultUser)
 										}
 									>
 										<div className="flex items-center">
 											<Avatar
-												src={
-													result.userId
-														.googleAvatarUrl
-												}
+												src={resultUser.googleAvatarUrl}
 												size="sm"
 											/>
 											<div className="pl-2">
-												{result.userId.name}
+												{resultUser.name}
 											</div>
 										</div>
 									</Td>
 									<Td
 										onClick={() =>
-											viewResultAnswers(result)
+											viewResultAnswers(resultUser)
 										}
 										textAlign="center"
 									>
-										<div>{result.numberOfUpvotes}</div>
+										<div>{resultUser.numberOfUpvotes}</div>
 									</Td>
 									<Td
 										onClick={() =>
-											viewResultAnswers(result)
+											viewResultAnswers(resultUser)
 										}
 										textAlign="center"
 									>
-										<div>{result.numberOfDownvotes}</div>
+										<div>
+											{resultUser.numberOfDownvotes}
+										</div>
 									</Td>
 									<Td
 										onClick={() =>
-											viewResultAnswers(result)
+											viewResultAnswers(resultUser)
 										}
 										textAlign="center"
 									>
-										<div>{result.score}</div>
+										<div>{resultUser.score}</div>
 									</Td>
 									<Td textAlign="right">
 										<div className="flex items-center justify-end">
@@ -195,7 +209,9 @@ const DiscussionResults = () => {
 												color="blue.600"
 												className="shadow mr-2"
 												onClick={() =>
-													viewResultAnswers(result)
+													viewResultAnswers(
+														resultUser,
+													)
 												}
 											/>
 										</div>
@@ -206,6 +222,145 @@ const DiscussionResults = () => {
 					</Table>
 				</div>
 			</div>
+			<Drawer {...resultAnswerDrawer} size="lg">
+				<DrawerOverlay />
+				<DrawerContent>
+					<DrawerCloseButton />
+					<DrawerHeader borderBottomWidth="1px">
+						Result Answers -{' '}
+						{selectedResult?.answers[0]?.user?.name}
+					</DrawerHeader>
+					<DrawerBody>
+						{selectedResult?.answers.length ? (
+							<>
+								<div className="text-lg font-semibold">
+									Answers
+								</div>
+								{selectedResult?.answers.map(
+									(answer, index) => (
+										<div key={index} className="my-4">
+											<div className="flex">
+												<div className="flex-none">
+													<div className="flex flex-col items-center text-gray-500">
+														<div>
+															<Icons.CaretUp
+																size={26}
+															/>
+														</div>
+														<div className="font-bold">
+															{answer.upvoters!
+																.length -
+																answer.downvoters!
+																	.length}
+														</div>
+														<div>
+															<Icons.CaretDown
+																size={26}
+															/>
+														</div>
+													</div>
+												</div>
+												<div className="flex-1">
+													<div className="relative">
+														<div
+															className={classNames(
+																'ml-2 px-5 py-4 rounded-2xl rounded-tl-md bg-gray-700 text-gray-200',
+															)}
+														>
+															{answer.content}
+														</div>
+														<div
+															className={classNames(
+																'absolute bottom-1 right-3 text-xs text-gray-300',
+															)}
+														>
+															{timeAgo.format(
+																dayjs(
+																	new Date(
+																		answer.createdAt,
+																	),
+																).toDate(),
+															)}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									),
+								)}
+							</>
+						) : null}
+						{selectedResult?.comments.length ? (
+							<>
+								<div className="text-lg font-semibold">
+									Comments
+								</div>
+								{selectedResult?.comments.map(
+									(comment, index) => (
+										<div key={index} className="my-4">
+											<div className="flex">
+												<div className="flex-none">
+													<div className="flex flex-col items-center text-gray-500">
+														<div>
+															<Icons.CaretUp
+																size={26}
+															/>
+														</div>
+														<div className="font-bold">
+															{comment.upvoters!
+																.length -
+																comment.downvoters!
+																	.length}
+														</div>
+														<div>
+															<Icons.CaretDown
+																size={26}
+															/>
+														</div>
+													</div>
+												</div>
+												<div className="flex-1">
+													<div className="relative">
+														<div
+															className={classNames(
+																'ml-2 px-5 py-4 rounded-2xl rounded-tl-md bg-gray-600 text-gray-200',
+															)}
+														>
+															{comment.content}
+														</div>
+														<div
+															className={classNames(
+																'absolute bottom-1 right-3 text-xs text-gray-300',
+															)}
+														>
+															{timeAgo.format(
+																dayjs(
+																	new Date(
+																		comment.createdAt,
+																	),
+																).toDate(),
+															)}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									),
+								)}
+							</>
+						) : null}
+					</DrawerBody>
+					<DrawerFooter borderTopWidth="1px">
+						<Button
+							variant="outline"
+							mr={3}
+							onClick={resultAnswerDrawer.onClose}
+						>
+							Close
+						</Button>
+					</DrawerFooter>
+				</DrawerContent>
+			</Drawer>
 		</div>
 	)
 }
