@@ -16,6 +16,10 @@ export interface Discussion {
 	participants?: User[]
 	viewerIds: string[]
 	viewers?: User[]
+	isViewer: boolean
+	isParticipant: boolean
+	isInputAllowed: boolean
+	isActionAllowed: boolean
 	createdAt: string
 	modifiedAt: string
 }
@@ -50,6 +54,7 @@ export function generateDiscussion(): Discussion {
 			dayjs().add(15, 'days').toDate(),
 		)
 		.toString()
+
 	return {
 		_id: fakeId(),
 		title,
@@ -61,6 +66,10 @@ export function generateDiscussion(): Discussion {
 		createdAt: faker.date.past().toString(),
 		modifiedAt: faker.date.past().toString(),
 		organizationId: fakeId(),
+		isInputAllowed: true,
+		isActionAllowed: true,
+		isParticipant: true,
+		isViewer: false,
 	}
 }
 

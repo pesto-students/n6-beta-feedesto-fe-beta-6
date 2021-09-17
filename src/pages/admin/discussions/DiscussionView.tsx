@@ -271,6 +271,8 @@ const DiscussionViewPage = () => {
 		fetchDiscussionDetails(), fetchDiscussionAnswers()
 	}, [])
 
+	const isInputAllowed = discussionDetails?.isInputAllowed ?? false
+	const isActionAllowed = discussionDetails?.isActionAllowed ?? false
 	const isAdmin = userStore.currentUser.isAdmin
 
 	const Answer = ({
@@ -296,13 +298,13 @@ const DiscussionViewPage = () => {
 											'cursor-pointer':
 												!answer.hasUpvoted &&
 												!answer.hasDownvoted &&
-												!userStore.currentUser.isAdmin,
+												isActionAllowed,
 										})}
 										onClick={() => {
 											if (
 												answer.hasUpvoted ||
 												answer.hasDownvoted ||
-												userStore.currentUser.isAdmin
+												!isActionAllowed
 											)
 												return
 											answerController.addUpvote.onSubmit(
@@ -314,7 +316,6 @@ const DiscussionViewPage = () => {
 							</div>
 							<div className="text-xl font-bold">
 								{answer.upvoteCount - answer.downvoteCount}
-								{!isAdmin && '+'}
 							</div>
 							<div>
 								{answer.hasDownvoted ? (
@@ -329,13 +330,13 @@ const DiscussionViewPage = () => {
 											'cursor-pointer':
 												!answer.hasUpvoted &&
 												!answer.hasDownvoted &&
-												!userStore.currentUser.isAdmin,
+												isActionAllowed,
 										})}
 										onClick={() => {
 											if (
 												answer.hasUpvoted ||
 												answer.hasDownvoted ||
-												userStore.currentUser.isAdmin
+												!isActionAllowed
 											)
 												return
 											answerController.addDownvote.onSubmit(
@@ -407,18 +408,14 @@ const DiscussionViewPage = () => {
 																	'cursor-pointer':
 																		!comment.hasUpvoted &&
 																		!comment.hasDownvoted &&
-																		!userStore
-																			.currentUser
-																			.isAdmin,
+																		isActionAllowed,
 																},
 															)}
 															onClick={() => {
 																if (
 																	comment.hasUpvoted ||
 																	comment.hasDownvoted ||
-																	userStore
-																		.currentUser
-																		.isAdmin
+																	!isActionAllowed
 																)
 																	return
 																commentController.addUpvote.onSubmit(
@@ -431,7 +428,6 @@ const DiscussionViewPage = () => {
 												<div className=" font-bold">
 													{comment.upvoteCount -
 														comment.downvoteCount}
-													{!isAdmin && '+'}
 												</div>
 												<div>
 													{comment.hasDownvoted ? (
@@ -447,18 +443,14 @@ const DiscussionViewPage = () => {
 																	'cursor-pointer':
 																		!comment.hasUpvoted &&
 																		!comment.hasDownvoted &&
-																		!userStore
-																			.currentUser
-																			.isAdmin,
+																		isActionAllowed,
 																},
 															)}
 															onClick={() => {
 																if (
 																	comment.hasUpvoted ||
 																	comment.hasDownvoted ||
-																	userStore
-																		.currentUser
-																		.isAdmin
+																	!isActionAllowed
 																)
 																	return
 																commentController.addDownvote.onSubmit(
@@ -530,7 +522,7 @@ const DiscussionViewPage = () => {
 									</div>
 								</div>
 							))}
-							{!isAdmin && (
+							{!isAdmin && isInputAllowed && (
 								<div className="ml-2 pr-2 mt-2 w-full">
 									<InputGroup size="md">
 										<Input
@@ -599,7 +591,7 @@ const DiscussionViewPage = () => {
 				<div className="col-span-1 h-screen overflow-x-hidden">
 					<div className="p-3 overflow-y-scroll">
 						<div className="flex flex-col">
-							{!isAdmin && (
+							{!isAdmin && isInputAllowed && (
 								<div className="flex-none">
 									<div className="w-full">
 										<div>

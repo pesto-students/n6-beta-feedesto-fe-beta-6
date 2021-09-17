@@ -74,7 +74,7 @@ class NetworkHelper {
 			// If server sends unauthorized user then logOut
 			if (axiosResponse?.status == 401) {
 				localStorage.clear()
-				location.href = '/'
+				location.replace('/')
 			}
 
 			if (showToast) {
@@ -85,6 +85,10 @@ class NetworkHelper {
 		} catch (err: AxiosError | any) {
 			const axiosResponse: AxiosResponse = err.response
 			if (axiosResponse) {
+				if (axiosResponse?.status == 401) {
+					localStorage.clear()
+					location.href = '/'
+				}
 				if (axiosResponse.status > 300) {
 					if (
 						axiosResponse.status >= 500 ||
