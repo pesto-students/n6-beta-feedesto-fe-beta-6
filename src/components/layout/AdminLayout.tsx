@@ -15,12 +15,6 @@ const AdminLayout = ({ children, ...args }: any) => {
 			icon: <Icon.ChatText size={24} />,
 			link: Routes.ADMIN_DISCUSSIONS,
 		},
-		{
-			label: 'Super Admin',
-			icon: <Icon.Bank size={24} />,
-			link: Routes.SUPER_ADMIN_USERS,
-			tooltipText: 'For demo purposes only',
-		},
 	]
 	return (
 		<div>
