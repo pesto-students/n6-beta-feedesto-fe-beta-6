@@ -121,19 +121,19 @@ const LoginUserWithGoogle = ({
 					data-testid="entity-type-radio"
 				>
 					<Radio
-						className="col"
+						className="col cursor-pointer"
 						value={LoginType.USER}
 						data-testid="entity-type-user-radio"
 					>
-						User
+						<span className="cursor-pointer">User</span>
 					</Radio>
 
 					<Radio
-						className="col"
+						className="col cursor-pointer"
 						value={LoginType.ORGANIZATION}
 						data-testid="entity-type-organization-radio"
 					>
-						Organization
+						<span className="cursor-pointer">Organization</span>
 					</Radio>
 				</RadioGroup>
 			</div>
