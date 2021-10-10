@@ -1,10 +1,13 @@
-# Feedesto Frontend
+<p align="center">
+	<img src="https://feedesto.com/feedesto.svg" width="200" align="center">
+</p>
+<h1 align="center">Feedesto Frontend</h1>
 
-![feedesto.svg](https://feedesto.com/feedesto-logo.png)
+<p align="center">A Decisive buddy for your Business.</p>
 
-## Demo
-
-### [Live URL](https://feedesto.com)
+<h3 align="center">
+	<a href="https://feedesto.com">Live URL</a>
+</h3>
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
