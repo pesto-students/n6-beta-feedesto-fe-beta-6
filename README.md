@@ -61,35 +61,29 @@ Following are the simple steps to run this project.
 
 ### Prerequisites
 
--   npm ```
+-   npm
+    ```sh
     npm install npm@latest -g
-
-```
+    ```
 
 ### Installation
 
 1. Clone the repo
 
-```
-
-git clone https://github.com/pesto-students/n6-beta-feedesto-fe-beta-6.git feedesto-fe
-
+```sh
+  git clone https://github.com/pesto-students/n6-beta-feedesto-fe-beta-6.git feedesto-fe
 ```
 
 2. Install NPM packages
 
 ```
-
-cd feedesto-fe && npm install
-
+  cd feedesto-fe && npm install
 ```
 
 3. Run
 
 ```
-
-npm run dev
-
+  npm run dev
 ```
 
 4. Open http://localhost:3000 to view it in the browser
@@ -109,4 +103,3 @@ npm run dev
 Harshit Sangani - [GitHub](https://github.com/dev-deepak-rawat)
 
 Harshpinder Singh - [GitHub](https://github.com/harisrahman)
-```
