@@ -1,0 +1,18 @@
+{
+	"prettier.useTabs": true,
+	"editor.tabSize": 4,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	},
+	"[javascript]": {
+		"editor.tabSize": 4
+	},
+	"[jsx-tags]": {
+		"editor.tabSize": 2
+	},
+	"[html]": {
+		"editor.suggest.insertMode": "replace",
+		"gitlens.codeLens.scopes": ["document"],
+		"editor.tabSize": 2
+	}
+}
