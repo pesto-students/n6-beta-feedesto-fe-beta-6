@@ -1,6 +1,6 @@
 # Feedesto Frontend
 
-![feedesto.svg](https://feedesto.com/feedesto.svg)
+![feedesto.svg](https://feedesto.com/feedesto-logo.png)
 
 ## Demo
 
@@ -62,15 +62,16 @@ Following are the simple steps to run this project.
 ### Prerequisites
 
 -   npm
-    ```sh
-    npm install npm@latest -g
-    ```
+
+```
+  npm install npm@latest -g
+```
 
 ### Installation
 
 1. Clone the repo
 
-```sh
+```
   git clone https://github.com/pesto-students/n6-beta-feedesto-fe-beta-6.git feedesto-fe
 ```
 
