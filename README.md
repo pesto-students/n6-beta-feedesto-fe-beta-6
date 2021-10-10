@@ -1,12 +1,33 @@
-# README
+# Feedesto Frontend
 
 ![feedesto.svg](https://feedesto.com/feedesto.svg)
 
-# Feedesto Frontend
+## Demo
 
 ### [Live URL](https://feedesto.com)
 
--   Table of contents
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#backend-repo">Backend Repo</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#built-with">Built with</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#contributors">Contributors</a></li>
+  </ol>
+</details>
 
 ## About The Project
 
@@ -20,7 +41,7 @@ Feedesto provides a Complete and Concrete solution to help executives in the dec
 
 [Backend Repo](https://github.com/pesto-students/n6-beta-feedesto-be-beta-6)
 
-**Features:**
+### Features
 
 -   Anonymous discussions.
 -   Simple and consistent UI.
