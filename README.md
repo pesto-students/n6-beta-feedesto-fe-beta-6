@@ -28,6 +28,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
+    <li><a href="#tools">Tools and Libraries</a></li>
     <li><a href="#contributors">Contributors</a></li>
   </ol>
 </details>
@@ -104,6 +105,6 @@ Following are the simple steps to run this project.
 
 ## Contributors
 
-Harshit Sangani - [GitHub](https://github.com/dev-deepak-rawat)
+Harshit Sangani - [GitHub](https://github.com/harshitsangani)
 
-Harshpinder Singh - [GitHub](https://github.com/harisrahman)
+Harshpinder Singh - [GitHub](https://github.com/Harshpinder-singh)
