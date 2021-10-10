@@ -91,14 +91,16 @@ const LoginUserWithGoogle = ({
 	}
 
 	const handleGoogleLoginSuccess = async (
-		response: GoogleLoginResponse | GoogleLoginResponseOffline,
+		response?: GoogleLoginResponse | GoogleLoginResponseOffline,
+		googleUserId?: string,
 	) => {
 		response = response as GoogleLoginResponse
 
-		if (response) {
+		if (googleUserId || response) {
 			loginUserController.updateFields({
 				loginType,
-				googleUserId: response.getBasicProfile().getId(),
+				googleUserId:
+					googleUserId ?? response.getBasicProfile().getId(),
 			})
 			loginUserController.onSubmit(response)
 		}
@@ -119,19 +121,19 @@ const LoginUserWithGoogle = ({
 					data-testid="entity-type-radio"
 				>
 					<Radio
-						className="col"
+						className="col cursor-pointer"
 						value={LoginType.USER}
 						data-testid="entity-type-user-radio"
 					>
-						User
+						<span className="cursor-pointer">User</span>
 					</Radio>
 
 					<Radio
-						className="col"
+						className="col cursor-pointer"
 						value={LoginType.ORGANIZATION}
 						data-testid="entity-type-organization-radio"
 					>
-						Organization
+						<span className="cursor-pointer">Organization</span>
 					</Radio>
 				</RadioGroup>
 			</div>
@@ -164,6 +166,29 @@ const LoginUserWithGoogle = ({
 					onFailure={handleGoogleLoginFailure}
 					cookiePolicy={'single_host_origin'}
 				/>
+			</div>
+			<div className="text-gray-500 font-semibold mt-5">
+				Want to have a peek inside?
+			</div>
+			<div className="pt-3">
+				<button
+					onClick={() =>
+						handleGoogleLoginSuccess(
+							undefined,
+							loginType == LoginType.ORGANIZATION
+								? '106393911219559234350'
+								: '106962698788100602521',
+						)
+					}
+					className="bg-gray-800 px-3 py-2 w-full rounded-xl shadow-lg font-semibold text-left"
+				>
+					<div className="text-white text-lg text-center">
+						Try demo as
+						{loginType == LoginType.ORGANIZATION
+							? ' an Organization'
+							: ' a User'}
+					</div>
+				</button>
 			</div>
 		</div>
 	)

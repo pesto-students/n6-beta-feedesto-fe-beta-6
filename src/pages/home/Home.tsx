@@ -1,16 +1,37 @@
 import { Image } from '@chakra-ui/react'
 import classNames from 'classnames'
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import GetStarted from './components/GetStarted'
 
 const Home = () => {
 	const navLinks = ['Home', 'About', 'Contact']
 
+	const homeRef = useRef<HTMLDivElement>(null)
+	const aboutRef = useRef<HTMLDivElement>(null)
+	const contactRef = useRef<HTMLDivElement>(null)
+
+	const handleLinkClick = (link: string) => {
+		switch (link) {
+			case 'Home':
+				homeRef.current?.scrollIntoView({ behavior: 'smooth' })
+				break
+			case 'About':
+				aboutRef.current?.scrollIntoView({ behavior: 'smooth' })
+				break
+			case 'Contact':
+				contactRef.current?.scrollIntoView({ behavior: 'smooth' })
+				break
+			default:
+				break
+		}
+	}
+
 	return (
 		<div>
 			<main>
 				<header>
-					<div className="mt-8 px-12">
+					<div className="mt-8 px-12" ref={homeRef}>
 						<div className="flex justify-between items-center">
 							<Image
 								className="h-16"
@@ -21,10 +42,11 @@ const Home = () => {
 								<ul>
 									{navLinks.map((el, index) => (
 										<Link
-											to={`#${el}`}
+											to="/"
 											className={classNames(
-												'inline mx-2 p-2',
+												'inline mx-2 p-2 hover:text-blue-800',
 											)}
+											onClick={() => handleLinkClick(el)}
 											key={index}
 										>
 											{el}
@@ -52,14 +74,14 @@ const Home = () => {
 						</div>
 					</div>
 				</div>
-				<section className="my-14 container mx-auto">
-					<div className="grid grid-cols-2">
+				<section className="my-14 container mx-auto" id="#about">
+					<div className="grid grid-cols-2" ref={aboutRef}>
 						<div className="col-span-2 md:col-span-1">
 							<div>
 								<img src="/discussion-add.gif" />
 							</div>
 						</div>
-						<div className="col-span-2 md:col-span-1  ml-6">
+						<div className="col-span-2 md:col-span-1 ml-6">
 							<div className="text-3xl font-bold">
 								For Organizations
 							</div>
@@ -113,7 +135,7 @@ const Home = () => {
 						</div>
 					</div>
 				</section>
-				<div>
+				<div ref={contactRef}>
 					<footer className="bg-gray-800">
 						<div className="container mx-auto py-4">
 							<div className="md:text-center p-3">

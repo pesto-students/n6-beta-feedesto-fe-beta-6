@@ -1,65 +1,110 @@
-# Feedesto - Frontend
+<p align="center">
+	<img src="https://feedesto.com/feedesto.svg" width="200" align="center">
+</p>
+<h1 align="center">Feedesto Frontend</h1>
 
-This system will help in taking the biggest decisions for corporates. i.e. determining the correct workforce to have in leading positions. The accurate analytics of anonymous responses is the key.
+<p align="center">A Decisive buddy for your Business.</p>
 
-## Feedesto Overview
+<h3 align="center">
+	<a href="https://feedesto.com">Live URL</a>
+</h3>
 
-Considering the fact that there are many such industries (Textile, Diamond, Mining, Labour, etc.) in which analytical metrics may not be available through direct sources and that makes deciding of appraisals and promotions tough.
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#backend-repo">Backend Repo</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#built-with">Built with</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#tools">Tools and Libraries</a></li>
+    <li><a href="#contributors">Contributors</a></li>
+  </ol>
+</details>
+
+## About The Project
+
+Considering the fact that there are many such industries (Textile, Diamond, Mining, Labour, etc.) in which analytical metrics may not be available through direct sources and that makes deciding for appraisals and promotions tough.
 
 The corporates who have got better thinkers in their management structure are performing far better than their competitors.
 
 Feedesto provides a Complete and Concrete solution to help executives in the decision making process for promotions or appraisals of the employees through anonymous discussions and feedback.
 
+### Backend Repo
+
+[Backend Repo](https://github.com/pesto-students/n6-beta-feedesto-be-beta-6)
+
+### Features
+
+-   Anonymous discussions.
+-   Simple and consistent UI.
+-   Analytical metrics for organisations.
+-   Infinite scrolling to optimise long lists.
+
+### Built With
+
+-   React
+-   Redux, redux-toolkit
+-   Chakra UI
+-   Tailwind CSS
+
 ## Getting Started
 
-[Try it out](https://feedesto.com)
+Following are the simple steps to run this project.
 
-### Dependencies
+### Prerequisites
 
--   Node.JS
+-   npm
 
-### 1. Installing
-
--   Clone this repo by executing
-
-    ```
-    git clone https://github.com/pesto-students/n6-beta-feedesto-fe-beta-6.git feedesto-fe
-    ```
-
--   Switch to the cloned repo by executing
-
-    ```
-    cd feedesto-fe
-    ```
-
-### 2. Installing dependencies
-
-```jsx
-yarn // if you are using yarn
-npm install
+```
+  npm install npm@latest -g
 ```
 
-### 3. Executing program
+### Installation
 
-```jsx
-yarn dev // if you are using yarn
-npm run dev
+1. Clone the repo
+
+```
+  git clone https://github.com/pesto-students/n6-beta-feedesto-fe-beta-6.git feedesto-fe
 ```
 
-## Authors
+2. Install NPM packages
 
-[harshitsangani - Overview](https://github.com/harshitsangani)
+```
+  cd feedesto-fe && npm install
+```
 
-[Harshpinder-singh - Overview](https://github.com/Harshpinder-singh)
+3. Run
 
-## Version History
+```
+  npm run dev
+```
 
--   0.2
-    -   Various bug fixes and optimizations
-    -   See commit change or See release history
--   0.1
-    -   Initial Release
+4. Open http://localhost:3000 to view it in the browser
 
-## License
+## Tools and Libraries
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+-   [Redux-Tool-Kit] - State Management
+-   [BugSnag] - Error Tracking
+-   [Jest] - Unit testing
+-   [React-testing-Library] - Integration testing
+-   [ESlint] - Linting
+-   [Prettier] - Automatic code formatting
+-   [TailwindCSS] - CSS styling classes
+
+## Contributors
+
+Harshit Sangani - [GitHub](https://github.com/harshitsangani)
+
+Harshpinder Singh - [GitHub](https://github.com/Harshpinder-singh)
